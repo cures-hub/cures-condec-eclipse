@@ -1,0 +1,13 @@
+# Gitignore for Eclipse ConDec plug-in
+
+# Directories
+target/
+.idea/
+.metadata/
+
+# Files
+.classpath
+.settings
+*.iml
+*.class
+.project
