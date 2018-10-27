@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.uhd.ifi.se.decision</groupId>
+	<artifactId>de.uhd.ifi.se.decision.management.eclipse</artifactId>
+	<version>0.0.1</version>
+	<packaging>eclipse-plugin</packaging>
+
+	<name>Decision Documentation and Exploration</name>
+	<description>Enables developers to continuously document and explore decision knowledge. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale).</description>
+	<organization>
+		<name>Software Engineering Research Group, Heidelberg University</name>
+		<url>https://github.com/cures-hub</url>
+	</organization>
+
+	<properties>
+		<tycho.version>0.23.0</tycho.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>Oxygen</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/oxygen/</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>6.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
+			<version>3.3.5</version>
+		</dependency>
+	</dependencies>
+	<url>https://github.com/cures-hub/cures-condec-eclipse</url>
+</project>
