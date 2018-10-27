@@ -5,6 +5,7 @@ cache:
   - $HOME/.m2
 script:
   - mvn install
+  - mvn cobertura:cobertura
 deploy:
   provider: releases
   api_key:
