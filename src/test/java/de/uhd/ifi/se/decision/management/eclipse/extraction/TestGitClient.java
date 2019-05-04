@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 
 public class TestGitClient {
 

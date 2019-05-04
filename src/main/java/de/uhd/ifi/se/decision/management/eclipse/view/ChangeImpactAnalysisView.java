@@ -1,11 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -13,8 +9,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
-
-import de.uhd.ifi.se.decision.management.eclipse.changesupport.ViewSupport;
 
 public class ChangeImpactAnalysisView extends ViewPart {
 
@@ -38,8 +32,8 @@ public class ChangeImpactAnalysisView extends ViewPart {
 		scrolledComposite.setMinSize(scrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public void analyseChangeImpact() throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		label.setText(ViewSupport.analyzeChange());
+	public void setContent(String text) {
+		label.setText(text);
 		scrolledComposite.setMinSize(scrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 

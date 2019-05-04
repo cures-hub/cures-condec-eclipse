@@ -12,7 +12,17 @@ import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
+
 public interface GitClient {
+
+	/**
+	 * 
+	 * @return Returns a Set with all commits of the current branch.
+	 */
+	Set<GitCommit> getAllCommits();
 
 	/**
 	 * Show what author and revision last modified each line of a file.
@@ -33,7 +43,7 @@ public interface GitClient {
 	 *            the line that is to be analyzed
 	 * @return RevCommit returns all information about the commit as RevCommit
 	 */
-	RevCommit getCommitForLine(IPath filePath, int line);
+	GitCommit getCommitForLine(IPath filePath, int line);
 
 	/**
 	 * Retrieve the commit message for a given line from a blamed file
@@ -53,7 +63,7 @@ public interface GitClient {
 	 *            issue key for which commits are searched
 	 * @return commits with the issue key in their commit message
 	 */
-	Set<RevCommit> getCommitsForIssueKey(String issueKey);
+	Set<GitCommit> getCommitsForIssueKey(IssueKey issueKey);
 
 	/**
 	 * Get the parent commit for a given commit.
@@ -71,7 +81,7 @@ public interface GitClient {
 	 *            commit as a RevCommit object
 	 * @return list of diff entries
 	 */
-	List<DiffEntry> getDiffEntries(RevCommit revCommit);
+	List<CodeClass> getDiffEntries(GitCommit commit);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.
@@ -80,8 +90,8 @@ public interface GitClient {
 	 *            commit as a RevCommit object
 	 * @return map of diff entries and respective edit lists
 	 */
-	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit);
-	
+	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(GitCommit commit);
+
 	/**
 	 * Gets the changed methods in a diff entry
 	 * 
@@ -137,4 +147,34 @@ public interface GitClient {
 	 *            jgit git object
 	 */
 	void setGit(Git git);
+
+	/**
+	 * Retrieve the commits with the issue key in their commit message.
+	 * 
+	 * @param issueKey
+	 *            issue key for which commits are searched
+	 * @return commits with the issue key in their commit message
+	 */
+	Set<RevCommit> getCommitsForIssueKey(String issueKey);
+
+	/**
+	 * Retrieve the commit message for a given line from a blamed file as a
+	 * RevCommit.
+	 * 
+	 * @param filePath
+	 *            path to the file to be blamed
+	 * @param line
+	 *            the line that is to be analyzed
+	 * @return RevCommit returns all information about the commit as RevCommit
+	 */
+	RevCommit getRevCommitForLine(IPath filePath, int line);
+
+	/**
+	 * Get a map of diff entries and the respective edit lists for a commit.
+	 * 
+	 * @param revCommit
+	 *            commit as a RevCommit object
+	 * @return map of diff entries and respective edit lists
+	 */
+	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit);
 }

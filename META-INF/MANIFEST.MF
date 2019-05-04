@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ConDec Eclipse
 Bundle-SymbolicName: de.uhd.ifi.se.decision.management.eclipse;singleton:=true
-Bundle-Version: 0.0.1
+Bundle-Version: 0.0.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jgit,
@@ -10,9 +10,18 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui,
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ org.eclipse.equinox.registry,
+ org.eclipse.ui.workbench,
+ org.eclipse.jdt;bundle-version="3.17.0",
+ org.eclipse.jdt.core,
+ org.eclipse.e4.core.di.annotations,
+ org.eclipse.e4.ui.services
 Bundle-Activator: de.uhd.ifi.se.decision.management.eclipse.Activator
-Import-Package: org.eclipse.jface.viewers,
+Import-Package: org.eclipse.jdt.core,
+ org.eclipse.jdt.internal.core,
+ org.eclipse.jface.viewers,
  org.eclipse.swt,
  org.eclipse.swt.widgets,
  org.eclipse.ui.texteditor
@@ -30,10 +39,6 @@ Export-Package: com.atlassian.event,
  com.atlassian.httpclient.base,
  com.atlassian.httpclient.base.event,
  com.atlassian.httpclient.spi,
- com.atlassian.jira.rest.client.api,
- com.atlassian.jira.rest.client.api.domain,
- com.atlassian.jira.rest.client.api.domain.input,
- com.atlassian.jira.rest.client.api.domain.util,
  com.atlassian.jira.rest.client.auth,
  com.atlassian.jira.rest.client.internal;x-internal:=true,
  com.atlassian.jira.rest.client.internal.async;x-internal:=true,
@@ -436,8 +441,6 @@ Bundle-ClassPath: lib/aopalliance-1.0.jar,
  lib/jersey-core-1.5.jar,
  lib/jersey-json-1.5.jar,
  lib/jettison-1.1.jar,
- lib/jira-rest-java-client-api-2.0.0-m25.jar,
- lib/jira-rest-java-client-core-2.0.0-m25.jar,
  lib/joda-time-1.6.jar,
  lib/jsr305-1.3.9.jar,
  lib/junit-4.12.jar,
@@ -450,6 +453,10 @@ Bundle-ClassPath: lib/aopalliance-1.0.jar,
  lib/stax-api-1.0.1.jar,
  lib/activation-1.1.jar,
  lib/javaparser-core-3.6.27.jar,
- .
+ .,
+ lib/jira-rest-java-client-2.0.0-m2-sources.jar,
+ lib/jira-rest-java-client-2.0.0-m2.jar,
+ lib/atlassian-util-concurrent-3.0.0.jar,
+ lib/gephi-toolkit-0.9.2-all.jar
 Automatic-Module-Name: de.uhd.ifi.se.decision.management.eclipse
 Bundle-Vendor: Software Engineering Research Group, Heidelberg University

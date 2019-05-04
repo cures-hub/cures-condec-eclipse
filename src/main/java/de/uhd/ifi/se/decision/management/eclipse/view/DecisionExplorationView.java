@@ -11,8 +11,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
-import de.uhd.ifi.se.decision.management.eclipse.changesupport.ViewSupport;
-
 public class DecisionExplorationView extends ViewPart {
 
 	private Label label;
@@ -36,11 +34,11 @@ public class DecisionExplorationView extends ViewPart {
 		scrolledComposite.setMinSize(scrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public void exploreDecision() {
-		label.setText(ViewSupport.produceDecisionExploration());
+	public void setContent(String text) {
+		label.setText(text);
 		scrolledComposite.setMinSize(scrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
-	
+
 	@Override
 	public void setFocus() {
 		label.setFocus();

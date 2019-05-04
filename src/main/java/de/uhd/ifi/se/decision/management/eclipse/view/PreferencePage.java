@@ -10,8 +10,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
 
 /**
- * The PreferencePage class creates the plugins preference page viewable in
- * eclipse under window -> preferences -> ConDec
+ * Creates the plugins preference page accessable via Window -> Preferences ->
+ * ConDec.
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -32,6 +32,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		addField(new StringFieldEditor("JIRA_PROJECT_KEY", "Project Key in JIRA:", getFieldEditorParent()));
 
 		addField(new IntegerFieldEditor("LINK_DISTANCE", "Link Distance:", getFieldEditorParent()));
+		addField(new StringFieldEditor("DECREASE_FACTOR", "Highlight Decrease Factor:", getFieldEditorParent()));
 	}
 
 	@Override
