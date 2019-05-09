@@ -40,8 +40,7 @@ public class TextualRepresentation {
 
 		Issue issue = jiraClient.getIssue(issueKey);
 
-		int linePlusOne = line++;
-		String start = "Line " + linePlusOne + " of the current file is used for knowledge exploration.\n\n";
+		String start = "Line " + line++ + " of the current file is used for knowledge exploration.\n\n";
 		start += "The last commit message of the commit that changed this line is:\n" + commitToString(commitForLine)
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
