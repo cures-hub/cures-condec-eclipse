@@ -90,7 +90,7 @@ public class Linker {
 	private void createLinks(INode node, int currentDepth, int maxDepth, Set<INode> visitedNodes) {
 		// Create Links, if node wasn't visited yet
 		if (currentDepth < maxDepth && !visitedNodes.contains(node)) {
-			visitedNodes.add(node);
+			visitedNodes.add(node);			
 			if (node instanceof GitCommit) {
 				GitCommit gc = (GitCommit) node;
 				List<IssueKey> keys = gc.getIssueKeys();
@@ -104,18 +104,23 @@ public class Linker {
 				for (DecisionKnowledgeElement cd : gc.getCommitDecisions()) {
 					createLinks(cd, currentDepth + 1, maxDepth, visitedNodes);
 				}
-			} else if (node instanceof DecisionKnowledgeElement) {
+			} 
+			if (node instanceof DecisionKnowledgeElement) {
 				// Nothing more to do - Git-Decisions have no other links than to the
 				// corresponding commit.
-			} else if (node instanceof CodeClass) {
+				System.err.println("DecisionKnowledgeElement as a Node");
+			} 
+			if (node instanceof CodeClass) {
 				for(INode n : node.getLinks()) {
 					createLinks(n, currentDepth + 1, maxDepth, visitedNodes);
 				}
-			} else if (node instanceof CodeMethod) {
+			} 
+			if (node instanceof CodeMethod) {
 				for(INode n : node.getLinks()) {
 					createLinks(n, currentDepth +1, maxDepth, visitedNodes);
 				}
-			} else if (node instanceof JiraIssue) {
+			} 
+			if (node instanceof JiraIssue) {
 				JiraIssue ji = (JiraIssue) node;
 				Set<GitCommit> commits = gitManager.getCommitsForIssueKey(ji.getIssueKey());
 				for (GitCommit commit : commits) {
