@@ -421,7 +421,7 @@ public class GitClientImpl implements GitClient {
 		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
 		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
 
-		DiffFormatter diffFormatter = getDiffFormater(revCommit);
+		DiffFormatter diffFormatter = getDiffFormater();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			diffEntries = diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
@@ -441,7 +441,7 @@ public class GitClientImpl implements GitClient {
 		return diffEntriesMappedToEditLists;
 	}
 
-	private DiffFormatter getDiffFormater(RevCommit revCommit) {
+	private DiffFormatter getDiffFormater() {
 		DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
 		diffFormatter.setRepository(this.repository);
 		diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
