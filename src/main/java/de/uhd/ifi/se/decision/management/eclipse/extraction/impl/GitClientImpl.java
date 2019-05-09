@@ -226,7 +226,7 @@ public class GitClientImpl implements GitClient {
 		commitMessage = commitMessage.replace("\r\n", " ").replace("\n", " ");
 		String[] words = commitMessage.toLowerCase().split(" ");
 		if (issueKeyBase == null) {
-			issueKeyBase = "";
+			return keys;
 		}
 		String basekey = issueKeyBase.toLowerCase();
 		for (String word : words) {
