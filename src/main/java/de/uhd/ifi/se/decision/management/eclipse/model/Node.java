@@ -2,7 +2,9 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.util.HashSet;
 
-public interface INode {
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.NodeImpl;
+
+public interface Node {
 	/**
 	 * Get the id of the node.
 	 *
@@ -47,14 +49,14 @@ public interface INode {
 	 * 			is the node, where the link is pointing to.
 	 * @return is true, if linking was successful.
 	 */
-	boolean addLinkedNode(INode node);
+	boolean addLinkedNode(Node node);
 	
 	/**
 	 * Remove a reference to another node which is linked.
 	 * @param node
 	 * 			is the node, which is going to be removed from the linked list.
 	 */
-	boolean removeLinkedNode(INode node);
+	boolean removeLinkedNode(Node node);
 	
 	/**
 	 * Removes all links from a node. Other nodes might still point at this node.
@@ -69,12 +71,28 @@ public interface INode {
 	 * 		is true, if there is a link to the node and is false, if there is no link
 	 * 		to the given node.
 	 */
-	boolean isLinkedToNode(INode node);
+	boolean isLinkedToNode(Node node);
 	
 	/**
 	 * Get the full list of all linked nodes.
 	 * @return
 	 * 		The ArrayList is never null. It contains all linked nodes.
 	 */
-	HashSet<INode> getLinks();
+	HashSet<Node> getLinks();
+	
+	/**
+	 * Get a INode object by its id.
+	 * 
+	 * @param id
+	 *            is the id which needs to be looked for.
+	 * @return returns null, if the object wasn't found. Otherwise the node-object
+	 *         will be returned.
+	 */
+	public static Node getNodeById(long id) {
+		if (NodeImpl.nodes.containsKey(id)) {
+			return NodeImpl.nodes.get(id);
+		} else {
+			return null;
+		}
+	}
 }

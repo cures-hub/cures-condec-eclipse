@@ -49,7 +49,6 @@ import org.openide.util.Lookup;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.INode;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethod;
@@ -90,7 +89,7 @@ public class MapDesigner {
 	private JCheckBox fKIOther;
 	private JCheckBox fKIPro;
 	private JCheckBox fKnowledgeItems;
-	private Map<INode, Set<INode>> map;
+	private Map<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>> map;
 	private ProjectController projectController;
 	private Workspace workspace;
 	private GraphModel graphModel;
@@ -229,19 +228,20 @@ public class MapDesigner {
 		refresh();
 	}
 
-	public void createSelectedMap(INode rootNode, int depth, Linker linker) {
+	public void createSelectedMap(de.uhd.ifi.se.decision.management.eclipse.model.Node rootNode, int depth,
+			Linker linker) {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
-		Set<INode> nodes = linker.createLinks(rootNode, depth);
+		Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> nodes = linker.createLinks(rootNode, depth);
 		if (map != null) {
 			map.clear();
 		} else {
-			map = new HashMap<INode, Set<INode>>();
+			map = new HashMap<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>>();
 		}
-		for (INode n : nodes) {
-			Set<INode> links = new HashSet<INode>();
-			for (INode neighbor : n.getLinks()) {
+		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
+			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> links = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
+			for (de.uhd.ifi.se.decision.management.eclipse.model.Node neighbor : n.getLinks()) {
 				if (nodes.contains(neighbor)) {
 					links.add(neighbor);
 				}
@@ -327,13 +327,13 @@ public class MapDesigner {
 		}
 	}
 
-	private void generateGraph(Set<INode> nodes) {
+	private void generateGraph(Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> nodes) {
 		// first, check load existing node-IDs
 		// for preventing errors when re-creating a graph
 		directedGraph.clear();
 		directedGraph.clearEdges();
 		// second, create nodes...
-		for (INode n : nodes) {
+		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
 			Node node = graphModel.factory().newNode(String.valueOf(n.getId()));
 			node.setLabel("[" + String.valueOf(n.getId()) + "] " + n.toString());
 			node.setX((float) Math.random() * 100f * (float) Math.sqrt(nodes.size()));
@@ -355,8 +355,9 @@ public class MapDesigner {
 		}
 		updateNodeSizes();
 		// third, create edges...
-		for (Map.Entry<INode, Set<INode>> entry : map.entrySet()) {
-			for (INode n : entry.getValue()) {
+		for (Map.Entry<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>> entry : map
+				.entrySet()) {
+			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : entry.getValue()) {
 				try {
 					Edge e = graphModel.factory().newEdge(directedGraph.getNode(String.valueOf(entry.getKey().getId())),
 							directedGraph.getNode(String.valueOf(n.getId())), 0, 1.0, true);
@@ -380,7 +381,7 @@ public class MapDesigner {
 		}
 	}
 
-	private boolean shouldBeVisible(INode node) {
+	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
 		if (node instanceof GitCommit && bShowCommits || node instanceof JiraIssue && bShowIssues
 				|| node instanceof CodeMethod && bShowMethods) {
 			return true;
@@ -446,7 +447,8 @@ public class MapDesigner {
 	 *            The node which size should be reset
 	 */
 	private void updateNodeSize(Node node) {
-		INode iN = GitCommit.getNodeById(Long.valueOf(node.getId().toString()));
+		de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
+				.getNodeById(Long.valueOf(node.getId().toString()));
 		// first - should the node be even visible?
 		// inside the if/else:
 		// is a filter active, which must be regarded?
@@ -467,12 +469,13 @@ public class MapDesigner {
 	}
 
 	private void highlightGraph() {
-		INode inode = GitCommit.getNodeById(interactionID);
+		de.uhd.ifi.se.decision.management.eclipse.model.Node inode = de.uhd.ifi.se.decision.management.eclipse.model.Node
+				.getNodeById(interactionID);
 		if (inode != null) {
 			for (Node n : directedGraph.getNodes()) {
 				n.setSize(0f);
 			}
-			Set<INode> visitedNodes = new HashSet<INode>();
+			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
 			directedGraph.getNode(String.valueOf(interactionID)).setSize(15f);
 			visitedNodes.add(inode);
 			highlightNodes(inode, 1, ConfigPersistenceManager.getLinkDistance(),
@@ -480,15 +483,16 @@ public class MapDesigner {
 		}
 	}
 
-	private void highlightNodes(INode node, int currentDepth, int maxDepth, float size, Set<INode> visitedNodes) {
-		for (INode n : node.getLinks()) {
+	private void highlightNodes(de.uhd.ifi.se.decision.management.eclipse.model.Node node, int currentDepth,
+			int maxDepth, float size, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes) {
+		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinks()) {
 			if (!visitedNodes.contains(n)) {
 				directedGraph.getNode(String.valueOf(n.getId())).setSize(size);
 				visitedNodes.add(n);
 			}
 		}
 		if (currentDepth + 1 < maxDepth) {
-			for (INode n : node.getLinks()) {
+			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinks()) {
 				highlightNodes(n, currentDepth + 1, maxDepth, size / ConfigPersistenceManager.getDecreaseFactor(),
 						visitedNodes);
 			}
@@ -806,7 +810,8 @@ public class MapDesigner {
 					if (id > 0) {
 						Node n = directedGraph.getNode(tfInteraction.getText());
 						if (n != null) {
-							INode iN = GitCommit.getNodeById(id);
+							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
+									.getNodeById(id);
 							if (iN instanceof JiraIssue) {
 								JiraIssue ji = (JiraIssue) iN;
 								OpenWebbrowser.openWebpage(new URI(extractIssueUri(ji)));

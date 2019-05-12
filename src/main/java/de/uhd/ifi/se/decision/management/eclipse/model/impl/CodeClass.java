@@ -17,9 +17,8 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.ICodeClass;
-import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
-public class CodeClass extends Node implements ICodeClass {
+public class CodeClass extends NodeImpl implements ICodeClass {
 	private static Map<String, CodeClass> instances = new HashMap<String, CodeClass>();
 	private String className;
 	private String packageName;

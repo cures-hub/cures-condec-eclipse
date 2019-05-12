@@ -3,9 +3,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-
-public class CodeMethod extends Node {
+public class CodeMethod extends NodeImpl {
 	private String methodName = "";
 	private int methodStart = 0;
 	private int methodStop = 0;

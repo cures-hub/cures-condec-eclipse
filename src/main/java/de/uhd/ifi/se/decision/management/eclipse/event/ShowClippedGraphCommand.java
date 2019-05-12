@@ -17,7 +17,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.INode;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
@@ -42,7 +42,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 				// Just to load all elements and look for the invoked .java file in the
 				// CodeClass-instances
 				linker.createFullMap();
-				INode rootNode = null;
+				Node rootNode = null;
 				for (CodeClass cc : CodeClass.getInstances()) {
 					String fileloc = cc.getFilelocation().replace('\\', '/').toLowerCase();
 					if (fileloc.equals(fullPath)) {

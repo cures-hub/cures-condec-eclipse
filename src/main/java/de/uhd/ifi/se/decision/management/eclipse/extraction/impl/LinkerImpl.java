@@ -13,7 +13,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.INode;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
@@ -50,14 +50,14 @@ public class LinkerImpl implements Linker {
 	}
 
 	@Override
-	public Map<INode, Set<INode>> createFullMap() {
-		Map<INode, Set<INode>> map = new HashMap<INode, Set<INode>>();
+	public Map<Node, Set<Node>> createFullMap() {
+		Map<Node, Set<Node>> map = new HashMap<Node, Set<Node>>();
 		for (GitCommit gc : gitClient.getAllCommits()) { 
 			gc.extractChangedClasses(gitClient);
 			createLinks(gc, 1);
 			map.put(gc, gc.getLinks());
 			for(DecisionKnowledgeElement dke : gc.getCommitDecisions()) {
-				Set<INode> n = new HashSet<INode>();
+				Set<Node> n = new HashSet<Node>();
 				n.add(gc);
 				map.put(dke, n);
 			}
@@ -87,16 +87,16 @@ public class LinkerImpl implements Linker {
 	 *        retrieved.
 	 */
 	@Override
-	public Set<INode> createLinks(INode node, int maxDepth) {
+	public Set<Node> createLinks(Node node, int maxDepth) {
 		for(GitCommit gc : gitClient.getAllCommits()) {
 			gc.extractChangedClasses(gitClient);
 		}
-		Set<INode> visitedNodes = new HashSet<INode>();
+		Set<Node> visitedNodes = new HashSet<Node>();
 		createLinks(node, 0, maxDepth, visitedNodes);
 		return visitedNodes;
 	}
 
-	private void createLinks(INode node, int currentDepth, int maxDepth, Set<INode> visitedNodes) {
+	private void createLinks(Node node, int currentDepth, int maxDepth, Set<Node> visitedNodes) {
 		// Create Links, if node wasn't visited yet
 		if (currentDepth < maxDepth && !visitedNodes.contains(node)) {
 			visitedNodes.add(node);			
@@ -120,12 +120,12 @@ public class LinkerImpl implements Linker {
 				System.err.println("DecisionKnowledgeElement as a Node");
 			} 
 			if (node instanceof CodeClass) {
-				for(INode n : node.getLinks()) {
+				for(Node n : node.getLinks()) {
 					createLinks(n, currentDepth + 1, maxDepth, visitedNodes);
 				}
 			} 
 			if (node instanceof CodeMethod) {
-				for(INode n : node.getLinks()) {
+				for(Node n : node.getLinks()) {
 					createLinks(n, currentDepth +1, maxDepth, visitedNodes);
 				}
 			} 
@@ -148,7 +148,7 @@ public class LinkerImpl implements Linker {
 		}
 	}
 
-	private void linkBidirectional(INode in1, INode in2) {
+	private void linkBidirectional(Node in1, Node in2) {
 		in1.addLinkedNode(in2);
 		in2.addLinkedNode(in1);
 	}

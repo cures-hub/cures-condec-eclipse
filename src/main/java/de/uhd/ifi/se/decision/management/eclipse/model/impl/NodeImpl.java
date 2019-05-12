@@ -1,71 +1,53 @@
-package de.uhd.ifi.se.decision.management.eclipse.model;
+package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
-public abstract class Node implements INode {
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
+
+public abstract class NodeImpl implements Node {
 	private long id = 0;
 	private boolean isVisible = true;
-	private HashSet<INode> linkedNodes = new HashSet<INode>();
-	private static long nextId = 0;
-	private static Map<Long, INode> nodes = new HashMap<Long, INode>();
-	private static HashSet<INode> allNodes = new HashSet<INode>();
-	
-	public Node() {
+	private HashSet<Node> linkedNodes = new HashSet<Node>();
+	public static long nextId = 0;
+	public static Map<Long, Node> nodes = new HashMap<Long, Node>();
+	private static HashSet<Node> allNodes = new HashSet<Node>();
+
+	public NodeImpl() {
 		this.id = nextId;
 		nextId++;
 		nodes.put(this.id, this);
 		allNodes.add(this);
 	}
-	
-	
-	/**
-	 * Get a INode object by its id.
-	 * @param id is the id which needs to be looked for.
-	 * @return returns null, if the object wasn't found. Otherwise the node-object
-	 * will be returned.
-	 */
-	public static INode getNodeById(long id) {
-		if(nodes.containsKey(id)) {
-			return nodes.get(id);
-		} else {
-			return null;
-		}
-	}
-	
-	public static HashSet<INode> getAllNodes(){
+
+	public static HashSet<Node> getAllNodes() {
 		return allNodes;
 	}
 
-	
 	@Override
 	public long getId() {
 		return this.id;
 	}
-
 
 	@Override
 	public void setId(long id) {
 		this.id = id;
 	}
 
-
 	@Override
 	public boolean getVisibility() {
 		return this.isVisible;
 	}
-
 
 	@Override
 	public void setVisibility(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 
-
 	@Override
-	public boolean addLinkedNode(INode node) {
-		if(this.linkedNodes.contains(node) || this.equals(node)) {
+	public boolean addLinkedNode(Node node) {
+		if (this.linkedNodes.contains(node) || this.equals(node)) {
 			return false;
 		} else {
 			this.linkedNodes.add(node);
@@ -73,10 +55,9 @@ public abstract class Node implements INode {
 		}
 	}
 
-
 	@Override
-	public boolean removeLinkedNode(INode node) {
-		if(this.linkedNodes.contains(node)) {
+	public boolean removeLinkedNode(Node node) {
+		if (this.linkedNodes.contains(node)) {
 			this.linkedNodes.remove(node);
 			return true;
 		} else {
@@ -84,25 +65,22 @@ public abstract class Node implements INode {
 		}
 	}
 
-
 	@Override
 	public void clearLinkedNodes() {
 		this.linkedNodes.clear();
 	}
 
-
 	@Override
-	public boolean isLinkedToNode(INode node) {
-		if(this.linkedNodes.contains(node)) {
+	public boolean isLinkedToNode(Node node) {
+		if (this.linkedNodes.contains(node)) {
 			return true;
 		} else {
-			return false; 
+			return false;
 		}
 	}
 
-
 	@Override
-	public HashSet<INode> getLinks() {
+	public HashSet<Node> getLinks() {
 		return this.linkedNodes;
 	}
 }

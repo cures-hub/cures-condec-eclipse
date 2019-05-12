@@ -1,6 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
-public interface IDecisionKnowledgeElement extends INode {
+public interface IDecisionKnowledgeElement extends Node {
 	/**
 	 * Get the id of the decision knowledge element. This id is the internal
 	 * database id. When using JIRA issues to persist decision knowledge, this id is

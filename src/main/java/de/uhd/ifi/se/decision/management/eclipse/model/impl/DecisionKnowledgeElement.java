@@ -2,9 +2,8 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.IDecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
-import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
-public class DecisionKnowledgeElement extends Node implements IDecisionKnowledgeElement {
+public class DecisionKnowledgeElement extends NodeImpl implements IDecisionKnowledgeElement {
 	private KnowledgeType knowledgeType;
 	private String knowledgeMessage;
 	

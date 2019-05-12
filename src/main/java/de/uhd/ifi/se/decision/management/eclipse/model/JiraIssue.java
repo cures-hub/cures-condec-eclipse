@@ -8,8 +8,9 @@ import java.util.Set;
 import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.NodeImpl;
 
-public class JiraIssue extends Node implements INode {
+public class JiraIssue extends NodeImpl implements Node {
 	private static Map<Issue, JiraIssue> instances = new HashMap<Issue, JiraIssue>();
 	private static Map<String, JiraIssue> instances_alternative = new HashMap<String, JiraIssue>();
 	private Issue issue;
