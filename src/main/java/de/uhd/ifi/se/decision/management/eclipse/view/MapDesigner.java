@@ -48,11 +48,11 @@ import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
-import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class MapDesigner {
@@ -338,13 +338,13 @@ public class MapDesigner {
 			node.setLabel("[" + String.valueOf(n.getId()) + "] " + n.toString());
 			node.setX((float) Math.random() * 100f * (float) Math.sqrt(nodes.size()));
 			node.setY((float) Math.random() * 100f * (float) Math.sqrt(nodes.size()));
-			if (n instanceof GitCommit) {
+			if (n instanceof GitCommitImpl) {
 				node.setColor(MapDesignerSettingsProvider.getCommitColor());
 			} else if (n instanceof DecisionKnowledgeElement) {
 				node.setColor(MapDesignerSettingsProvider.getDecisionKnowledgeElementColor());
 			} else if (n instanceof JiraIssue) {
 				node.setColor(MapDesignerSettingsProvider.getIssueColor());
-			} else if (n instanceof CodeClass) {
+			} else if (n instanceof CodeClassImpl) {
 				node.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
 			} else if (n instanceof CodeMethod) {
 				node.setColor(MapDesignerSettingsProvider.getCodeMethodColor());
@@ -382,7 +382,7 @@ public class MapDesigner {
 	}
 
 	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
-		if (node instanceof GitCommit && bShowCommits || node instanceof JiraIssue && bShowIssues
+		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssue && bShowIssues
 				|| node instanceof CodeMethod && bShowMethods) {
 			return true;
 		} else if (node instanceof DecisionKnowledgeElement && bShowKnowledgeItems) {
@@ -420,8 +420,8 @@ public class MapDesigner {
 				return true;
 			}
 			return false;
-		} else if (node instanceof CodeClass && bShowFiles) {
-			CodeClass cc = (CodeClass) node;
+		} else if (node instanceof CodeClassImpl && bShowFiles) {
+			CodeClassImpl cc = (CodeClassImpl) node;
 			if (cc.getFullClassPath().toLowerCase().endsWith(".java")) {
 				if (bShowCFClasses) {
 					return true;

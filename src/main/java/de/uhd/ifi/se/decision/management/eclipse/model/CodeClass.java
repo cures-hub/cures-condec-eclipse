@@ -1,6 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
-public interface ICodeClass extends Node {
+public interface CodeClass extends Node {
 	
 	String getClassName();
 

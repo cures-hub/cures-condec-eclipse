@@ -39,7 +39,8 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -134,12 +135,12 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getAllCommits() {
-		Set<GitCommit> allCommits = new HashSet<GitCommit>();
+	public Set<GitCommitImpl> getAllCommits() {
+		Set<GitCommitImpl> allCommits = new HashSet<GitCommitImpl>();
 		try {
 			Iterable<RevCommit> commits = this.git.log().all().call();
 			for (RevCommit rc : commits) {
-				allCommits.add(GitCommit.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
+				allCommits.add(GitCommitImpl.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to load all commits of the current branch");
@@ -163,7 +164,7 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public GitCommit getCommitForLine(IPath filePath, int line) {
 		BlameResult blameResult = getGitBlameForFile(filePath);
-		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
+		return GitCommitImpl.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
 	}
 
 	@Override
@@ -172,13 +173,13 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getCommitsForIssueKey(IssueKey issueKey) {
-		Set<GitCommit> commitsForIssueKey = new LinkedHashSet<GitCommit>();
+	public Set<GitCommitImpl> getCommitsForIssueKey(IssueKey issueKey) {
+		Set<GitCommitImpl> commitsForIssueKey = new LinkedHashSet<GitCommitImpl>();
 		try {
 			Iterable<RevCommit> iterable = git.log().call();
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
-				GitCommit commit = GitCommit.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
+				GitCommitImpl commit = GitCommitImpl.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
 				IssueKey ik = getFirstIssueKey(commit.getBindedRevCommit().getFullMessage(),
 						ConfigPersistenceManager.getProjectKey());
 				if (ik != null && ik.toString().contains(issueKey.getFullIssueKey())) {
@@ -238,14 +239,14 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public List<CodeClass> getDiffEntries(GitCommit commit) {
+	public List<CodeClassImpl> getDiffEntries(GitCommit commit) {
 		RevCommit revCommit = commit.getBindedRevCommit();
-		List<CodeClass> changedClasses = new ArrayList<CodeClass>();
+		List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses.add(CodeClass.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
+				changedClasses.add(CodeClassImpl.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

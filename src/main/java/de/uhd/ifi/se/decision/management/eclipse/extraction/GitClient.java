@@ -14,7 +14,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 public interface GitClient {
 
@@ -22,7 +23,7 @@ public interface GitClient {
 	 * 
 	 * @return Returns a Set with all commits of the current branch.
 	 */
-	Set<GitCommit> getAllCommits();
+	Set<GitCommitImpl> getAllCommits();
 
 	/**
 	 * Show what author and revision last modified each line of a file.
@@ -63,7 +64,7 @@ public interface GitClient {
 	 *            issue key for which commits are searched
 	 * @return commits with the issue key in their commit message
 	 */
-	Set<GitCommit> getCommitsForIssueKey(IssueKey issueKey);
+	Set<GitCommitImpl> getCommitsForIssueKey(IssueKey issueKey);
 
 	/**
 	 * Get the parent commit for a given commit.
@@ -81,7 +82,7 @@ public interface GitClient {
 	 *            commit as a RevCommit object
 	 * @return list of diff entries
 	 */
-	List<CodeClass> getDiffEntries(GitCommit commit);
+	List<CodeClassImpl> getDiffEntries(GitCommit commit);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.

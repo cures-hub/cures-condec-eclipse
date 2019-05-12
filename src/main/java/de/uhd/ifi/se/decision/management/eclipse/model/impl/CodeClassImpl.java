@@ -16,10 +16,10 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
-import de.uhd.ifi.se.decision.management.eclipse.model.ICodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 
-public class CodeClass extends NodeImpl implements ICodeClass {
-	private static Map<String, CodeClass> instances = new HashMap<String, CodeClass>();
+public class CodeClassImpl extends NodeImpl implements CodeClass {
+	private static Map<String, CodeClassImpl> instances = new HashMap<String, CodeClassImpl>();
 	private String className;
 	private String packageName;
 	private String project;
@@ -29,26 +29,26 @@ public class CodeClass extends NodeImpl implements ICodeClass {
 	private String fileLocation = "";
 	private List<CodeMethod> methodsInClass;
 
-	public static Set<CodeClass> getInstances() {
-		Set<CodeClass> output = new HashSet<CodeClass>();
-		for (Map.Entry<String, CodeClass> entry : instances.entrySet()) {
+	public static Set<CodeClassImpl> getInstances() {
+		Set<CodeClassImpl> output = new HashSet<CodeClassImpl>();
+		for (Map.Entry<String, CodeClassImpl> entry : instances.entrySet()) {
 			output.add(entry.getValue());
 		}
 		return output;
 	}
 
-	public static CodeClass getOrCreate(DiffEntry diffEntry, String pathToGit) {
+	public static CodeClassImpl getOrCreate(DiffEntry diffEntry, String pathToGit) {
 		String fullClassPath = diffEntry.getNewPath();
 		if (instances.containsKey(fullClassPath)) {
 			return instances.get(fullClassPath);
 		} else {
-			CodeClass cc = new CodeClass(fullClassPath, pathToGit);
+			CodeClassImpl cc = new CodeClassImpl(fullClassPath, pathToGit);
 			instances.put(fullClassPath, cc);
 			return cc;
 		}
 	}
 
-	private CodeClass(String fullClassPath, String pathToGit) {
+	private CodeClassImpl(String fullClassPath, String pathToGit) {
 		this.methodsInClass = new ArrayList<CodeMethod>();
 		this.fullClassPath = fullClassPath;
 		this.pathToGit = pathToGit;

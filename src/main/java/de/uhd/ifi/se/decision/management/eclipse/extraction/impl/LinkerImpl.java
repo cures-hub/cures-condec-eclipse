@@ -16,9 +16,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 public class LinkerImpl implements Linker {
 	private GitClient gitClient;
@@ -52,7 +53,7 @@ public class LinkerImpl implements Linker {
 	@Override
 	public Map<Node, Set<Node>> createFullMap() {
 		Map<Node, Set<Node>> map = new HashMap<Node, Set<Node>>();
-		for (GitCommit gc : gitClient.getAllCommits()) { 
+		for (GitCommitImpl gc : gitClient.getAllCommits()) { 
 			gc.extractChangedClasses(gitClient);
 			createLinks(gc, 1);
 			map.put(gc, gc.getLinks());
@@ -63,7 +64,7 @@ public class LinkerImpl implements Linker {
 			}
 		}
 		// All commits needed to be loaded first
-		for(CodeClass cc : CodeClass.getInstances()) {
+		for(CodeClassImpl cc : CodeClassImpl.getInstances()) {
 			map.put(cc, cc.getLinks());
 		}
 		// All commits needed to be loaded first
@@ -100,9 +101,9 @@ public class LinkerImpl implements Linker {
 		// Create Links, if node wasn't visited yet
 		if (currentDepth < maxDepth && !visitedNodes.contains(node)) {
 			visitedNodes.add(node);			
-			if (node instanceof GitCommit) {
+			if (node instanceof GitCommitImpl) {
 				GitCommit gc = (GitCommit) node;
-				List<IssueKey> keys = gc.getIssueKeys();
+				List<IssueKey> keys = gc.getJiraIssueKeys();
 				if (keys.size() > 0) {
 					JiraIssue ji = JiraIssue.getOrCreate(keys.get(0), jiraClient);
 					if (ji != null) {
@@ -119,7 +120,7 @@ public class LinkerImpl implements Linker {
 				// corresponding commit.
 				System.err.println("DecisionKnowledgeElement as a Node");
 			} 
-			if (node instanceof CodeClass) {
+			if (node instanceof CodeClassImpl) {
 				for(Node n : node.getLinks()) {
 					createLinks(n, currentDepth + 1, maxDepth, visitedNodes);
 				}
@@ -131,8 +132,8 @@ public class LinkerImpl implements Linker {
 			} 
 			if (node instanceof JiraIssue) {
 				JiraIssue ji = (JiraIssue) node;
-				Set<GitCommit> commits = gitClient.getCommitsForIssueKey(ji.getIssueKey());
-				for (GitCommit commit : commits) {
+				Set<GitCommitImpl> commits = gitClient.getCommitsForIssueKey(ji.getIssueKey());
+				for (GitCommitImpl commit : commits) {
 					linkBidirectional(node, commit);
 					createLinks(commit, currentDepth + 1, maxDepth, visitedNodes);
 				}
