@@ -8,7 +8,7 @@ import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
-import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 
 public interface JiraClient {
 
@@ -23,7 +23,7 @@ public interface JiraClient {
 
 	public Issue getIssue(IssueKey issueKey);
 
-	public Set<JiraIssue> getAllIssues();
+	public Set<JiraIssueImpl> getAllIssues();
 
 	/**
 	 * Retrieves the issues linked to a given issue with a certain link distance

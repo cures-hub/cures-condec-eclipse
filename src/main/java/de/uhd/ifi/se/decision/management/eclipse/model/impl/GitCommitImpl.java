@@ -19,7 +19,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
-	private List<DecisionKnowledgeElement> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElement>();
+	private List<DecisionKnowledgeElementImpl> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElementImpl>();
 	private List<IssueKey> issueKeys = new ArrayList<IssueKey>();
 	private List<Issue> referencedIssues = new ArrayList<Issue>();
 	private List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
@@ -88,22 +88,22 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	// CommitDecision-Section
 	@Override
-	public List<DecisionKnowledgeElement> getCommitDecisions() {
+	public List<DecisionKnowledgeElementImpl> getCommitDecisions() {
 		return this.decisionKnowledgeElements;
 	}
 
 	@Override
-	public void setCommitDecisions(List<DecisionKnowledgeElement> decisionKnowledgeElements) {
+	public void setCommitDecisions(List<DecisionKnowledgeElementImpl> decisionKnowledgeElements) {
 		this.decisionKnowledgeElements = decisionKnowledgeElements;
 	}
 
 	@Override
-	public boolean addCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement) {
+	public boolean addCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement) {
 		return this.decisionKnowledgeElements.add(decisionKnowledgeElement);
 	}
 
 	@Override
-	public boolean removeCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement) {
+	public boolean removeCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement) {
 		return this.decisionKnowledgeElements.remove(decisionKnowledgeElement);
 	}
 	// END CommitDecision-Section
@@ -204,7 +204,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 					case ALTERNATIVE:
 						if (lower_s.equals("/alternative")) {
 							decisionKnowledgeElements
-									.add(new DecisionKnowledgeElement(dt, formatDescription(description)));
+									.add(new DecisionKnowledgeElementImpl(dt, formatDescription(description)));
 							recordDescription = false;
 							description = "";
 							dt = null;
@@ -215,7 +215,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 					case CON:
 						if (lower_s.equals("/con")) {
 							decisionKnowledgeElements
-									.add(new DecisionKnowledgeElement(dt, formatDescription(description)));
+									.add(new DecisionKnowledgeElementImpl(dt, formatDescription(description)));
 							recordDescription = false;
 							description = "";
 							dt = null;
@@ -226,7 +226,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 					case DECISION:
 						if (lower_s.equals("/decision")) {
 							decisionKnowledgeElements
-									.add(new DecisionKnowledgeElement(dt, formatDescription(description)));
+									.add(new DecisionKnowledgeElementImpl(dt, formatDescription(description)));
 							recordDescription = false;
 							description = "";
 							dt = null;
@@ -237,7 +237,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 					case GOAL:
 						if (lower_s.equals("/goal")) {
 							decisionKnowledgeElements
-									.add(new DecisionKnowledgeElement(dt, formatDescription(description)));
+									.add(new DecisionKnowledgeElementImpl(dt, formatDescription(description)));
 							recordDescription = false;
 							description = "";
 							dt = null;
@@ -248,7 +248,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 					case ISSUE:
 						if (lower_s.equals("/issue")) {
 							decisionKnowledgeElements
-									.add(new DecisionKnowledgeElement(dt, formatDescription(description)));
+									.add(new DecisionKnowledgeElementImpl(dt, formatDescription(description)));
 							recordDescription = false;
 							description = "";
 							dt = null;
@@ -259,7 +259,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 					case PRO:
 						if (lower_s.equals("/pro")) {
 							decisionKnowledgeElements
-									.add(new DecisionKnowledgeElement(dt, formatDescription(description)));
+									.add(new DecisionKnowledgeElementImpl(dt, formatDescription(description)));
 							recordDescription = false;
 							description = "";
 							dt = null;
@@ -293,7 +293,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 						recordDescription = true;
 					}
 				}
-				for (DecisionKnowledgeElement cd : decisionKnowledgeElements) {
+				for (DecisionKnowledgeElementImpl cd : decisionKnowledgeElements) {
 					this.addLinkedNode(cd);
 					cd.addLinkedNode(this);
 				}

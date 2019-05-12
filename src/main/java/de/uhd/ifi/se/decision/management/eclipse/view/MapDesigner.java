@@ -51,8 +51,9 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethod;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class MapDesigner {
@@ -340,9 +341,9 @@ public class MapDesigner {
 			node.setY((float) Math.random() * 100f * (float) Math.sqrt(nodes.size()));
 			if (n instanceof GitCommitImpl) {
 				node.setColor(MapDesignerSettingsProvider.getCommitColor());
-			} else if (n instanceof DecisionKnowledgeElement) {
+			} else if (n instanceof DecisionKnowledgeElementImpl) {
 				node.setColor(MapDesignerSettingsProvider.getDecisionKnowledgeElementColor());
-			} else if (n instanceof JiraIssue) {
+			} else if (n instanceof JiraIssueImpl) {
 				node.setColor(MapDesignerSettingsProvider.getIssueColor());
 			} else if (n instanceof CodeClassImpl) {
 				node.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
@@ -382,11 +383,11 @@ public class MapDesigner {
 	}
 
 	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
-		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssue && bShowIssues
+		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssueImpl && bShowIssues
 				|| node instanceof CodeMethod && bShowMethods) {
 			return true;
-		} else if (node instanceof DecisionKnowledgeElement && bShowKnowledgeItems) {
-			DecisionKnowledgeElement dke = (DecisionKnowledgeElement) node;
+		} else if (node instanceof DecisionKnowledgeElementImpl && bShowKnowledgeItems) {
+			DecisionKnowledgeElementImpl dke = (DecisionKnowledgeElementImpl) node;
 			switch (dke.getKnowledgeType()) {
 			case ALTERNATIVE:
 				if (bShowKIAlternative)
@@ -812,7 +813,7 @@ public class MapDesigner {
 						if (n != null) {
 							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
 									.getNodeById(id);
-							if (iN instanceof JiraIssue) {
+							if (iN instanceof JiraIssueImpl) {
 								JiraIssue ji = (JiraIssue) iN;
 								OpenWebbrowser.openWebpage(new URI(extractIssueUri(ji)));
 							}
@@ -894,13 +895,13 @@ public class MapDesigner {
 	}
 
 	private String extractIssueUri(JiraIssue issue) {
-		String fullRestApiUri = issue.getBindedIssue().getSelf().toString();
+		String fullRestApiUri = issue.getJiraIssue().getSelf().toString();
 		String[] uriSplits = fullRestApiUri.split("/");
 		String uri = "";
 		for (String s : uriSplits) {
 			if (s.equals("rest")) {
-				uri += "projects/" + issue.getIssueKey().getIssuekeyBase() + "/issues/"
-						+ issue.getIssueKey().getFullIssueKey();
+				uri += "projects/" + issue.getJiraIssueKey().getIssuekeyBase() + "/issues/"
+						+ issue.getJiraIssueKey().getFullIssueKey();
 				return uri;
 			} else {
 				uri += s + "/";

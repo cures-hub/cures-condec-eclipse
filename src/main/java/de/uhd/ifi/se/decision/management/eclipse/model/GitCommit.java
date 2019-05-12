@@ -9,7 +9,7 @@ import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
 public interface GitCommit {
 
@@ -26,13 +26,13 @@ public interface GitCommit {
 	// END ReferencedIssues-Section
 
 	// CommitDecision-Section
-	List<DecisionKnowledgeElement> getCommitDecisions();
+	List<DecisionKnowledgeElementImpl> getCommitDecisions();
 
-	void setCommitDecisions(List<DecisionKnowledgeElement> decisionKnowledgeElements);
+	void setCommitDecisions(List<DecisionKnowledgeElementImpl> decisionKnowledgeElements);
 
-	boolean addCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement);
+	boolean addCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement);
 
-	boolean removeCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement);
+	boolean removeCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement);
 	// END CommitDecision-Section
 
 	// ChangedClasses-Section
