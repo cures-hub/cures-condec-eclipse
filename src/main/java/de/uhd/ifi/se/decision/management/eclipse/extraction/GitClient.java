@@ -13,7 +13,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
@@ -64,7 +63,7 @@ public interface GitClient {
 	 *            issue key for which commits are searched
 	 * @return commits with the issue key in their commit message
 	 */
-	Set<GitCommitImpl> getCommitsForIssueKey(IssueKey issueKey);
+	Set<GitCommit> getCommitsForIssueKey(String issueKey);
 
 	/**
 	 * Get the parent commit for a given commit.
@@ -148,15 +147,6 @@ public interface GitClient {
 	 *            jgit git object
 	 */
 	void setGit(Git git);
-
-	/**
-	 * Retrieve the commits with the issue key in their commit message.
-	 * 
-	 * @param issueKey
-	 *            issue key for which commits are searched
-	 * @return commits with the issue key in their commit message
-	 */
-	Set<RevCommit> getCommitsForIssueKey(String issueKey);
 
 	/**
 	 * Retrieve the commit message for a given line from a blamed file as a

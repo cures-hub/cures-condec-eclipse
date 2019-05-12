@@ -7,7 +7,6 @@ import java.util.Set;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.domain.Issue;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 
 public interface JiraClient {
@@ -21,7 +20,7 @@ public interface JiraClient {
 
 	public int getAuthenticationResponse(String username);
 
-	public Issue getIssue(IssueKey issueKey);
+	public Issue getIssue(String issueKey);
 
 	public Set<JiraIssueImpl> getAllIssues();
 
@@ -41,7 +40,7 @@ public interface JiraClient {
 	 *            JIRA issue
 	 * @return keys of linked issues
 	 */
-	public List<IssueKey> getKeysOfNeighborIssues(Issue issue);
+	public List<String> getKeysOfNeighborIssues(Issue issue);
 
 	/**
 	 * Closes the client when finished

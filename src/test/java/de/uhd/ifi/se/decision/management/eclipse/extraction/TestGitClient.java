@@ -9,13 +9,12 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 
 public class TestGitClient {
 
@@ -36,14 +35,14 @@ public class TestGitClient {
 
 		GitClient myExtractor = new GitClientImpl(repositoryPathMS + ".git", "HEAD");
 
-		Set<RevCommit> commitSet = myExtractor.getCommitsForIssueKey("BMS-49");
+		Set<GitCommit> commitSet = myExtractor.getCommitsForIssueKey("BMS-49");
 
 		String messageGlob = "";
 
-		Iterator<RevCommit> iter = commitSet.iterator();
+		Iterator<GitCommit> iter = commitSet.iterator();
 		while (iter.hasNext()) {
-			RevCommit commit = iter.next();
-			messageGlob = messageGlob + commit.getFullMessage() + "\n";
+			GitCommit commit = iter.next();
+			messageGlob = messageGlob + commit.getBindedRevCommit().getFullMessage() + "\n";
 
 		}
 
@@ -58,15 +57,15 @@ public class TestGitClient {
 
 		GitClient myExtractor = new GitClientImpl(repositoryPathMS + ".git", "HEAD");
 
-		Set<RevCommit> commitSet = myExtractor.getCommitsForIssueKey("BMS-52");
+		Set<GitCommit> commitSet = myExtractor.getCommitsForIssueKey("BMS-52");
 
 		String messageGlob = "";
 
-		Iterator<RevCommit> iter = commitSet.iterator();
+		Iterator<GitCommit> iter = commitSet.iterator();
 		while (iter.hasNext()) {
-			RevCommit commit = iter.next();
+			GitCommit commit = iter.next();
 
-			messageGlob = messageGlob + commit.getFullMessage() + commit.getId() + "\n";
+			messageGlob = messageGlob + commit.getBindedRevCommit().getFullMessage() + commit.getId() + "\n";
 
 		}
 

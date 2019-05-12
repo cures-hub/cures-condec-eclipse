@@ -14,7 +14,6 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethod;
@@ -104,7 +103,7 @@ public class LinkerImpl implements Linker {
 			visitedNodes.add(node);			
 			if (node instanceof GitCommitImpl) {
 				GitCommit gc = (GitCommit) node;
-				List<IssueKey> keys = gc.getJiraIssueKeys();
+				List<String> keys = gc.getJiraIssueKeys();
 				if (keys.size() > 0) {
 					JiraIssueImpl ji = JiraIssueImpl.getOrCreate(keys.get(0), jiraClient);
 					if (ji != null) {
@@ -133,14 +132,14 @@ public class LinkerImpl implements Linker {
 			} 
 			if (node instanceof JiraIssueImpl) {
 				JiraIssue ji = (JiraIssue) node;
-				Set<GitCommitImpl> commits = gitClient.getCommitsForIssueKey(ji.getJiraIssueKey());
-				for (GitCommitImpl commit : commits) {
+				Set<GitCommit> commits = gitClient.getCommitsForIssueKey(ji.getJiraIssueKey());
+				for (GitCommit commit : commits) {
 					linkBidirectional(node, commit);
 					createLinks(commit, currentDepth + 1, maxDepth, visitedNodes);
 				}
 				Issue issue = ji.getJiraIssue();
 				for (IssueLink il : issue.getIssueLinks()) {
-					JiraIssueImpl ji2 = JiraIssueImpl.getOrCreate(IssueKey.getOrCreate(il.getTargetIssueKey()), jiraClient);
+					JiraIssueImpl ji2 = JiraIssueImpl.getOrCreate(il.getTargetIssueKey(), jiraClient);
 					if (ji2 != null) {
 						linkBidirectional(node, ji2);
 						createLinks(ji2, currentDepth + 1, maxDepth, visitedNodes);

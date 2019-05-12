@@ -14,6 +14,7 @@ import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -45,15 +46,15 @@ public class TextualRepresentation {
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
 
-		Set<RevCommit> otherCommitForIssue = gitClient.getCommitsForIssueKey(issueKey);
+		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForIssueKey(issueKey);
 
 		String otherCommitsForIssue = "";
 		if (!otherCommitForIssue.isEmpty()) {
 			otherCommitsForIssue += "Other commit messages of the issue " + issueKey + " are:\n";
 		}
 
-		for (RevCommit commit : otherCommitForIssue) {
-			otherCommitsForIssue += commitToString(commit.getFullMessage()) + "\n";
+		for (GitCommit commit : otherCommitForIssue) {
+			otherCommitsForIssue += commitToString(commit.getBindedRevCommit().getFullMessage()) + "\n";
 		}
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
@@ -68,13 +69,13 @@ public class TextualRepresentation {
 			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
 					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
 
-			Set<RevCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
 
-				for (RevCommit commit : commitsForLinkedIssue) {
-					commitForLinkedIssueString += commitToString(commit.getFullMessage()) + "\n";
+				for (GitCommit commit : commitsForLinkedIssue) {
+					commitForLinkedIssueString += commitToString(commit.getBindedRevCommit().getFullMessage()) + "\n";
 				}
 			}
 
@@ -135,15 +136,15 @@ public class TextualRepresentation {
 		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
 
 			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-			Set<RevCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
 
-				for (RevCommit commit : commitsForLinkedIssue) {
-					commitForLinkedIssueString += commitToString(commit.getFullMessage()) + "\n";
+				for (GitCommit commit : commitsForLinkedIssue) {
+					commitForLinkedIssueString += commitToString(commit.getBindedRevCommit().getFullMessage()) + "\n";
 					numberOfAnalysedCommitMessages += 1;
-					if (WrongLinkDetector.tanglednessToString(commit.getFullMessage(), projectKey)
+					if (WrongLinkDetector.tanglednessToString(commit.getBindedRevCommit().getFullMessage(), projectKey)
 							.equals("untangled")) {
 						numberOfCommitsFoundUntangled += 1;
 					}

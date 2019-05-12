@@ -900,8 +900,8 @@ public class MapDesigner {
 		String uri = "";
 		for (String s : uriSplits) {
 			if (s.equals("rest")) {
-				uri += "projects/" + issue.getJiraIssueKey().getIssuekeyBase() + "/issues/"
-						+ issue.getJiraIssueKey().getFullIssueKey();
+				uri += "projects/" + issue.getJiraIssue().getProject().getKey() + "/issues/"
+						+ issue.getJiraIssue().getKey();
 				return uri;
 			} else {
 				uri += s + "/";

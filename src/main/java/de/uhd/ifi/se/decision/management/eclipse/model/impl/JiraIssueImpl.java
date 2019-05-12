@@ -8,7 +8,6 @@ import java.util.Set;
 import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
@@ -16,7 +15,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	private static Map<Issue, JiraIssueImpl> instances = new HashMap<Issue, JiraIssueImpl>();
 	private static Map<String, JiraIssueImpl> instances_alternative = new HashMap<String, JiraIssueImpl>();
 	private Issue issue;
-	private IssueKey issueKey;
+	private String issueKey;
 
 	public static Set<JiraIssueImpl> getInstances() {
 		Set<JiraIssueImpl> output = new HashSet<JiraIssueImpl>();
@@ -44,13 +43,12 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	 * @return Might be null, if the given IssueKey couldn't be resolved to a
 	 *         JiraIssue-object.
 	 */
-	public static JiraIssueImpl getOrCreate(IssueKey issueKey, JiraClient jiraManager) {
+	public static JiraIssueImpl getOrCreate(String issueKey, JiraClient jiraManager) {
 		if (issueKey == null) {
 			return null;
 		}
-		String key = issueKey.getFullIssueKey().toLowerCase();
-		if (instances_alternative.containsKey(key)) {
-			return instances_alternative.get(key);
+		if (instances_alternative.containsKey(issueKey)) {
+			return instances_alternative.get(issueKey);
 		} else {
 			try {
 				Issue pulled_issue = jiraManager.getIssue(issueKey);
@@ -67,23 +65,23 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 
 	private JiraIssueImpl(Issue issue) {
 		this.issue = issue;
-		this.issueKey = IssueKey.getOrCreate(this.issue.getKey());
+		this.issueKey = this.issue.getKey();
 		instances.put(this.issue, this);
 		instances_alternative.put(this.issue.getKey().toLowerCase(), this);
 	}
 
 	@Override
-	public Issue getJiraIssueIssue() {
+	public Issue getJiraIssue() {
 		return this.issue;
 	}
 
 	@Override
-	public IssueKey getJiraIssueKey() {
+	public String getJiraIssueKey() {
 		return this.issueKey;
 	}
 
 	@Override
 	public String toString() {
-		return this.issueKey.getFullIssueKey() + ":" + this.issue.getSummary();
+		return this.issueKey + ":" + this.issue.getSummary();
 	}
 }

@@ -14,13 +14,12 @@ import com.atlassian.jira.rest.client.domain.Issue;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	private List<DecisionKnowledgeElementImpl> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElementImpl>();
-	private List<IssueKey> issueKeys = new ArrayList<IssueKey>();
+	private List<String> issueKeys = new ArrayList<String>();
 	private List<Issue> referencedIssues = new ArrayList<Issue>();
 	private List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
 	private RevCommit revCommit;
@@ -132,31 +131,31 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	// IssueKey-Section
 	@Override
-	public List<IssueKey> getJiraIssueKeys() {
+	public List<String> getJiraIssueKeys() {
 		return this.issueKeys;
 	}
 
 	@Override
-	public Set<IssueKey> getIssueKeysAsSet() {
-		Set<IssueKey> output = new HashSet<IssueKey>();
-		for (IssueKey ik : this.issueKeys) {
+	public Set<String> getIssueKeysAsSet() {
+		Set<String> output = new HashSet<String>();
+		for (String ik : this.issueKeys) {
 			output.add(ik);
 		}
 		return output;
 	}
 
 	@Override
-	public void setJiraIssueKeys(List<IssueKey> issueKeys) {
+	public void setJiraIssueKeys(List<String> issueKeys) {
 		this.issueKeys = issueKeys;
 	}
 
 	@Override
-	public boolean addJiraIssueKey(IssueKey issueKey) {
+	public boolean addJiraIssueKey(String issueKey) {
 		return this.issueKeys.add(issueKey);
 	}
 
 	@Override
-	public boolean removeIssueKey(IssueKey issueKey) {
+	public boolean removeIssueKey(String issueKey) {
 		return this.issueKeys.remove(issueKey);
 	}
 	// END IssueKey-Section

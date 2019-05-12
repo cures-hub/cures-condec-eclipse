@@ -38,7 +38,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.IssueKey;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
@@ -173,30 +172,25 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommitImpl> getCommitsForIssueKey(IssueKey issueKey) {
-		Set<GitCommitImpl> commitsForIssueKey = new LinkedHashSet<GitCommitImpl>();
+	public Set<GitCommit> getCommitsForIssueKey(String issueKey) {
+		Set<GitCommit> commitsForIssueKey = new LinkedHashSet<GitCommit>();
 		try {
 			Iterable<RevCommit> iterable = git.log().call();
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
-				GitCommitImpl commit = GitCommitImpl.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
-				IssueKey ik = getFirstIssueKey(commit.getBindedRevCommit().getFullMessage(),
-						ConfigPersistenceManager.getProjectKey());
-				if (ik != null && ik.toString().contains(issueKey.getFullIssueKey())) {
-					commitsForIssueKey.add(commit);
-				}
+              RevCommit revCommit = iterator.next();
+              if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
+            	  GitCommit commit = GitCommitImpl.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
+                  commitsForIssueKey.add(commit);
+              }
 			}
-		} catch (GitAPIException e) {
-			System.err.println("Could not retrieve commits for the issue key " + issueKey.getFullIssueKey());
+		} catch (GitAPIException | NullPointerException e) {
+			System.err.println("Could not retrieve commits for the issue key " + issueKey);
 			e.printStackTrace();
-		} catch (NullPointerException ex) {
-			System.err.println("NullPointerException occurred while getting commits for the issue key "
-					+ issueKey.getFullIssueKey());
-			ex.printStackTrace();
 		}
 		return commitsForIssueKey;
 	}
-
+	
 	/**
 	 * Retrieves the issue key from a commit message
 	 * 
@@ -204,8 +198,8 @@ public class GitClientImpl implements GitClient {
 	 *            a commit message that should contain an issue key
 	 * @return extracted issue key
 	 */
-	public static IssueKey getFirstIssueKey(String commitMessage, String issueKeyBase) {
-		List<IssueKey> keys = getAllMentionedIssueKeys(commitMessage, issueKeyBase);
+	public static String getFirstIssueKey(String commitMessage, String issueKeyBase) {
+		List<String> keys = getAllMentionedIssueKeys(commitMessage, issueKeyBase);
 		if (keys.size() > 0) {
 			return keys.get(0);
 		} else {
@@ -222,8 +216,8 @@ public class GitClientImpl implements GitClient {
 	 * @return List of all mentioned IssueKeys. May contain duplicates; Ordered by
 	 *         apperance in message.
 	 */
-	public static List<IssueKey> getAllMentionedIssueKeys(String commitMessage, String issueKeyBase) {
-		List<IssueKey> keys = new ArrayList<IssueKey>();
+	public static List<String> getAllMentionedIssueKeys(String commitMessage, String issueKeyBase) {
+		List<String> keys = new ArrayList<String>();
 		commitMessage = commitMessage.replace("\r\n", " ").replace("\n", " ");
 		String[] words = commitMessage.toLowerCase().split(" ");
 		if (issueKeyBase == null) {
@@ -232,7 +226,7 @@ public class GitClientImpl implements GitClient {
 		String basekey = issueKeyBase.toLowerCase();
 		for (String word : words) {
 			if (word.contains(basekey + "-")) {
-				keys.add(IssueKey.getOrCreate(word));
+				keys.add(word);
 			}
 		}
 		return keys;
@@ -390,25 +384,6 @@ public class GitClientImpl implements GitClient {
 		} else {
 			return "";
 		}
-	}
-
-	@Override
-	public Set<RevCommit> getCommitsForIssueKey(String issueKey) {
-		Set<RevCommit> commitsForIssueKey = new LinkedHashSet<RevCommit>();
-		try {
-			Iterable<RevCommit> iterable = git.log().call();
-			Iterator<RevCommit> iterator = iterable.iterator();
-			while (iterator.hasNext()) {
-				RevCommit commit = iterator.next();
-				if (getIssueKey(commit.getFullMessage()).equals(issueKey)) {
-					commitsForIssueKey.add(commit);
-				}
-			}
-		} catch (GitAPIException e) {
-			System.err.println("Could not retrieve commits for the issue key " + issueKey);
-			e.printStackTrace();
-		}
-		return commitsForIssueKey;
 	}
 
 	@Override

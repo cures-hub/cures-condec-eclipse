@@ -11,7 +11,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
-public interface GitCommit {
+public interface GitCommit extends Node {
 
 	void setIssueKeyBase(String issueKeyBase);
 
@@ -46,15 +46,15 @@ public interface GitCommit {
 	// END CHangedClasses-Section
 
 	// IssueKey-Section
-	List<IssueKey> getJiraIssueKeys();
+	List<String> getJiraIssueKeys();
 
-	Set<IssueKey> getIssueKeysAsSet();
+	Set<String> getIssueKeysAsSet();
 
-	void setJiraIssueKeys(List<IssueKey> issueKeys);
+	void setJiraIssueKeys(List<String> issueKeys);
 
-	boolean addJiraIssueKey(IssueKey issueKey);
+	boolean addJiraIssueKey(String issueKey);
 
-	boolean removeIssueKey(IssueKey issueKey);
+	boolean removeIssueKey(String issueKey);
 	// END IssueKey-Section
 
 	RevCommit getBindedRevCommit();

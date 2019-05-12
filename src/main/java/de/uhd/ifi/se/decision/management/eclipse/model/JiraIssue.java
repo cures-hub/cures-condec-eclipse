@@ -6,6 +6,6 @@ public interface JiraIssue {
 
 	Issue getJiraIssue();
 
-	IssueKey getJiraIssueKey();
+	String getJiraIssueKey();
 
 }
