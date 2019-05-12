@@ -42,7 +42,7 @@ public class TestGitClient {
 		Iterator<GitCommit> iter = commitSet.iterator();
 		while (iter.hasNext()) {
 			GitCommit commit = iter.next();
-			messageGlob = messageGlob + commit.getBindedRevCommit().getFullMessage() + "\n";
+			messageGlob = messageGlob + commit.getRevCommit().getFullMessage() + "\n";
 
 		}
 
@@ -65,7 +65,7 @@ public class TestGitClient {
 		while (iter.hasNext()) {
 			GitCommit commit = iter.next();
 
-			messageGlob = messageGlob + commit.getBindedRevCommit().getFullMessage() + commit.getId() + "\n";
+			messageGlob = messageGlob + commit.getRevCommit().getFullMessage() + commit.getId() + "\n";
 
 		}
 

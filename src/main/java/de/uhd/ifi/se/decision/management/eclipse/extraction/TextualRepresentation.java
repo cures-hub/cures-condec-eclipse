@@ -54,7 +54,7 @@ public class TextualRepresentation {
 		}
 
 		for (GitCommit commit : otherCommitForIssue) {
-			otherCommitsForIssue += commitToString(commit.getBindedRevCommit().getFullMessage()) + "\n";
+			otherCommitsForIssue += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
 		}
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
@@ -75,7 +75,7 @@ public class TextualRepresentation {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
 
 				for (GitCommit commit : commitsForLinkedIssue) {
-					commitForLinkedIssueString += commitToString(commit.getBindedRevCommit().getFullMessage()) + "\n";
+					commitForLinkedIssueString += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
 				}
 			}
 
@@ -142,9 +142,9 @@ public class TextualRepresentation {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
 
 				for (GitCommit commit : commitsForLinkedIssue) {
-					commitForLinkedIssueString += commitToString(commit.getBindedRevCommit().getFullMessage()) + "\n";
+					commitForLinkedIssueString += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
 					numberOfAnalysedCommitMessages += 1;
-					if (WrongLinkDetector.tanglednessToString(commit.getBindedRevCommit().getFullMessage(), projectKey)
+					if (WrongLinkDetector.tanglednessToString(commit.getRevCommit().getFullMessage(), projectKey)
 							.equals("untangled")) {
 						numberOfCommitsFoundUntangled += 1;
 					}

@@ -28,7 +28,7 @@ public class GetCommitsByIssueIDExample {
 		while (iterator.hasNext()) {
 			GitCommit commit = iterator.next();
 			System.out.println(commit.getId());
-			System.out.println(commit.getBindedRevCommit().getFullMessage());
+			System.out.println(commit.getRevCommit().getFullMessage());
 		}
 
 		System.out.println("All commit messages messages were shown!");

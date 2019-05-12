@@ -168,7 +168,7 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public String getCommitMessageForLine(IPath filePath, int line) {
-		return getCommitForLine(filePath, line).getBindedRevCommit().getFullMessage();
+		return getCommitForLine(filePath, line).getRevCommit().getFullMessage();
 	}
 
 	@Override
@@ -234,7 +234,7 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public List<CodeClassImpl> getDiffEntries(GitCommit commit) {
-		RevCommit revCommit = commit.getBindedRevCommit();
+		RevCommit revCommit = commit.getRevCommit();
 		List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
@@ -253,7 +253,7 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(GitCommit commit) {
-		RevCommit revCommit = commit.getBindedRevCommit();
+		RevCommit revCommit = commit.getRevCommit();
 		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
 		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
 		try {

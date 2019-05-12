@@ -161,7 +161,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	// END IssueKey-Section
 
 	@Override
-	public RevCommit getBindedRevCommit() {
+	public RevCommit getRevCommit() {
 		return this.revCommit;
 	}
 

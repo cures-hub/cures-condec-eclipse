@@ -22,14 +22,6 @@ public interface Node {
 	void setId(long id);
 	
 	/**
-	 * Get the a short text, which will be shown on the node.
-	 * @return
-	 * 		Returns a text for the title of the node.
-	 */
-	@Override
-	String toString();
-	
-	/**
 	 * Get the visibility of the current node.
 	 *  
 	 * @return True if node is visible, otherwise false.

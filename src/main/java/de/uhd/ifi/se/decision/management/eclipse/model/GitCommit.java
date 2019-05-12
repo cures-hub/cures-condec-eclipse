@@ -57,7 +57,7 @@ public interface GitCommit extends Node {
 	boolean removeIssueKey(String issueKey);
 	// END IssueKey-Section
 
-	RevCommit getBindedRevCommit();
+	RevCommit getRevCommit();
 
 	void extractChangedClasses(GitClient gm);
 
