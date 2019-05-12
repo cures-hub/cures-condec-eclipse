@@ -14,6 +14,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 
 public class ShowFullGraphCommand extends AbstractHandler {
@@ -33,7 +34,7 @@ public class ShowFullGraphCommand extends AbstractHandler {
 					System.out.println("There was an error when authenticate JiraManager");
 				}
 				GitClient gm = GitClientImpl.getOrCreate();
-				Linker l = new Linker(gm, jm);
+				Linker l = new LinkerImpl(gm, jm);
 				MapDesigner mapDesigner = MapDesigner.getOrCreate();
 				mapDesigner.createFullMap(l);
 			}
