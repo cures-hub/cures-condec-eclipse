@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
@@ -29,6 +30,7 @@ public class TestGitClient {
 	}
 
 	@Test
+	@Ignore
 	public void testMessagesExists() {
 
 		IPath repositoryPathMS = new Path("C:\\Users\\anja\\Documents\\gits\\theses\\martinseiler\\");
@@ -51,6 +53,7 @@ public class TestGitClient {
 	}
 
 	@Test
+	@Ignore
 	public void testMessagesAndIDExist() {
 
 		IPath repositoryPathMS = new Path("C:\\Users\\anja\\Documents\\gits\\theses\\martinseiler\\");

@@ -71,7 +71,7 @@ public class LinkerImpl implements Linker {
 		for(CodeMethod cm : CodeMethod.getInstances()) {
 			map.put(cm, cm.getLinks());
 		}
-		for (JiraIssueImpl ji : jiraClient.getAllIssues()) {
+		for (JiraIssue ji : jiraClient.getAllIssues()) {
 			createLinks(ji, 1);
 			map.put(ji, ji.getLinks());
 		}
