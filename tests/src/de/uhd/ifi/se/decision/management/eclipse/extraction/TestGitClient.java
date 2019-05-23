@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 
@@ -44,7 +45,7 @@ public class TestGitClient {
 		Iterator<GitCommit> iter = commitSet.iterator();
 		while (iter.hasNext()) {
 			GitCommit commit = iter.next();
-			messageGlob = messageGlob + commit.getRevCommit().getFullMessage() + "\n";
+			messageGlob = messageGlob + commit.toString() + "\n";
 
 		}
 
@@ -68,7 +69,7 @@ public class TestGitClient {
 		while (iter.hasNext()) {
 			GitCommit commit = iter.next();
 
-			messageGlob = messageGlob + commit.getRevCommit().getFullMessage() + commit.getId() + "\n";
+			messageGlob = messageGlob + commit.toString() + commit.getId() + "\n";
 
 		}
 
