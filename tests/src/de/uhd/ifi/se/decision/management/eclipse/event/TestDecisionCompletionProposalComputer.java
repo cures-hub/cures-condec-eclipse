@@ -23,7 +23,6 @@ public class TestDecisionCompletionProposalComputer {
 		tester = null;
 	}
 
-	@Test
 	@Ignore
 	public void testProposalCreation() {
 
