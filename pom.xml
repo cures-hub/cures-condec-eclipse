@@ -148,6 +148,20 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Test settup -->
+			<plugin>
+			    <groupId>org.eclipse.tycho</groupId>
+			    <artifactId>tycho-surefire-plugin</artifactId>
+			    <version>${tycho.version}</version>
+			    <configuration>
+			      <includes>
+		            <include>**/*Test.java</include>
+		          </includes>
+			    </configuration>
+			    <goals>
+			    	<goal>test</goal>
+			    </goals>
+			</plugin>
 			<!-- CodeCov Plug-in -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
