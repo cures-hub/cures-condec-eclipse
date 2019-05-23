@@ -2,10 +2,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>de.uhd.ifi.se.decision</groupId>
-	<artifactId>de.uhd.ifi.se.decision.management.eclipse</artifactId>
+	<artifactId>parent</artifactId>
 	<version>0.0.2</version>
-	<packaging>eclipse-plugin</packaging>
+
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>main</module>
+		<module>tests</module>
+	</modules>
 
 	<name>Decision Documentation and Exploration</name>
 	<description>Enables developers to continuously document and explore decision knowledge. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale).</description>
@@ -13,9 +20,10 @@
 		<name>Software Engineering Research Group, Heidelberg University</name>
 		<url>https://github.com/cures-hub</url>
 	</organization>
+	<url>https://github.com/cures-hub/cures-condec-eclipse</url>
 
 	<properties>
-		<tycho.version>1.2.0</tycho.version>
+		<tycho-version>1.4.0</tycho-version>
 	</properties>
 
 	<repositories>
@@ -55,13 +63,11 @@
 			<groupId>com.github.javaparser</groupId>
 			<artifactId>javaparser-core</artifactId>
 			<version>3.6.27</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-rest-java-client</artifactId>
 			<version>2.0.0-m2</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.atlassian.util.concurrent</groupId>
@@ -71,96 +77,41 @@
 	</dependencies>
 
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>
-			<!--Target runtime environment-->
-			
 			<plugin>
-		        <groupId>org.eclipse.tycho</groupId>
-		        <artifactId>target-platform-configuration</artifactId>
-		        <version>${tycho.version}</version>
-		        <configuration>
-		          <environments>
-		            <environment>
-		              <os>win32</os>
-		              <ws>win32</ws>
-		              <arch>x86</arch>
-		            </environment>
-		            <environment>
-		              <os>linux</os>
-		              <ws>gtk</ws>
-		              <arch>x86_64</arch>
-		            </environment>
-		            <environment>
-		              <os>macosx</os>
-		              <ws>cocoa</ws>
-		              <arch>x86_64</arch>
-		            </environment>
-		          </environments>
-		        </configuration>
-      		</plugin>
-      		
-			<plugin>
-				<!-- enable tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho.version}</version>
+				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<pomDependencies>consider</pomDependencies>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.4</version>
-				<executions>
-					<execution>
-						<id>test</id>
-						<phase>test</phase>
-						<configuration>
-							<includes>
-								<include>*.java</include>
-							</includes>
-						</configuration>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<executions>
-					<execution>
-						<id>compiletests</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Test settup -->
-			<plugin>
-			    <groupId>org.eclipse.tycho</groupId>
-			    <artifactId>tycho-surefire-plugin</artifactId>
-			    <version>${tycho.version}</version>
-			    <configuration>
-			      <includes>
-		            <include>**/*Test.java</include>
-		          </includes>
-			    </configuration>
-			    <goals>
-			    	<goal>test</goal>
-			    </goals>
 			</plugin>
 			<!-- CodeCov Plug-in -->
 			<plugin>
@@ -176,5 +127,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<url>https://github.com/cures-hub/cures-condec-eclipse</url>
+
 </project>

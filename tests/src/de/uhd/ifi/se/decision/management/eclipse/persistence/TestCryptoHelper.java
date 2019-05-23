@@ -2,11 +2,13 @@ package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestCryptoHelper {
 
 	@Test
+	@Ignore
 	public void test() {
 		String input1 = "Teststring1";
 		String encrypt1 = CryptoHelper.encrypt(input1);

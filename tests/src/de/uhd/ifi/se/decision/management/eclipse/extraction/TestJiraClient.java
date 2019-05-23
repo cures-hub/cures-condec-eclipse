@@ -1,6 +1,8 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 
