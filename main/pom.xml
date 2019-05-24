@@ -8,7 +8,38 @@
 		<artifactId>parent</artifactId>
 		<version>0.0.2</version>
 	</parent>
-	
+
 	<artifactId>main</artifactId>
 	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<!-- Tests -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+			</plugin>
+			<!-- CodeCov Plug-in -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>cobertura-integration-test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
