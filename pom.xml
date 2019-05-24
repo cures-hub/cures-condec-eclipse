@@ -124,8 +124,23 @@
 						<format>xml</format>
 					</formats>
 				</configuration>
+			</plugin>			
+			<!-- Test SetUp -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				 <executions>
+	                 <execution>
+	                         <id>JUnitTest</id>
+	                         <goals>
+	                                 <goal>test</goal>
+	                         </goals>
+	                 </execution>
+	        	</executions>
 			</plugin>
-		</plugins>
+			
+			</plugins>
 	</build>
 
 </project>
