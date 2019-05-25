@@ -12,6 +12,7 @@
 	<modules>
 		<module>main</module>
 		<module>tests</module>
+		<module>tests.report</module>
 	</modules>
 
 	<name>Decision Documentation and Exploration</name>
