@@ -10,9 +10,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>main</module>
-		<module>tests</module>
-		<module>tests.report</module>
+		<module>de.uhd.ifi.se.decision.management.eclipse</module>
+		<module>de.uhd.ifi.se.decision.management.eclipse.tests</module>
+		<module>de.uhd.ifi.se.decision.management.eclipse.tests.report</module>
 	</modules>
 
 	<name>Decision Documentation and Exploration</name>

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ConDec Eclipse
-Bundle-SymbolicName: main;singleton:=true
+Bundle-SymbolicName: de.uhd.ifi.se.decision.management.eclipse;singleton:=true
 Bundle-Version: 0.0.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
@@ -435,5 +435,4 @@ Bundle-ClassPath: lib/aopalliance-1.0.jar,
  lib/jira-rest-java-client-2.0.0-m2.jar,
  lib/atlassian-util-concurrent-3.0.0.jar,
  lib/gephi-toolkit-0.9.2-all.jar
-Automatic-Module-Name: de.uhd.ifi.se.decision.management.eclipse
 Bundle-Vendor: Software Engineering Research Group, Heidelberg University
