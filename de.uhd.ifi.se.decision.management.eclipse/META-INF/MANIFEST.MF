@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ConDec Eclipse
-Bundle-SymbolicName: de.uhd.ifi.se.decision.management.eclipse
+Bundle-SymbolicName: de.uhd.ifi.se.decision.management.eclipse;singleton:=true
 Bundle-Version: 0.0.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
