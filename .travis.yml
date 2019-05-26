@@ -4,7 +4,7 @@ cache:
   directories:
   - $HOME/.m2
 before_install:
-  - cpanm --notest Devel::Cover::Report::Coveralls
+  - rm $HOME/.m2/repository/.meta/*
 script:
   - mvn clean verify -P jacoco
 deploy:
