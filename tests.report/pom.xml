@@ -6,6 +6,7 @@
 		<groupId>de.uhd.ifi.se.decision</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.0.2</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 	<artifactId>tests.report</artifactId>
 
@@ -22,19 +23,12 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.2</version>
+						<version>${jacoco-version}</version>
 						<executions>
 							<execution>
-								<id>default-prepare-agent</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<phase>post-integration-test</phase>
+								<phase>verify</phase>
 								<goals>
 									<goal>report-aggregate</goal>
-									<goal>report</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -48,13 +42,13 @@
 		<dependency>
 			<groupId>de.uhd.ifi.se.decision</groupId>
 			<artifactId>main</artifactId>
-			<version>0.0.2</version>
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.uhd.ifi.se.decision</groupId>
 			<artifactId>tests</artifactId>
-			<version>0.0.2</version>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
