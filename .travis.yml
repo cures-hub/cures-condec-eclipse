@@ -4,7 +4,7 @@ cache:
   directories:
   - $HOME/.m2
 script:
-  - mvn clean verify -P jacoco
+  - mvn clean verify -P jacoco coveralls:report
 deploy:
   provider: releases
   api_key:
