@@ -5,7 +5,7 @@ cache:
   - $HOME/.m2
 script:
   - mvn clean verify -P jacoco
-  - mvn coveralls:report
+  - cat $TRAVIS_BUILD_DIR
 deploy:
   provider: releases
   api_key:
