@@ -5,7 +5,6 @@ cache:
   - $HOME/.m2
 script:
   - mvn clean verify -P jacoco
-  - cat $TRAVIS_BUILD_DIR
 deploy:
   provider: releases
   api_key:
@@ -17,6 +16,5 @@ deploy:
     repo: cures-hub/cures-condec-eclipse
 after_success:
   - mvn coveralls:report
-  - cat de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
+  - cat $TRAVIS_BUILD_DIR/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
   - bash <(curl -s https://codecov.io/bash) -f de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
-  - cat $TRAVIS_BUILD_DIR
