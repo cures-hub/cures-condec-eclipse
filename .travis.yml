@@ -16,4 +16,5 @@ deploy:
     repo: cures-hub/cures-condec-eclipse
 after_success:
   - mvn coveralls:report
-  - bash <(curl -s https://codecov.io/bash)
+  - ls
+  - bash <(curl -s https://codecov.io/bash) -f de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
