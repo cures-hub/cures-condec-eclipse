@@ -4,7 +4,7 @@ cache:
   directories:
   - $HOME/.m2
 script:
-  - mvn clean verify -P jacoco coveralls:report
+  - mvn clean verify -P jacoco
 deploy:
   provider: releases
   api_key:
@@ -15,4 +15,5 @@ deploy:
     tags: true
     repo: cures-hub/cures-condec-eclipse
 after_success:
+  - mvn coveralls:report
   - bash <(curl -s https://codecov.io/bash)

@@ -42,7 +42,7 @@
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>${jacoco-version}</version>
 						<configuration>
-							<destFile>${project.basedir}/../target/jacoco.exec</destFile>
+							<destFile>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/jacoco.exec</destFile>
 						</configuration>
 						<executions>
 							<execution>
@@ -61,7 +61,7 @@
 							<version>4.3.0</version>
 							<configuration>
 								<jacocoReports>
-									<jacocoReport>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+									<jacocoReport>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
 								</jacocoReports>
 							</configuration>
 						</plugin>
