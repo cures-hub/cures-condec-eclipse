@@ -35,15 +35,15 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<properties>
-				<tycho.testArgLine.local>${tycho.testArgLine}</tycho.testArgLine.local>
-			</properties>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>${jacoco-version}</version>
+						<configuration>
+							<destFile>${project.basedir}/../target/jacoco.exec</destFile>
+						</configuration>
 						<executions>
 							<execution>
 								<goals>
@@ -61,7 +61,7 @@
 							<version>4.3.0</version>
 							<configuration>
 								<jacocoReports>
-									<jacocoReport>${project.basedir}/example.tests.report/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+									<jacocoReport>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
 								</jacocoReports>
 							</configuration>
 						</plugin>
@@ -155,41 +155,6 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-				</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>
