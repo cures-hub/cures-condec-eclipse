@@ -3,9 +3,9 @@ language: java
 cache:
   directories:
   - $HOME/.m2
-before_install:
-  - rm $HOME/.m2/repository/.meta/p2-artifacts.properties
 script:
+  - rm $HOME/.m2/repository/.meta/p2-artifacts.properties
+  - rm $HOME/.m2/repository/.meta/*
   - mvn clean verify -P jacoco
 deploy:
   provider: releases
