@@ -24,9 +24,8 @@
 	<url>https://github.com/cures-hub/cures-condec-eclipse</url>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>1.4.0</tycho-version>
-		<jacoco-version>0.8.3</jacoco-version>
+		<jacoco-version>0.8.4</jacoco-version>
 		<tycho.testArgLine.local></tycho.testArgLine.local>
 	</properties>
 
@@ -77,29 +76,7 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>sonatype-nexus-snapshot</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
 		<dependency>

@@ -29,9 +29,6 @@
 								<goals>
 									<goal>report-aggregate</goal>
 								</goals>
-								<configuration>
-									<dataFile>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/jacoco.exec</dataFile>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>
