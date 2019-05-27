@@ -27,6 +27,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>1.4.0</tycho-version>
 		<jacoco-version>0.8.3</jacoco-version>
+		<tycho.testArgLine.local></tycho.testArgLine.local>
 	</properties>
 
 	<profiles>
@@ -35,6 +36,9 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
+			<properties>
+				<tycho.testArgLine.local>${tycho.testArgLine}</tycho.testArgLine.local>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -46,10 +50,6 @@
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
-								<configuration>
-									<destFile>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/jacoco.exec</destFile>
-									<propertyName>surefireArgLine</propertyName>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>

@@ -28,23 +28,12 @@
 								<phase>verify</phase>
 								<goals>
 									<goal>report-aggregate</goal>
-									<goal>report</goal>
 								</goals>
 								<configuration>
 									<dataFile>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/jacoco.exec</dataFile>
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.eluder.coveralls</groupId>
-						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>4.3.0</version>
-						<configuration>
-							<jacocoReports>
-								<jacocoReport>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
-							</jacocoReports>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
