@@ -436,3 +436,4 @@ Bundle-ClassPath: lib/aopalliance-1.0.jar,
  lib/atlassian-util-concurrent-3.0.0.jar,
  lib/gephi-toolkit-0.9.2-all.jar
 Bundle-Vendor: Software Engineering Research Group, Heidelberg University
+Automatic-Module-Name: de.uhd.ifi.se.decision.management.eclipse
