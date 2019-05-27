@@ -4,8 +4,6 @@ cache:
   directories:
   - $HOME/.m2
 script:
-  - rm $HOME/.m2/repository/.meta/p2-artifacts.properties
-  - rm $HOME/.m2/repository/.meta/*
   - mvn clean verify -P jacoco
 deploy:
   provider: releases
@@ -17,7 +15,6 @@ deploy:
     tags: true
     repo: cures-hub/cures-condec-eclipse
 after_success:
-  - cover -test -report coveralls
   - bash <(curl -s https://codecov.io/bash) -f $TRAVIS_BUILD_DIR/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
   - cat $TRAVIS_BUILD_DIR/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
   - cat $TRAVIS_BUILD_DIR/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/index.html
