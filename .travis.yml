@@ -4,6 +4,7 @@ cache:
   directories:
   - $HOME/.m2
 script:
+  - rm $HOME/.m2/repository/.meta/p2-artifacts.properties
   - mvn clean verify -P jacoco
 deploy:
   provider: releases
