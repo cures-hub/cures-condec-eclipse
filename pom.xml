@@ -205,6 +205,7 @@
 							<outputDirectory>${maven.multiModuleProjectDirectory}/de.uhd.ifi.se.decision.management.eclipse/lib</outputDirectory>
 							<excludeTransitive>false</excludeTransitive>
 							<includeScope>runtime</includeScope>
+							<excludeGroupIds>de.uhd.ifi.se.decision</excludeGroupIds>
 						</configuration>
 					</execution>
 				</executions>
