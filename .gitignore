@@ -4,6 +4,7 @@
 target/
 .idea/
 .metadata/
+lib/
 
 # Files
 *.iml
