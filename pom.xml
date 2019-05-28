@@ -147,7 +147,11 @@
 		    <artifactId>activation</artifactId>
 		    <version>1.1</version>
 		</dependency>
-
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.6.4</version>
+		</dependency>
 		<!-- Base dependencies for the eclipse plugin -->
 		<dependency>
 			<groupId>junit</groupId>
