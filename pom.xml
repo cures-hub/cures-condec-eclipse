@@ -117,6 +117,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
 			<version>1.5.5</version>
@@ -186,7 +191,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse/lib</outputDirectory>
-							<excludeTransitive>true</excludeTransitive>
+							<excludeTransitive>false</excludeTransitive>
 							<includeScope>runtime</includeScope>
 						</configuration>
 					</execution>
