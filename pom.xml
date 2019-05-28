@@ -79,6 +79,7 @@
 	</repositories>
 
 	<dependencies>
+
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -86,6 +87,7 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- JIRA -->
 		<dependency>
 			<groupId>com.atlassian.event</groupId>
@@ -121,6 +123,7 @@
 			<version>3.0.0</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<!-- Encoding and decoding -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -134,7 +137,7 @@
 			<artifactId>aopalliance</artifactId>
 			<version>1.0</version>
 			<scope>runtime</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
@@ -160,11 +163,7 @@
 			<artifactId>activation</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
-		</dependency>
+
 		<!-- Code -->
 		<dependency>
 			<groupId>com.github.javaparser</groupId>
@@ -172,12 +171,20 @@
 			<version>3.6.27</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<!-- Graph visualization -->
 		<dependency>
 			<groupId>org.gephi</groupId>
 			<artifactId>gephi-toolkit</artifactId>
 			<version>0.9.2</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 
@@ -190,12 +197,12 @@
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
-						<phase>package</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.basedir}/de.uhd.ifi.se.decision.management.eclipse/lib</outputDirectory>
+							<outputDirectory>${maven.multiModuleProjectDirectory}/de.uhd.ifi.se.decision.management.eclipse/lib</outputDirectory>
 							<excludeTransitive>false</excludeTransitive>
 							<includeScope>runtime</includeScope>
 						</configuration>
