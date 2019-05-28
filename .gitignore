@@ -6,7 +6,5 @@ target/
 .metadata/
 
 # Files
-.settings
 *.iml
 *.class
-.classpath
