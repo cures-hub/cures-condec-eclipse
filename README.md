@@ -24,6 +24,15 @@ The cures-condec-eclipse.jar file is created in the de.uhd.ifi.se.decision.manag
 ### Download of Precompiled .jar-File
 The precompiled .jar-File for the latest release can be found here: https://github.com/cures-hub/cures-condec-eclipse/releases/latest
 
+### Develop in Eclipse
+To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
+- [Install Eclipse IDE for RCP and RAP Developers](https://www.eclipse.org/downloads/packages/) and open it.
+- Import the project as an Existing Maven Project.
+- Run *mvn clean install* in the parent project (cures-condec-eclipse folder) to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
+- Configure the de.uhd.ifi.se.decision.management.eclipse project: Properties / Java Build Path / Libraries / 
+    - Add JARs... / select all jar-files in the lib folder.
+    - Add Library... / select the *Plug-in Dependencies* and all jar-files in the lib folder.
+
 ### Installation in Eclipse
 - Download or compile the .jar-File.
 - Install and open Eclipse.
@@ -32,9 +41,3 @@ The precompiled .jar-File for the latest release can be found here: https://gith
 - In the Add Repository dialog that appears, click the Archive button next to the Location field.
 - Select the cures-condec-eclipse.jar file, click OK.
 
-### Develop in Eclipse
-To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
-- [Install Eclipse IDE for RCP and RAP Developers](https://www.eclipse.org/downloads/packages/) and open it.
-- Import the project as an Existing Maven Project.
-- Run *mvn clean install* to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
-- Configure the project build path of the de.uhd.ifi.se.decision.management.eclipse project to include the *Plug-in Dependencies* and all jar-files in the lib folder.
