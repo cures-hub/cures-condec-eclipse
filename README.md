@@ -30,14 +30,12 @@ To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
 - Import the project as an Existing Maven Project.
 - Run *mvn clean install* in the parent project (cures-condec-eclipse folder) to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
 - Configure the de.uhd.ifi.se.decision.management.eclipse project: Properties / Java Build Path / Libraries / 
-    - Add JARs... / select all jar-files in the lib folder.
-    - Add Library... / select the *Plug-in Dependencies* and all jar-files in the lib folder.
+    - Add JARs... / select all jar-files in the lib folder (if not already included).
+    - Add Library... / select the *Plug-in Dependencies* (if not already included).
 
 ### Installation in Eclipse
-- Download or compile the .jar-File.
-- Install and open Eclipse.
-- From the menu choose: Help / Install New Software...
-- Click the Add button.
-- In the Add Repository dialog that appears, click the Archive button next to the Location field.
-- Select the cures-condec-eclipse.jar file, click OK.
+- Download or compile the cures-condec-eclipse.jar file.
+- [Install Eclipse](https://www.eclipse.org/downloads/packages/).
+- Navigate to the Eclipse installation folder and copy the cures-condec-eclipse.jar file into the dropins folder (or a similar folder depending on your operation system).
+- Open Eclipse.
 
