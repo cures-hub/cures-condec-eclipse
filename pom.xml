@@ -26,7 +26,6 @@
 	<properties>
 		<tycho-version>1.4.0</tycho-version>
 		<jacoco-version>0.8.4</jacoco-version>
-		<tycho.testArgLine.local></tycho.testArgLine.local>
 	</properties>
 
 	<profiles>
@@ -66,15 +65,6 @@
 		<repository>
 			<id>atlassian-public</id>
 			<url>https://packages.atlassian.com/maven/repository/public</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
 		</repository>
 	</repositories>
 
