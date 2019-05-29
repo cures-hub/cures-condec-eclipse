@@ -11,6 +11,7 @@ import java.util.Set;
 import org.eclipse.jgit.diff.DiffEntry;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
@@ -82,12 +83,14 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 			if (repoPath != null && !repoPath.isEmpty() && pathToGit.endsWith(directorySeperator + ".git")) {
 				try {
 					FileInputStream fileInputStream = new FileInputStream(this.fileLocation);
-					CompilationUnit compilationUnit;
+					JavaParser javaParser = new JavaParser();
+					ParseResult<CompilationUnit> parseResult;
 					try {
-						compilationUnit = JavaParser.parse(fileInputStream);
+						parseResult = javaParser.parse(fileInputStream);
 					} finally {
 						fileInputStream.close();
 					}
+					CompilationUnit compilationUnit = parseResult.getResult().get();
 					MethodVisitor methodVistor = new MethodVisitor();
 					compilationUnit.accept(methodVistor, null);
 					for (MethodDeclaration md : methodVistor.getMethodDeclarations()) {

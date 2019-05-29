@@ -22,7 +22,7 @@ public class TestGitClient {
 
 	@Before
 	public void setUp() {
-		new GitClientImpl("C:\\Users\\anja\\Documents\\gits\\theses\\martinseiler\\.git", "HEAD");
+		new GitClientImpl(".git", "HEAD");
 		new File("");
 	}
 
@@ -34,7 +34,7 @@ public class TestGitClient {
 	@Ignore
 	public void testMessagesExists() {
 
-		IPath repositoryPathMS = new Path("C:\\Users\\anja\\Documents\\gits\\theses\\martinseiler\\");
+		IPath repositoryPathMS = new Path("");
 
 		GitClient myExtractor = new GitClientImpl(repositoryPathMS + ".git", "HEAD");
 
@@ -57,7 +57,7 @@ public class TestGitClient {
 	@Ignore
 	public void testMessagesAndIDExist() {
 
-		IPath repositoryPathMS = new Path("C:\\Users\\anja\\Documents\\gits\\theses\\martinseiler\\");
+		IPath repositoryPathMS = new Path("");
 
 		GitClient myExtractor = new GitClientImpl(repositoryPathMS + ".git", "HEAD");
 

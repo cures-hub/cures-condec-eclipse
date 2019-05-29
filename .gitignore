@@ -4,9 +4,8 @@
 target/
 .idea/
 .metadata/
+lib/
 
 # Files
-.settings
 *.iml
 *.class
-.classpath

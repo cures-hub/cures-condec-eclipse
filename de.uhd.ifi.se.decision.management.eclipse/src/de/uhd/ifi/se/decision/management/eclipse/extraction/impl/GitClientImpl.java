@@ -32,6 +32,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
@@ -178,11 +179,12 @@ public class GitClientImpl implements GitClient {
 			Iterable<RevCommit> iterable = git.log().call();
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
-              RevCommit revCommit = iterator.next();
-              if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
-            	  GitCommit commit = GitCommitImpl.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
-                  commitsForIssueKey.add(commit);
-              }
+				RevCommit revCommit = iterator.next();
+				if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
+					GitCommit commit = GitCommitImpl.getOrCreate(iterator.next(),
+							ConfigPersistenceManager.getProjectKey());
+					commitsForIssueKey.add(commit);
+				}
 			}
 		} catch (GitAPIException | NullPointerException e) {
 			System.err.println("Could not retrieve commits for the issue key " + issueKey);
@@ -190,7 +192,7 @@ public class GitClientImpl implements GitClient {
 		}
 		return commitsForIssueKey;
 	}
-	
+
 	/**
 	 * Retrieves the issue key from a commit message
 	 * 
@@ -240,7 +242,8 @@ public class GitClientImpl implements GitClient {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses.add(CodeClassImpl.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
+				changedClasses
+						.add(CodeClassImpl.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -314,12 +317,14 @@ public class GitClientImpl implements GitClient {
 		Set<MethodDeclaration> methodDeclarations = new LinkedHashSet<MethodDeclaration>();
 
 		FileInputStream fileInputStream;
-		CompilationUnit compilationUnit;
+		ParseResult<CompilationUnit> parseResult;
 		try {
 			fileInputStream = new FileInputStream(filePath.toString());
-			compilationUnit = JavaParser.parse(fileInputStream); // produces real readable code
+			JavaParser javaParser = new JavaParser();
+			parseResult = javaParser.parse(fileInputStream); // produces real readable code
 			fileInputStream.close();
 
+			CompilationUnit compilationUnit = parseResult.getResult().get();
 			MethodVisitor methodVisitor = new MethodVisitor();
 			compilationUnit.accept(methodVisitor, null);
 			methodDeclarations = methodVisitor.getMethodDeclarations();
