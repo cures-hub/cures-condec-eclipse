@@ -80,26 +80,9 @@
 
 		<!-- JIRA -->
 		<dependency>
-			<groupId>com.atlassian.event</groupId>
-			<artifactId>atlassian-event</artifactId>
-			<version>2.2.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.atlassian.httpclient</groupId>
 			<artifactId>atlassian-httpclient-apache-httpcomponents</artifactId>
 			<version>0.13.4</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.atlassian.httpclient</groupId>
-			<artifactId>atlassian-httpclient-api</artifactId>
-			<version>0.13.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.atlassian.httpclient</groupId>
-			<artifactId>atlassian-httpclient-spi</artifactId>
-			<version>0.13.2</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -144,6 +127,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.4</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 

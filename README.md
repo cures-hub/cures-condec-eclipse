@@ -33,7 +33,7 @@ The precompiled .jar-File for the latest release can be found here: https://gith
 - Select the cures-condec-eclipse.jar file, click OK.
 
 ### Develop in Eclipse
-To develop the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
+To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
 - [Install Eclipse IDE for RCP and RAP Developers](https://www.eclipse.org/downloads/packages/) and open it.
 - Import the project as an Existing Maven Project.
 - Run *mvn clean install* to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
