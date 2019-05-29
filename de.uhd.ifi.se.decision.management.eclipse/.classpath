@@ -35,7 +35,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-core-2.5.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jira-rest-java-client-2.0.0-m2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-3.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gephi-toolkit-0.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/algorithms-plugin-0.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/appearance-api-0.9.2.jar"/>
@@ -154,5 +153,6 @@
 	<classpathentry kind="lib" path="lib/guava-13.0.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0-2.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/atlassian-util-concurrent-2.4.0-M9.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -91,12 +91,6 @@
 			<version>2.0.0-m2</version>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.atlassian.util.concurrent</groupId>
-			<artifactId>atlassian-util-concurrent</artifactId>
-			<version>3.0.0</version>
-			<scope>runtime</scope>
-		</dependency>
 
 		<!-- Encoding and decoding -->
 		<dependency>
