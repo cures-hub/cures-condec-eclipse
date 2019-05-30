@@ -36,6 +36,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
@@ -202,37 +203,12 @@ public class GitClientImpl implements GitClient {
 	 * @return extracted issue key
 	 */
 	public static String getFirstIssueKey(String commitMessage, String issueKeyBase) {
-		List<String> keys = getAllMentionedIssueKeys(commitMessage, issueKeyBase);
+		List<String> keys = CommitMessageParser.getAllMentionedIssueKeys(commitMessage, issueKeyBase);
 		if (keys.size() > 0) {
 			return keys.get(0);
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * Returns all Issue-Keys which are mentioned in a message.
-	 * 
-	 * @param commitMessage
-	 *            All mentioned IssueKeys must not contain a space. Positive
-	 *            Example: "Example-123"
-	 * @return List of all mentioned IssueKeys. May contain duplicates; Ordered by
-	 *         apperance in message.
-	 */
-	public static List<String> getAllMentionedIssueKeys(String commitMessage, String issueKeyBase) {
-		List<String> keys = new ArrayList<String>();
-		commitMessage = commitMessage.replace("\r\n", " ").replace("\n", " ");
-		String[] words = commitMessage.toLowerCase().split(" ");
-		if (issueKeyBase == null) {
-			return keys;
-		}
-		String basekey = issueKeyBase.toLowerCase();
-		for (String word : words) {
-			if (word.contains(basekey + "-")) {
-				keys.add(word);
-			}
-		}
-		return keys;
 	}
 
 	@Override

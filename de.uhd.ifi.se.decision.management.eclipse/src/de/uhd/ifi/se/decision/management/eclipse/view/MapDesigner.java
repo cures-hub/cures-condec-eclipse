@@ -335,25 +335,10 @@ public class MapDesigner {
 		directedGraph.clear();
 		directedGraph.clearEdges();
 		// second, create nodes...
-		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
-			Node node = graphModel.factory().newNode(String.valueOf(n.getId()));
-			node.setLabel("[" + String.valueOf(n.getId()) + "] " + n.toString());
-			node.setX((float) Math.random() * 100f * (float) Math.sqrt(nodes.size()));
-			node.setY((float) Math.random() * 100f * (float) Math.sqrt(nodes.size()));
-			if (n instanceof GitCommitImpl) {
-				node.setColor(MapDesignerSettingsProvider.getCommitColor());
-			} else if (n instanceof DecisionKnowledgeElementImpl) {
-				node.setColor(MapDesignerSettingsProvider.getDecisionKnowledgeElementColor());
-			} else if (n instanceof JiraIssueImpl) {
-				node.setColor(MapDesignerSettingsProvider.getIssueColor());
-			} else if (n instanceof CodeClassImpl) {
-				node.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
-			} else if (n instanceof CodeMethodImpl) {
-				node.setColor(MapDesignerSettingsProvider.getCodeMethodColor());
-			} else {
-				node.setColor(Color.PINK);
-			}
-			directedGraph.addNode(node);
+		for (de.uhd.ifi.se.decision.management.eclipse.model.Node node : nodes) {
+			Node gephiNode = createNode(node);
+			setPosition(gephiNode, nodes.size());			
+			directedGraph.addNode(gephiNode);
 		}
 		updateNodeSizes();
 		// third, create edges...
@@ -381,6 +366,30 @@ public class MapDesigner {
 				}
 			}
 		}
+	}
+
+	private Node createNode(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
+		Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
+		gephiNode.setLabel("[" + String.valueOf(node.getId()) + "] " + node.toString());
+		if (node instanceof GitCommitImpl) {
+			gephiNode.setColor(MapDesignerSettingsProvider.getCommitColor());
+		} else if (node instanceof DecisionKnowledgeElementImpl) {
+			gephiNode.setColor(MapDesignerSettingsProvider.getDecisionKnowledgeElementColor());
+		} else if (node instanceof JiraIssueImpl) {
+			gephiNode.setColor(MapDesignerSettingsProvider.getIssueColor());
+		} else if (node instanceof CodeClassImpl) {
+			gephiNode.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
+		} else if (node instanceof CodeMethodImpl) {
+			gephiNode.setColor(MapDesignerSettingsProvider.getCodeMethodColor());
+		} else {
+			gephiNode.setColor(Color.PINK);
+		}
+		return gephiNode;
+	}
+	
+	void setPosition(Node gephiNode, int numberOfNodes) {
+		gephiNode.setX((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
+		gephiNode.setY((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
 	}
 
 	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
@@ -509,8 +518,8 @@ public class MapDesigner {
 	 */
 	private void updateNodeSizes() {
 		if (interactionID < 0) {
-			for (Node n : directedGraph.getNodes()) {
-				updateNodeSize(n);
+			for (Node gephiNode : directedGraph.getNodes()) {
+				updateNodeSize(gephiNode);
 			}
 		} else {
 			highlightGraph();

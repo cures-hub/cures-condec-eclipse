@@ -13,7 +13,6 @@ import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
@@ -57,7 +56,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 			this.addLinkedNode(knowledgeElement);
 			knowledgeElement.addLinkedNode(this);
 		}
-		this.issueKeys = GitClientImpl.getAllMentionedIssueKeys(commit.getFullMessage(), this.issueKeyBase);
+		this.issueKeys = CommitMessageParser.getAllMentionedIssueKeys(commit.getFullMessage(), this.issueKeyBase);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class CommitMessageParser {
 						description = "";
 						dt = null;
 					} else {
-						description += tag;
+						description += tag + " ";
 					}
 					continue;
 				case CON:
@@ -45,7 +45,7 @@ public class CommitMessageParser {
 						description = "";
 						dt = null;
 					} else {
-						description += tag;
+						description += tag + " ";
 					}
 					continue;
 				case DECISION:
@@ -56,7 +56,7 @@ public class CommitMessageParser {
 						description = "";
 						dt = null;
 					} else {
-						description += tag;
+						description += tag + " ";
 					}
 					continue;
 				case GOAL:
@@ -67,7 +67,7 @@ public class CommitMessageParser {
 						description = "";
 						dt = null;
 					} else {
-						description += tag;
+						description += tag  + " ";
 					}
 					continue;
 				case ISSUE:
@@ -78,7 +78,7 @@ public class CommitMessageParser {
 						description = "";
 						dt = null;
 					} else {
-						description += tag;
+						description += tag + " ";
 					}
 					continue;
 				case PRO:
@@ -89,7 +89,7 @@ public class CommitMessageParser {
 						description = "";
 						dt = null;
 					} else {
-						description += tag;
+						description += tag + " ";
 					}
 					continue;
 				default:
@@ -146,5 +146,30 @@ public class CommitMessageParser {
 			description = description.substring(0, description.length() - 1);
 		}
 		return description;
+	}
+
+	/**
+	 * Returns all Issue-Keys which are mentioned in a message.
+	 * 
+	 * @param commitMessage
+	 *            All mentioned IssueKeys must not contain a space. Positive
+	 *            Example: "Example-123"
+	 * @return List of all mentioned IssueKeys. May contain duplicates; Ordered by
+	 *         apperance in message.
+	 */
+	public static List<String> getAllMentionedIssueKeys(String commitMessage, String issueKeyBase) {
+		List<String> keys = new ArrayList<String>();
+		commitMessage = commitMessage.replace("\r\n", " ").replace("\n", " ");
+		String[] words = commitMessage.toLowerCase().split(" ");
+		if (issueKeyBase == null) {
+			return keys;
+		}
+		String basekey = issueKeyBase.toLowerCase();
+		for (String word : words) {
+			if (word.contains(basekey + "-")) {
+				keys.add(word);
+			}
+		}
+		return keys;
 	}
 }

@@ -28,7 +28,6 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 		if (pathOfSelectedFile == null || !pathOfSelectedFile.toFile().exists()) {
 			return null;
 		}
-
 		JiraClient jiraClient = JiraClientImpl.getOrCreate();
 		if (jiraClient.authenticate() != 0) {
 			System.out.println("There was an error when authenticate JiraManager");
