@@ -3,16 +3,18 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public abstract class NodeImpl implements Node {
-	private long id = 0;
-	private boolean isVisible = true;
-	private HashSet<Node> linkedNodes = new HashSet<Node>();
 	public static long nextId = 0;
 	public static Map<Long, Node> nodes = new HashMap<Long, Node>();
-	private static HashSet<Node> allNodes = new HashSet<Node>();
+	private static Set<Node> allNodes = new HashSet<Node>();
+
+	private long id = 0;
+	private boolean isVisible = true;
+	private Set<Node> linkedNodes = new HashSet<Node>();
 
 	public NodeImpl() {
 		this.id = nextId;
@@ -21,7 +23,7 @@ public abstract class NodeImpl implements Node {
 		allNodes.add(this);
 	}
 
-	public static HashSet<Node> getAllNodes() {
+	public static Set<Node> getAllNodes() {
 		return allNodes;
 	}
 
@@ -66,21 +68,17 @@ public abstract class NodeImpl implements Node {
 	}
 
 	@Override
-	public void clearLinkedNodes() {
+	public void removeLinkedNodes() {
 		this.linkedNodes.clear();
 	}
 
 	@Override
 	public boolean isLinkedToNode(Node node) {
-		if (this.linkedNodes.contains(node)) {
-			return true;
-		} else {
-			return false;
-		}
+		return this.linkedNodes.contains(node);
 	}
 
 	@Override
-	public HashSet<Node> getLinks() {
+	public Set<Node> getLinkedNodes() {
 		return this.linkedNodes;
 	}
 }

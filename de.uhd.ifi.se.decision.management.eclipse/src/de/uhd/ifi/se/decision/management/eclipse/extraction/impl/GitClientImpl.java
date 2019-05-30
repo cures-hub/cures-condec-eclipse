@@ -135,7 +135,7 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommitImpl> getAllCommits() {
+	public Set<GitCommitImpl> getCommits() {
 		Set<GitCommitImpl> allCommits = new HashSet<GitCommitImpl>();
 		try {
 			Iterable<RevCommit> commits = this.git.log().all().call();

@@ -242,7 +242,7 @@ public class MapDesigner {
 		}
 		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
 			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> links = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
-			for (de.uhd.ifi.se.decision.management.eclipse.model.Node neighbor : n.getLinks()) {
+			for (de.uhd.ifi.se.decision.management.eclipse.model.Node neighbor : n.getLinkedNodes()) {
 				if (nodes.contains(neighbor)) {
 					links.add(neighbor);
 				}
@@ -455,7 +455,7 @@ public class MapDesigner {
 		// is a filter active, which must be regarded?
 		if (shouldBeVisible(iN)) {
 			if (searchString == null || searchString.isEmpty()) {
-				float size = (float) Math.sqrt(Double.valueOf(iN.getLinks().size()));
+				float size = (float) Math.sqrt(Double.valueOf(iN.getLinkedNodes().size()));
 				node.setSize((size > 0 ? size : 0.75f));
 			} else {
 				if (node.getLabel().toLowerCase().contains(searchString.toLowerCase())) {
@@ -486,14 +486,14 @@ public class MapDesigner {
 
 	private void highlightNodes(de.uhd.ifi.se.decision.management.eclipse.model.Node node, int currentDepth,
 			int maxDepth, float size, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes) {
-		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinks()) {
+		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
 			if (!visitedNodes.contains(n)) {
 				directedGraph.getNode(String.valueOf(n.getId())).setSize(size);
 				visitedNodes.add(n);
 			}
 		}
 		if (currentDepth + 1 < maxDepth) {
-			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinks()) {
+			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
 				highlightNodes(n, currentDepth + 1, maxDepth, size / ConfigPersistenceManager.getDecreaseFactor(),
 						visitedNodes);
 			}

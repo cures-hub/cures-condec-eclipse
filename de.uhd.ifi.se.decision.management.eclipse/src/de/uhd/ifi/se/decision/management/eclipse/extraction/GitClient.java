@@ -16,20 +16,26 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
+/**
+ * Interface to connect to a git repository associated with this project.
+ * Retrieves commits and code changes (diffs) in git.
+ * @see GitCommit
+ */
 public interface GitClient {
 
 	/**
+	 * Retrieves all commits on the current branch.
 	 * 
-	 * @return Returns a Set with all commits of the current branch.
+	 * @return set of all commits on the current branch.
 	 */
-	Set<GitCommitImpl> getAllCommits();
+	Set<GitCommitImpl> getCommits();
 
 	/**
 	 * Show what author and revision last modified each line of a file.
 	 * 
 	 * @param filePath
-	 *            path to the file to be blamed
-	 * @return git blame result for the given file
+	 *            path to the file to be blamed.
+	 * @return git blame result for the given file.
 	 */
 	BlameResult getGitBlameForFile(IPath filePath);
 
@@ -38,10 +44,10 @@ public interface GitClient {
 	 * RevCommit.
 	 * 
 	 * @param filePath
-	 *            path to the file to be blamed
+	 *            path to the file to be blamed.
 	 * @param line
-	 *            the line that is to be analyzed
-	 * @return RevCommit returns all information about the commit as RevCommit
+	 *            the line that is to be analyzed.
+	 * @return GitCommit.
 	 */
 	GitCommit getCommitForLine(IPath filePath, int line);
 
