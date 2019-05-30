@@ -10,5 +10,5 @@ public interface CodeClass extends Node {
 	
 	String getFullClassPath();
 
-	String getFilelocation();
+	String getFileLocation();
 }

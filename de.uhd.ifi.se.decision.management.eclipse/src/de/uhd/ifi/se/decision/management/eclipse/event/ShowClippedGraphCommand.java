@@ -45,7 +45,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 				linker.createFullMap();
 				Node rootNode = null;
 				for (CodeClass cc : CodeClassImpl.getInstances()) {
-					String fileloc = cc.getFilelocation().replace('\\', '/').toLowerCase();
+					String fileloc = cc.getFileLocation().replace('\\', '/').toLowerCase();
 					if (fileloc.equals(fullPath)) {
 						rootNode = cc;
 						break;

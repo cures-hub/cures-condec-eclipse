@@ -122,7 +122,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 	}
 
 	@Override
-	public String getFilelocation() {
+	public String getFileLocation() {
 		return this.fileLocation;
 	}
 

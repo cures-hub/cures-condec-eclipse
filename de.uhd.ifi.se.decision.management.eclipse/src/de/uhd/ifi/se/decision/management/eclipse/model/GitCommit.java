@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -18,9 +17,9 @@ public interface GitCommit extends Node {
 
 	void setReferencedJiraIssues(List<Issue> referencedIssues);
 
-	boolean addReferencedIssue(Issue issue);
+	boolean addReferencedJiraIssue(Issue issue);
 
-	boolean removeReferencedIssue(Issue issue);
+	boolean removeReferencedJiraIssue(Issue issue);
 	// END ReferencedIssues-Section
 
 	// CommitDecision-Section
@@ -46,13 +45,11 @@ public interface GitCommit extends Node {
 	// IssueKey-Section
 	List<String> getJiraIssueKeys();
 
-	Set<String> getIssueKeysAsSet();
-
 	void setJiraIssueKeys(List<String> issueKeys);
 
 	boolean addJiraIssueKey(String issueKey);
 
-	boolean removeIssueKey(String issueKey);
+	boolean removeJiraIssueKey(String issueKey);
 	// END IssueKey-Section
 
 	RevCommit getRevCommit();
