@@ -18,9 +18,10 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 
 public class CodeClassImpl extends NodeImpl implements CodeClass {
-	private static Map<String, CodeClassImpl> instances = new HashMap<String, CodeClassImpl>();
+	private static Map<String, CodeClass> instances = new HashMap<String, CodeClass>();
 	private String className;
 	private String packageName;
 	private String project;
@@ -30,20 +31,20 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 	private String fileLocation = "";
 	private List<CodeMethod> methodsInClass;
 
-	public static Set<CodeClassImpl> getInstances() {
-		Set<CodeClassImpl> output = new HashSet<CodeClassImpl>();
-		for (Map.Entry<String, CodeClassImpl> entry : instances.entrySet()) {
+	public static Set<CodeClass> getInstances() {
+		Set<CodeClass> output = new HashSet<CodeClass>();
+		for (Map.Entry<String, CodeClass> entry : instances.entrySet()) {
 			output.add(entry.getValue());
 		}
 		return output;
 	}
 
-	public static CodeClassImpl getOrCreate(DiffEntry diffEntry, String pathToGit) {
+	public static CodeClass getOrCreate(DiffEntry diffEntry, String pathToGit) {
 		String fullClassPath = diffEntry.getNewPath();
 		if (instances.containsKey(fullClassPath)) {
 			return instances.get(fullClassPath);
 		} else {
-			CodeClassImpl cc = new CodeClassImpl(fullClassPath, pathToGit);
+			CodeClass cc = new CodeClassImpl(fullClassPath, pathToGit);
 			instances.put(fullClassPath, cc);
 			return cc;
 		}
@@ -94,7 +95,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 					MethodVisitor methodVistor = new MethodVisitor();
 					compilationUnit.accept(methodVistor, null);
 					for (MethodDeclaration md : methodVistor.getMethodDeclarations()) {
-						CodeMethod cm = new CodeMethod(md.getNameAsString());
+						CodeMethodImpl cm = new CodeMethodImpl(md.getNameAsString());
 						cm.setMethodStartInCodefile(md.getBegin().get().line);
 						cm.setMethodStopInCodefile(md.getEnd().get().line);
 						this.methodsInClass.add(cm);
@@ -120,6 +121,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 		return this.methodsInClass;
 	}
 
+	@Override
 	public String getFilelocation() {
 		return this.fileLocation;
 	}

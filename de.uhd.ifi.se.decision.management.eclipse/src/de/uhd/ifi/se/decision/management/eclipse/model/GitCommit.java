@@ -8,8 +8,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
 public interface GitCommit extends Node {
 
@@ -26,23 +24,23 @@ public interface GitCommit extends Node {
 	// END ReferencedIssues-Section
 
 	// CommitDecision-Section
-	List<DecisionKnowledgeElementImpl> getCommitDecisions();
+	List<DecisionKnowledgeElement> getCommitDecisions();
 
-	void setCommitDecisions(List<DecisionKnowledgeElementImpl> decisionKnowledgeElements);
+	void setCommitDecisions(List<DecisionKnowledgeElement> decisionKnowledgeElements);
 
-	boolean addCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement);
+	boolean addCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement);
 
-	boolean removeCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement);
+	boolean removeCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement);
 	// END CommitDecision-Section
 
 	// ChangedClasses-Section
-	List<CodeClassImpl> getChangedClasses();
+	List<CodeClass> getChangedClasses();
 
-	void setChangedClasses(List<CodeClassImpl> changedClasses);
+	void setChangedClasses(List<CodeClass> changedClasses);
 
-	boolean addChangedClass(CodeClassImpl changedClass);
+	boolean addChangedClass(CodeClass changedClass);
 
-	boolean removeChangedClass(CodeClassImpl changedClass);
+	boolean removeChangedClass(CodeClass changedClass);
 	// END CHangedClasses-Section
 
 	// IssueKey-Section

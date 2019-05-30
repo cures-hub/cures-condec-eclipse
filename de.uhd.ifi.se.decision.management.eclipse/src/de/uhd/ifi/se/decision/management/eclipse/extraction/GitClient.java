@@ -12,13 +12,13 @@ import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 /**
  * Interface to connect to a git repository associated with this project.
  * Retrieves commits and code changes (diffs) in git.
+ * 
  * @see GitCommit
  */
 public interface GitClient {
@@ -28,7 +28,7 @@ public interface GitClient {
 	 * 
 	 * @return set of all commits on the current branch.
 	 */
-	Set<GitCommitImpl> getCommits();
+	Set<GitCommit> getCommits();
 
 	/**
 	 * Show what author and revision last modified each line of a file.
@@ -87,7 +87,7 @@ public interface GitClient {
 	 *            commit as a RevCommit object
 	 * @return list of diff entries
 	 */
-	List<CodeClassImpl> getDiffEntries(GitCommit commit);
+	List<CodeClass> getDiffEntries(GitCommit commit);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.

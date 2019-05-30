@@ -12,14 +12,14 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
-	private static Map<Issue, JiraIssueImpl> instances = new HashMap<Issue, JiraIssueImpl>();
-	private static Map<String, JiraIssueImpl> instances_alternative = new HashMap<String, JiraIssueImpl>();
+	private static Map<Issue, JiraIssue> instances = new HashMap<Issue, JiraIssue>();
+	private static Map<String, JiraIssue> instances_alternative = new HashMap<String, JiraIssue>();
 	private Issue issue;
 	private String issueKey;
 
-	public static Set<JiraIssueImpl> getInstances() {
-		Set<JiraIssueImpl> output = new HashSet<JiraIssueImpl>();
-		for (Map.Entry<Issue, JiraIssueImpl> entry : instances.entrySet()) {
+	public static Set<JiraIssue> getInstances() {
+		Set<JiraIssue> output = new HashSet<JiraIssue>();
+		for (Map.Entry<Issue, JiraIssue> entry : instances.entrySet()) {
 			output.add(entry.getValue());
 		}
 		return output;
@@ -43,7 +43,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	 * @return Might be null, if the given IssueKey couldn't be resolved to a
 	 *         JiraIssue-object.
 	 */
-	public static JiraIssueImpl getOrCreate(String issueKey, JiraClient jiraManager) {
+	public static JiraIssue getOrCreate(String issueKey, JiraClient jiraManager) {
 		if (issueKey == null) {
 			return null;
 		}

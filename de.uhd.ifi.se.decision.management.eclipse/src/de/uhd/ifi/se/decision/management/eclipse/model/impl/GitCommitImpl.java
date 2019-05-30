@@ -13,15 +13,17 @@ import com.atlassian.jira.rest.client.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
-	private List<DecisionKnowledgeElementImpl> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElementImpl>();
+	private List<DecisionKnowledgeElement> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElement>();
 	private List<String> issueKeys = new ArrayList<String>();
 	private List<Issue> referencedIssues = new ArrayList<Issue>();
-	private List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
+	private List<CodeClass> changedClasses = new ArrayList<CodeClass>();
 	private RevCommit revCommit;
 	private String issueKeyBase = "";
 	private static Map<RevCommit, GitCommitImpl> instances = new HashMap<RevCommit, GitCommitImpl>();
@@ -50,7 +52,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 		instances.put(commit, this);
 		this.revCommit = commit;
 		this.issueKeyBase = issueKeyBase;
-		extractIssuesFromCommit(commit);
+		extractDecisionKnowledgeFromCommit(commit);
 		this.issueKeys = GitClientImpl.getAllMentionedIssueKeys(commit.getFullMessage(), this.issueKeyBase);
 	}
 
@@ -87,44 +89,44 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	// CommitDecision-Section
 	@Override
-	public List<DecisionKnowledgeElementImpl> getCommitDecisions() {
+	public List<DecisionKnowledgeElement> getCommitDecisions() {
 		return this.decisionKnowledgeElements;
 	}
 
 	@Override
-	public void setCommitDecisions(List<DecisionKnowledgeElementImpl> decisionKnowledgeElements) {
+	public void setCommitDecisions(List<DecisionKnowledgeElement> decisionKnowledgeElements) {
 		this.decisionKnowledgeElements = decisionKnowledgeElements;
 	}
 
 	@Override
-	public boolean addCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement) {
+	public boolean addCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement) {
 		return this.decisionKnowledgeElements.add(decisionKnowledgeElement);
 	}
 
 	@Override
-	public boolean removeCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement) {
+	public boolean removeCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement) {
 		return this.decisionKnowledgeElements.remove(decisionKnowledgeElement);
 	}
 	// END CommitDecision-Section
 
 	// ChangedClasses-Section
 	@Override
-	public List<CodeClassImpl> getChangedClasses() {
+	public List<CodeClass> getChangedClasses() {
 		return this.changedClasses;
 	}
 
 	@Override
-	public void setChangedClasses(List<CodeClassImpl> changedClasses) {
+	public void setChangedClasses(List<CodeClass> changedClasses) {
 		this.changedClasses = changedClasses;
 	}
 
 	@Override
-	public boolean addChangedClass(CodeClassImpl changedClass) {
+	public boolean addChangedClass(CodeClass changedClass) {
 		return this.changedClasses.add(changedClass);
 	}
 
 	@Override
-	public boolean removeChangedClass(CodeClassImpl changedClass) {
+	public boolean removeChangedClass(CodeClass changedClass) {
 		return this.changedClasses.remove(changedClass);
 	}
 	// END CHangedClasses-Section
@@ -173,13 +175,13 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	@Override
 	public void extractChangedClasses(GitClient gm) {
 		this.changedClasses = gm.getDiffEntries(this);
-		for (NodeImpl n : this.changedClasses) {
-			this.addLinkedNode(n);
-			n.addLinkedNode(this);
+		for (Node node : this.changedClasses) {
+			this.addLinkedNode(node);
+			node.addLinkedNode(this);
 		}
 	}
 
-	private void extractIssuesFromCommit(RevCommit commit) {
+	private void extractDecisionKnowledgeFromCommit(RevCommit commit) {
 		String commitMessage = commit.getFullMessage();
 		// replace("\r\n") is necessary for supporting both Windows-Lineendings AND
 		// Unix-Lineendings
@@ -292,7 +294,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 						recordDescription = true;
 					}
 				}
-				for (DecisionKnowledgeElementImpl cd : decisionKnowledgeElements) {
+				for (DecisionKnowledgeElement cd : decisionKnowledgeElements) {
 					this.addLinkedNode(cd);
 					cd.addLinkedNode(this);
 				}

@@ -9,4 +9,6 @@ public interface CodeClass extends Node {
 	String getProject();
 	
 	String getFullClassPath();
+
+	String getFilelocation();
 }

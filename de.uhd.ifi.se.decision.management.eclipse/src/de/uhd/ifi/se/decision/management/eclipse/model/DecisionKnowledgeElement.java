@@ -1,6 +1,10 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+/**
+ * Interface for decision knowledge elements.
+ */
 public interface DecisionKnowledgeElement extends Node {
+	
 	/**
 	 * Get the id of the decision knowledge element. This id is the internal
 	 * database id. When using JIRA issues to persist decision knowledge, this id is
@@ -21,7 +25,7 @@ public interface DecisionKnowledgeElement extends Node {
 	 */
 	@Override
 	void setId(long id);
-	
+
 	/**
 	 * Get the summary of the decision knowledge element. The summary is a short
 	 * description of the element.
@@ -38,7 +42,7 @@ public interface DecisionKnowledgeElement extends Node {
 	 *            of the decision knowledge element.
 	 */
 	void setSummary(String summary);
-	
+
 	/**
 	 * Get the description of the decision knowledge element. The description
 	 * provides details about the element. When using JIRA issues to persist

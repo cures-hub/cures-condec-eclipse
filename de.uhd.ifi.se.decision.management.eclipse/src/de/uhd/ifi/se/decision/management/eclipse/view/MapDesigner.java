@@ -48,9 +48,10 @@ import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
@@ -347,7 +348,7 @@ public class MapDesigner {
 				node.setColor(MapDesignerSettingsProvider.getIssueColor());
 			} else if (n instanceof CodeClassImpl) {
 				node.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
-			} else if (n instanceof CodeMethod) {
+			} else if (n instanceof CodeMethodImpl) {
 				node.setColor(MapDesignerSettingsProvider.getCodeMethodColor());
 			} else {
 				node.setColor(Color.PINK);
@@ -384,7 +385,7 @@ public class MapDesigner {
 
 	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
 		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssueImpl && bShowIssues
-				|| node instanceof CodeMethod && bShowMethods) {
+				|| node instanceof CodeMethodImpl && bShowMethods) {
 			return true;
 		} else if (node instanceof DecisionKnowledgeElementImpl && bShowKnowledgeItems) {
 			DecisionKnowledgeElementImpl dke = (DecisionKnowledgeElementImpl) node;
@@ -422,7 +423,7 @@ public class MapDesigner {
 			}
 			return false;
 		} else if (node instanceof CodeClassImpl && bShowFiles) {
-			CodeClassImpl cc = (CodeClassImpl) node;
+			CodeClass cc = (CodeClass) node;
 			if (cc.getFullClassPath().toLowerCase().endsWith(".java")) {
 				if (bShowCFClasses) {
 					return true;

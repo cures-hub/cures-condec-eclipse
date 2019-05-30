@@ -38,6 +38,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
@@ -135,8 +136,8 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommitImpl> getCommits() {
-		Set<GitCommitImpl> allCommits = new HashSet<GitCommitImpl>();
+	public Set<GitCommit> getCommits() {
+		Set<GitCommit> allCommits = new HashSet<GitCommit>();
 		try {
 			Iterable<RevCommit> commits = this.git.log().all().call();
 			for (RevCommit rc : commits) {
@@ -235,9 +236,9 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public List<CodeClassImpl> getDiffEntries(GitCommit commit) {
+	public List<CodeClass> getDiffEntries(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
-		List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
+		List<CodeClass> changedClasses = new ArrayList<CodeClass>();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
