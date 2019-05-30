@@ -4,36 +4,21 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.internal.core.CompilationUnit;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TextualRepresentation;
 import de.uhd.ifi.se.decision.management.eclipse.view.ChangeImpactAnalysisView;
 import de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView;
 
-@SuppressWarnings("restriction")
 public class KnowledgeExtractionCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IPath pathOfFile = getPathOfSelectedFile(event);
-		showRelatedKnowledge(pathOfFile);
-		return null;
-	}
-
-	private IPath getPathOfSelectedFile(ExecutionEvent event) {
-		CompilationUnit compilationUnit = getCompilationUnit(event);
-		return compilationUnit.getPath().removeFirstSegments(1);
-	}
-
-	private CompilationUnit getCompilationUnit(ExecutionEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
-		Object firstElement = selection.getFirstElement();
-		if (firstElement instanceof CompilationUnit) {
-			return (CompilationUnit) firstElement;
+		IPath pathOfSelectedFile = CommandHelper.getPathOfSelectedFile(event);
+		if (pathOfSelectedFile == null || !pathOfSelectedFile.toFile().exists()) {
+			return null;
 		}
+		showRelatedKnowledge(pathOfSelectedFile);
 		return null;
 	}
 

@@ -109,9 +109,9 @@ public class MapDesigner {
 		if (instances.containsKey(path)) {
 			return instances.get(path);
 		} else {
-			MapDesigner md = new MapDesigner();
-			instances.put(path, md);
-			return md;
+			MapDesigner mapDesigner = new MapDesigner();
+			instances.put(path, mapDesigner);
+			return mapDesigner;
 		}
 	}
 

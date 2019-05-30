@@ -56,19 +56,19 @@ public class LinkerImpl implements Linker {
 	@Override
 	public Map<Node, Set<Node>> createFullMap() {
 		Map<Node, Set<Node>> map = new HashMap<Node, Set<Node>>();
-		for (GitCommit gc : gitClient.getCommits()) {
-			gc.extractChangedClasses(gitClient);
-			createLinks(gc, 1);
-			map.put(gc, gc.getLinkedNodes());
-			for (DecisionKnowledgeElement dke : gc.getCommitDecisions()) {
+		for (GitCommit gitCommit : gitClient.getCommits()) {
+			gitCommit.extractChangedClasses(gitClient);
+			createLinks(gitCommit, 1);
+			map.put(gitCommit, gitCommit.getLinkedNodes());
+			for (DecisionKnowledgeElement dke : gitCommit.getCommitDecisions()) {
 				Set<Node> n = new HashSet<Node>();
-				n.add(gc);
+				n.add(gitCommit);
 				map.put(dke, n);
 			}
 		}
 		// All commits needed to be loaded first
-		for (CodeClass cc : CodeClassImpl.getInstances()) {
-			map.put(cc, cc.getLinkedNodes());
+		for (CodeClass codeClass : CodeClassImpl.getInstances()) {
+			map.put(codeClass, codeClass.getLinkedNodes());
 		}
 		// All commits needed to be loaded first
 		for (CodeMethod cm : CodeMethodImpl.getInstances()) {
@@ -94,8 +94,8 @@ public class LinkerImpl implements Linker {
 	 */
 	@Override
 	public Set<Node> createLinks(Node node, int maxDepth) {
-		for (GitCommit gc : gitClient.getCommits()) {
-			gc.extractChangedClasses(gitClient);
+		for (GitCommit gitCommit : gitClient.getCommits()) {
+			gitCommit.extractChangedClasses(gitClient);
 		}
 		Set<Node> visitedNodes = new HashSet<Node>();
 		createLinks(node, 0, maxDepth, visitedNodes);
@@ -154,8 +154,8 @@ public class LinkerImpl implements Linker {
 		}
 	}
 
-	private void linkBidirectional(Node in1, Node in2) {
-		in1.addLinkedNode(in2);
-		in2.addLinkedNode(in1);
+	private void linkBidirectional(Node node1, Node node2) {
+		node1.addLinkedNode(node2);
+		node2.addLinkedNode(node1);
 	}
 }
