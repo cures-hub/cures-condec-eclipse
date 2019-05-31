@@ -1,6 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
-import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 
 public interface JiraIssue extends Node {
 

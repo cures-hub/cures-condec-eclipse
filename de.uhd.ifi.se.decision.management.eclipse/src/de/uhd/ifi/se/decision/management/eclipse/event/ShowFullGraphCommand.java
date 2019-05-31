@@ -8,7 +8,6 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 
@@ -19,7 +18,7 @@ public class ShowFullGraphCommand extends AbstractHandler {
 		if (!CommandHelper.isValidSelection(event)) {
 			return null;
 		}
-		JiraClient jiraClient = JiraClientImpl.getOrCreate();
+		JiraClient jiraClient = JiraClient.getOrCreate();
 		if (jiraClient.authenticate() != 0) {
 			System.out.println("There was an error when authenticate JiraManager");
 		}

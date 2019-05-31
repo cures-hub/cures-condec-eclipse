@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
@@ -30,25 +30,9 @@ public class JiraClientImpl implements JiraClient {
 	private AsynchronousJiraRestClientFactory factory;
 	private JiraRestClient jiraRestClient;
 	private boolean isAuthenticated = false;
-	private static Map<String, JiraClient> instances = new HashMap<String, JiraClient>();
-
-	public static JiraClient getOrCreate() {
-		String url = ConfigPersistenceManager.getJiraUrl().toLowerCase();
-		if (instances.containsKey(url)) {
-			return instances.get(url);
-		} else {
-			JiraClient jm = new JiraClientImpl();
-			instances.put(url, jm);
-			return jm;
-		}
-	}
 
 	public JiraClientImpl() {
 		this.factory = new AsynchronousJiraRestClientFactory();
-	}
-
-	public static Map<String, JiraClient> getInstances() {
-		return instances;
 	}
 
 	@Override
@@ -108,7 +92,7 @@ public class JiraClientImpl implements JiraClient {
 		Set<JiraIssue> allIssues = new HashSet<JiraIssue>();
 		try {
 			for (BasicIssue issue : this.getJiraRestClient().getSearchClient()
-					.searchJql("project=\"" + ConfigPersistenceManager.getProjectKey() + "\"", -1, 0).claim()
+					.searchJql("project=\"" + ConfigPersistenceManager.getProjectKey() + "\"", -1, 0, null).claim()
 					.getIssues()) {
 				allIssues.add(JiraIssueImpl.getOrCreate(issue.getKey(), this));
 			}

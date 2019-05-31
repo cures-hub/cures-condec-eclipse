@@ -10,7 +10,7 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
@@ -36,7 +36,7 @@ public class TextualRepresentation {
 				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
 		String issueKey = GitClientImpl.getIssueKey(commitForLine);
 
-		JiraClientImpl jiraClient = new JiraClientImpl();
+		JiraClient jiraClient = new JiraClientImpl();
 		jiraClient.authenticate();
 
 		Issue issue = jiraClient.getIssue(issueKey);
@@ -124,7 +124,7 @@ public class TextualRepresentation {
 		}
 
 		String issueKey = GitClientImpl.getIssueKey(commitForLine.getFullMessage());
-		JiraClientImpl jiraClient = new JiraClientImpl();
+		JiraClient jiraClient = new JiraClientImpl();
 		jiraClient.authenticate();
 		Issue issue = jiraClient.getIssue(issueKey);
 
