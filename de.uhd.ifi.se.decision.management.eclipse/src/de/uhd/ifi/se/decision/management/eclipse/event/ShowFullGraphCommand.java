@@ -19,8 +19,9 @@ public class ShowFullGraphCommand extends AbstractHandler {
 			return null;
 		}
 		JiraClient jiraClient = JiraClient.getOrCreate();
-		if (jiraClient.authenticate() != 0) {
-			System.out.println("There was an error when authenticate JiraManager");
+		if (!jiraClient.isAuthenticated()) {
+			System.err.println("The authentication with the JIRA server failed.");
+			return null;
 		}
 		GitClient gitClient = GitClientImpl.getOrCreate();
 		Linker linker = new LinkerImpl(gitClient, jiraClient);

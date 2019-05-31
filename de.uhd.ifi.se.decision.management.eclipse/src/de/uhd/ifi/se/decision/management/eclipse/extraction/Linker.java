@@ -7,14 +7,6 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public interface Linker {
 
-	GitClient getGitClient();
-
-	void setGitClient(GitClient gitManager);
-
-	JiraClient getJiraClient();
-
-	void setJiraClient(JiraClient jiraManager);
-
 	Map<Node, Set<Node>> createFullMap();
 
 	/**
@@ -27,5 +19,13 @@ public interface Linker {
 	 *        retrieved.
 	 */
 	Set<Node> createLinks(Node node, int maxDepth);
+
+	GitClient getGitClient();
+
+	JiraClient getJiraClient();
+
+	void setGitClient(GitClient gitManager);
+
+	void setJiraClient(JiraClient jiraManager);
 
 }

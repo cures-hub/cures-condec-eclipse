@@ -13,7 +13,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -22,75 +21,6 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * for the ChangeImpactAnalysisView
  */
 public class TextualRepresentation {
-
-	/**
-	 * Produces the content for the DecisionExplorationView
-	 * 
-	 * @return decision exploration String
-	 */
-	public static String produceDecisionExploration(IPath pathOfFile, int line) {
-		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClientImpl.getOrCreate();
-
-		String commitForLine = gitClient
-				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
-		String issueKey = GitClientImpl.getIssueKey(commitForLine);
-
-		JiraClient jiraClient = new JiraClientImpl();
-		jiraClient.authenticate();
-
-		Issue issue = jiraClient.getIssue(issueKey);
-
-		String start = "Line " + line++ + " of the current file is used for knowledge exploration.\n\n";
-		start += "The last commit message of the commit that changed this line is:\n" + commitToString(commitForLine)
-				+ "\n";
-		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
-
-		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForIssueKey(issueKey);
-
-		String otherCommitsForIssue = "";
-		if (!otherCommitForIssue.isEmpty()) {
-			otherCommitsForIssue += "Other commit messages of the issue " + issueKey + " are:\n";
-		}
-
-		for (GitCommit commit : otherCommitForIssue) {
-			otherCommitsForIssue += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
-		}
-
-		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
-
-		String linkedIssues = "Link distance " + distance + " was chosen. Linked issues are:\n";
-
-		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
-
-			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-
-			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
-					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
-
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
-			String commitForLinkedIssueString = "";
-			if (!commitsForLinkedIssue.isEmpty()) {
-				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
-
-				for (GitCommit commit : commitsForLinkedIssue) {
-					commitForLinkedIssueString += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
-				}
-			}
-
-			linkedIssues += commitForLinkedIssueString;
-		}
-
-		String generatedForView = start + "\n" + otherCommitsForIssue + "\n" + linkedIssues + "\n";
-
-		return generatedForView;
-	}
-
-	public static String commitToString(String commitMessage) {
-		String projectKey = ConfigPersistenceManager.getProjectKey();
-		return commitMessage + " (" + WrongLinkDetector.tanglednessToString(commitMessage, projectKey) + ")\n";
-	}
 
 	/**
 	 * Produces the content for the ChangeImpactAnalysisView
@@ -124,9 +54,10 @@ public class TextualRepresentation {
 		}
 
 		String issueKey = GitClientImpl.getIssueKey(commitForLine.getFullMessage());
-		JiraClient jiraClient = new JiraClientImpl();
+		JiraClient jiraClient = JiraClient.getOrCreate();
+
 		jiraClient.authenticate();
-		Issue issue = jiraClient.getIssue(issueKey);
+		Issue issue = jiraClient.getJiraIssue(issueKey);
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
 		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
@@ -183,6 +114,74 @@ public class TextualRepresentation {
 				+ "Using knowledge about the commits, which were linked to the issues found during decision exploration\n"
 				+ "the plugin also found out, that:\n" + "\n" + outputCia2 + "\n" + untanglednessPrepared + "%"
 				+ " of the commits, that were the input in this change impact analysis were untangled.";
+
+		return generatedForView;
+	}
+
+	public static String commitToString(String commitMessage) {
+		String projectKey = ConfigPersistenceManager.getProjectKey();
+		return commitMessage + " (" + WrongLinkDetector.tanglednessToString(commitMessage, projectKey) + ")\n";
+	}
+
+	/**
+	 * Produces the content for the DecisionExplorationView
+	 * 
+	 * @return decision exploration String
+	 */
+	public static String produceDecisionExploration(IPath pathOfFile, int line) {
+		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
+		GitClient gitClient = GitClientImpl.getOrCreate();
+
+		String commitForLine = gitClient
+				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
+		String issueKey = GitClientImpl.getIssueKey(commitForLine);
+
+		JiraClient jiraClient = JiraClient.getOrCreate();
+
+		Issue issue = jiraClient.getJiraIssue(issueKey);
+
+		String start = "Line " + line++ + " of the current file is used for knowledge exploration.\n\n";
+		start += "The last commit message of the commit that changed this line is:\n" + commitToString(commitForLine)
+				+ "\n";
+		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
+
+		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForIssueKey(issueKey);
+
+		String otherCommitsForIssue = "";
+		if (!otherCommitForIssue.isEmpty()) {
+			otherCommitsForIssue += "Other commit messages of the issue " + issueKey + " are:\n";
+		}
+
+		for (GitCommit commit : otherCommitForIssue) {
+			otherCommitsForIssue += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
+		}
+
+		int distance = ConfigPersistenceManager.getLinkDistance();
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
+
+		String linkedIssues = "Link distance " + distance + " was chosen. Linked issues are:\n";
+
+		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
+
+			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
+
+			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
+					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
+
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			String commitForLinkedIssueString = "";
+			if (!commitsForLinkedIssue.isEmpty()) {
+				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
+
+				for (GitCommit commit : commitsForLinkedIssue) {
+					commitForLinkedIssueString += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
+				}
+			}
+
+			linkedIssues += commitForLinkedIssueString;
+		}
+
+		String generatedForView = start + "\n" + otherCommitsForIssue + "\n" + linkedIssues + "\n";
 
 		return generatedForView;
 	}

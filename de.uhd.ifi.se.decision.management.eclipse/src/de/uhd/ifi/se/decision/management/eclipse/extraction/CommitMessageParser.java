@@ -123,17 +123,6 @@ public class CommitMessageParser {
 		return decisionKnowledgeElements;
 	}
 
-	public static List<String> getTags(String commitMessage) {
-		List<String> tags = new ArrayList<String>();
-		String[] split = commitMessage.split("\\[");
-		for (String i : split) {
-			for (String j : i.split("\\]")) {
-				tags.add(j);
-			}
-		}
-		return tags;
-	}
-
 	/**
 	 * This function only removes spacebars at the beginning and at the end of the
 	 * given String
@@ -171,5 +160,16 @@ public class CommitMessageParser {
 			}
 		}
 		return keys;
+	}
+
+	public static List<String> getTags(String commitMessage) {
+		List<String> tags = new ArrayList<String>();
+		String[] split = commitMessage.split("\\[");
+		for (String i : split) {
+			for (String j : i.split("\\]")) {
+				tags.add(j);
+			}
+		}
+		return tags;
 	}
 }

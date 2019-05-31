@@ -17,6 +17,14 @@ public class MethodVisitor extends VoidVisitorAdapter<Void> {
 		this.methodDeclarations = new LinkedHashSet<MethodDeclaration>();
 	}
 
+	public Set<MethodDeclaration> getMethodDeclarations() {
+		return methodDeclarations;
+	}
+
+	public void setMethodDeclarations(Set<MethodDeclaration> methodDeclarations) {
+		this.methodDeclarations = methodDeclarations;
+	}
+
 	/**
 	 * Identifies method names, their beginning and end, and their annotations
 	 * 
@@ -29,13 +37,5 @@ public class MethodVisitor extends VoidVisitorAdapter<Void> {
 	public void visit(MethodDeclaration methodDeclaration, Void arg) {
 		methodDeclarations.add(methodDeclaration);
 		super.visit(methodDeclaration, arg);
-	}
-
-	public Set<MethodDeclaration> getMethodDeclarations() {
-		return methodDeclarations;
-	}
-
-	public void setMethodDeclarations(Set<MethodDeclaration> methodDeclarations) {
-		this.methodDeclarations = methodDeclarations;
 	}
 }

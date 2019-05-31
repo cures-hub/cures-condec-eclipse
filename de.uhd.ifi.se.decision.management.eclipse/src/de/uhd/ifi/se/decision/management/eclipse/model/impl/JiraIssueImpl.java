@@ -51,7 +51,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 			return instances_alternative.get(issueKey);
 		} else {
 			try {
-				Issue pulled_issue = jiraManager.getIssue(issueKey);
+				Issue pulled_issue = jiraManager.getJiraIssue(issueKey);
 				if (pulled_issue != null) {
 					return new JiraIssueImpl(pulled_issue);
 				} else {
