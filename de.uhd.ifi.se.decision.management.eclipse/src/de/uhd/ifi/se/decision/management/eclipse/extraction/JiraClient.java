@@ -27,6 +27,12 @@ public interface JiraClient {
 	 */
 	public Map<URI, JiraClient> instances = new HashMap<URI, JiraClient>();
 
+	/**
+	 * Retrieves an existing JiraClient instance or creates a new instance if there
+	 * is no instance for the given URI yet.
+	 * 
+	 * @return JiraClient instance.
+	 */
 	public static JiraClient getOrCreate() {
 		URI uri = ConfigPersistenceManager.getJiraURI();
 		JiraClient jiraClient;
@@ -65,14 +71,18 @@ public interface JiraClient {
 
 	/**
 	 * Closes the JIRA REST client.
+	 * 
+	 * @see JiraRestClient
 	 */
 	public void close();
 
+	/**
+	 * Retrieves all JIRA issues of the project given in the settings.
+	 * 
+	 * @see ConfigPersistenceManager
+	 * @return all JIRA issues of the project given in the settings.
+	 */
 	public Set<JiraIssue> getAllJiraIssues();
-
-	public boolean isValidProject(String projectKey);
-
-	boolean isValidProject();
 
 	/**
 	 * Retrieves the JIRA issue for the given key.
@@ -83,16 +93,22 @@ public interface JiraClient {
 	 */
 	public Issue getJiraIssue(String jiraIssueKey);
 
+	/**
+	 * Returns the JiraRestClient instance.
+	 * 
+	 * @see JiraRestClient
+	 * @return JiraRestClient instance.
+	 */
 	public JiraRestClient getJiraRestClient();
 
 	/**
-	 * Retrieves keys of linked issue to an issue at link distance 1
+	 * Retrieves keys of the JIRA issues linked to a JIRA issue at link distance 1.
 	 * 
-	 * @param issue
-	 *            JIRA issue
-	 * @return keys of linked issues
+	 * @param jiraIssue
+	 *            JIRA issue.
+	 * @return keys of linked JIRA issues as a list of Strings.
 	 */
-	public List<String> getKeysOfNeighborIssues(Issue issue);
+	public List<String> getKeysOfNeighborJiraIssues(Issue jiraIssue);
 
 	/**
 	 * Retrieves the issues linked to a given issue with a certain link distance
@@ -103,8 +119,21 @@ public interface JiraClient {
 	 */
 	public Map<Issue, Integer> getLinkedIssues(Issue issue, int distance);
 
+	/**
+	 * Sets the JiraRestClient instance.
+	 * 
+	 * @see JiraRestClient
+	 * @param JiraRestClient
+	 *            instance.
+	 */
 	public void setJiraRestClient(JiraRestClient jiraRestClient);
 
-	public boolean isAuthenticated();
-
+	/**
+	 * Determines whether the JIRA REST client is authenticated and the project is
+	 * accessable.
+	 * 
+	 * @return true if the JIRA REST client is authenticated and the project is
+	 *         accessable
+	 */
+	public boolean isWorking();
 }

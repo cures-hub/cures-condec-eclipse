@@ -29,20 +29,12 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
 public class JiraClientImpl implements JiraClient {
 
 	private JiraRestClient jiraRestClient;
-	private boolean isAuthenticated;
+	private boolean isWorking;
 
 	public JiraClientImpl() {
 		boolean isValidUser = this.authenticate();
 		boolean isValidProject = isValidProject();
-		this.isAuthenticated = isValidUser && isValidProject;
-	}
-
-	@Override
-	public boolean authenticate(URI jiraURI, String username, String password) {
-		this.jiraRestClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(jiraURI,
-				username, password);
-		boolean isValidUser = isValidUser(username);
-		return isValidUser;
+		this.isWorking = isValidUser && isValidProject;
 	}
 
 	@Override
@@ -52,20 +44,10 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public boolean isValidProject(String projectKey) {
-		boolean isValidProject = true;
-		try {
-			this.getJiraRestClient().getProjectClient().getProject(ConfigPersistenceManager.getProjectKey());
-		} catch (Exception e) {
-			isValidProject = false;
-			System.err.println("The JIRA project is unknown. Message: " + e.getMessage());
-		}
-		return isValidProject;
-	}
-
-	@Override
-	public boolean isValidProject() {
-		return isValidProject(ConfigPersistenceManager.getProjectKey());
+	public boolean authenticate(URI jiraURI, String username, String password) {
+		this.jiraRestClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(jiraURI,
+				username, password);
+		return isValidUser(username);
 	}
 
 	private boolean isValidUser(String username) {
@@ -84,6 +66,21 @@ public class JiraClientImpl implements JiraClient {
 			System.err.println("There is a problem with establishing the session. Message: " + e.getMessage());
 		}
 		return isValidUser;
+	}
+
+	private boolean isValidProject() {
+		return isValidProject(ConfigPersistenceManager.getProjectKey());
+	}
+
+	private boolean isValidProject(String projectKey) {
+		boolean isValidProject = true;
+		try {
+			this.getJiraRestClient().getProjectClient().getProject(ConfigPersistenceManager.getProjectKey());
+		} catch (Exception e) {
+			isValidProject = false;
+			System.err.println("The JIRA project is unknown. Message: " + e.getMessage());
+		}
+		return isValidProject;
 	}
 
 	@Override
@@ -109,22 +106,22 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public Map<Issue, Integer> getLinkedIssues(Issue issue, int distance) {
+	public Map<Issue, Integer> getLinkedIssues(Issue jiraIssue, int distance) {
 		Map<Issue, Integer> linkedIssuesAtDistance = new HashMap<Issue, Integer>();
 
-		if (issue == null || distance == 0) {
+		if (jiraIssue == null || distance == 0) {
 			return linkedIssuesAtDistance;
 		}
 
 		List<String> analyzedIssueKeys = new ArrayList<String>();
-		analyzedIssueKeys.add(issue.getKey());
+		analyzedIssueKeys.add(jiraIssue.getKey());
 		for (int i = 1; i <= distance; i++) {
-			List<String> neighborIssueKeys = getKeysOfNeighborIssues(issue);
+			List<String> neighborIssueKeys = getKeysOfNeighborJiraIssues(jiraIssue);
 			for (String issueKey : neighborIssueKeys) {
 				if (!analyzedIssueKeys.contains(issueKey)) {
 					analyzedIssueKeys.add(issueKey);
-					issue = this.getJiraIssue(issueKey);
-					linkedIssuesAtDistance.put(issue, i);
+					Issue linkedJiraIssue = this.getJiraIssue(issueKey);
+					linkedIssuesAtDistance.put(linkedJiraIssue, i);
 				}
 			}
 		}
@@ -132,15 +129,14 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public List<String> getKeysOfNeighborIssues(Issue issue) {
-
-		if (issue == null) {
-			return null;
-		}
-
+	public List<String> getKeysOfNeighborJiraIssues(Issue jiraIssue) {
 		List<String> neighborIssueKeys = new ArrayList<String>();
 
-		Iterable<IssueLink> issueLinkIterable = issue.getIssueLinks();
+		if (jiraIssue == null) {
+			return neighborIssueKeys;
+		}
+
+		Iterable<IssueLink> issueLinkIterable = jiraIssue.getIssueLinks();
 		Iterator<IssueLink> issueLinkIterator = issueLinkIterable.iterator();
 
 		while (issueLinkIterator.hasNext()) {
@@ -173,7 +169,7 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public boolean isAuthenticated() {
-		return isAuthenticated;
+	public boolean isWorking() {
+		return isWorking;
 	}
 }
