@@ -19,7 +19,6 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -89,7 +88,7 @@ public class JiraClientImpl implements JiraClient {
 		for (BasicIssue jiraIssue : this.getJiraRestClient().getSearchClient()
 				.searchJql("project=\"" + ConfigPersistenceManager.getProjectKey() + "\"", -1, 0, null).claim()
 				.getIssues()) {
-			jiraIssues.add(JiraIssueImpl.getOrCreate(jiraIssue.getKey(), this));
+			jiraIssues.add(JiraIssue.getOrCreate(jiraIssue.getKey(), this));
 		}
 		return jiraIssues;
 	}

@@ -110,7 +110,7 @@ public class LinkerImpl implements Linker {
 				GitCommit gc = (GitCommit) node;
 				List<String> keys = gc.getJiraIssueKeys();
 				if (keys.size() > 0) {
-					JiraIssue ji = JiraIssueImpl.getOrCreate(keys.get(0), jiraClient);
+					JiraIssue ji = JiraIssue.getOrCreate(keys.get(0), jiraClient);
 					if (ji != null) {
 						linkBidirectional(node, ji);
 						createLinks(ji, currentDepth + 1, maxDepth, visitedNodes);
@@ -144,7 +144,7 @@ public class LinkerImpl implements Linker {
 				}
 				Issue issue = ji.getJiraIssue();
 				for (IssueLink il : issue.getIssueLinks()) {
-					JiraIssue ji2 = JiraIssueImpl.getOrCreate(il.getTargetIssueKey(), jiraClient);
+					JiraIssue ji2 = JiraIssue.getOrCreate(il.getTargetIssueKey(), jiraClient);
 					if (ji2 != null) {
 						linkBidirectional(node, ji2);
 						createLinks(ji2, currentDepth + 1, maxDepth, visitedNodes);
