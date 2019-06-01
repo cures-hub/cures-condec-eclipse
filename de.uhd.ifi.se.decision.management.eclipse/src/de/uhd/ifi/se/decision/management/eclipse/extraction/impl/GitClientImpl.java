@@ -61,19 +61,6 @@ public class GitClientImpl implements GitClient {
 	private Git git;
 	private DiffFormatter diffFormatter;
 
-	private static Map<String, GitClient> instances = new HashMap<String, GitClient>();
-
-	public static GitClient getOrCreate() {
-		String path = ConfigPersistenceManager.getPathToGit().toString().toLowerCase();
-		if (instances.containsKey(path)) {
-			return instances.get(path);
-		} else {
-			GitClient gm = new GitClientImpl();
-			instances.put(path, gm);
-			return gm;
-		}
-	}
-
 	/**
 	 * Constructor for GitClient class
 	 * 
@@ -107,7 +94,7 @@ public class GitClientImpl implements GitClient {
 		}
 	}
 
-	private GitClientImpl() {
+	public GitClientImpl() {
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
 		repositoryBuilder.setGitDir(ConfigPersistenceManager.getPathToGit().toFile());

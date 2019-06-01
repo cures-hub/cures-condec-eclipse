@@ -7,7 +7,6 @@ import org.eclipse.core.commands.ExecutionException;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 
@@ -23,7 +22,7 @@ public class ShowFullGraphCommand extends AbstractHandler {
 			System.err.println("The authentication with the JIRA server failed.");
 			return null;
 		}
-		GitClient gitClient = GitClientImpl.getOrCreate();
+		GitClient gitClient = GitClient.getOrCreate();
 		Linker linker = new LinkerImpl(gitClient, jiraClient);
 		MapDesigner mapDesigner = MapDesigner.getOrCreate();
 		mapDesigner.createFullMap(linker);

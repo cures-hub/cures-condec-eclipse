@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,16 +13,40 @@ import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
- * Interface to connect to a git repository associated with this Eclipse project.
- * Retrieves commits and code changes (diffs) in git.
+ * Interface to connect to a git repository associated with this Eclipse
+ * project. Retrieves commits and code changes (diffs) in git.
  * 
  * @see GitCommit
  */
 public interface GitClient {
+
+	/**
+	 * Instances of the GitClient that are identified by the path of the git
+	 * repository.
+	 */
+	public Map<IPath, GitClient> instances = new HashMap<IPath, GitClient>();
+
+	/**
+	 * Retrieves an existing GitClient instance or creates a new instance if there
+	 * is no instance for the given path yet.
+	 * 
+	 * @return GitClient instance.
+	 */
+	public static GitClient getOrCreate() {
+		IPath path = ConfigPersistenceManager.getPathToGit();
+		if (instances.containsKey(path)) {
+			return instances.get(path);
+		}
+		GitClient gitClient = new GitClientImpl();
+		instances.put(path, gitClient);
+		return gitClient;
+	}
 
 	/**
 	 * Retrieve the commit message for a given line from a blamed file as a

@@ -32,7 +32,7 @@ public class TextualRepresentation {
 		double numberOfCommitsFoundUntangled = 0;
 
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClientImpl.getOrCreate();
+		GitClient gitClient = GitClient.getOrCreate();
 
 		RevCommit commitForLine = gitClient
 				.getRevCommitForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
@@ -130,7 +130,7 @@ public class TextualRepresentation {
 	 */
 	public static String produceDecisionExploration(IPath pathOfFile, int line) {
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClientImpl.getOrCreate();
+		GitClient gitClient = GitClient.getOrCreate();
 
 		String commitForLine = gitClient
 				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);

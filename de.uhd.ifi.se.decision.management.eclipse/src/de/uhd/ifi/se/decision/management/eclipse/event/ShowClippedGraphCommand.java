@@ -9,9 +9,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
@@ -33,7 +33,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 			return null;
 		}
 
-		Linker linker = new LinkerImpl(GitClientImpl.getOrCreate(), jiraClient);
+		Linker linker = new LinkerImpl(GitClient.getOrCreate(), jiraClient);
 		// Just to load all elements and look for the invoked .java file in the
 		// CodeClass-instances
 		linker.createFullMap();
