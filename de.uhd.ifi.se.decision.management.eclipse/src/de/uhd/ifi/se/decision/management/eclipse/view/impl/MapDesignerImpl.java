@@ -1,4 +1,4 @@
-package de.uhd.ifi.se.decision.management.eclipse.view;
+package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -56,10 +56,11 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
+import de.uhd.ifi.se.decision.management.eclipse.view.MapDesignerSettingsProvider;
+import de.uhd.ifi.se.decision.management.eclipse.view.MaspDesigner;
+import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
-public class MapDesigner {
-	private static Map<String, MapDesigner> instances = new HashMap<String, MapDesigner>();
-
+public class MapDesignerImpl implements MaspDesigner {
 	private String searchString = "";
 	private long interactionID = -1;
 	private boolean bShowCommits = true;
@@ -104,17 +105,7 @@ public class MapDesigner {
 	private PreviewModel previewModel;
 	private Linker linker = null;
 
-	public static MapDesigner getOrCreate() {
-		String path = ConfigPersistenceManager.getPathToGit().toString().toLowerCase();
-		if (instances.containsKey(path)) {
-			return instances.get(path);
-		}
-		MapDesigner mapDesigner = new MapDesigner();
-		instances.put(path, mapDesigner);
-		return mapDesigner;
-	}
-
-	private MapDesigner() {
+	public MapDesignerImpl() {
 		this.projectController = Lookup.getDefault().lookup(ProjectController.class);
 		this.projectController.newProject();
 		this.workspace = projectController.getCurrentWorkspace();
@@ -217,6 +208,7 @@ public class MapDesigner {
 		this.previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
 	}
 
+	@Override
 	public void createFullMap(Linker linker) {
 		if (this.linker == null) {
 			this.linker = linker;
@@ -229,6 +221,7 @@ public class MapDesigner {
 		refresh();
 	}
 
+	@Override
 	public void createSelectedMap(de.uhd.ifi.se.decision.management.eclipse.model.Node rootNode, int depth,
 			Linker linker) {
 		if (this.linker == null) {
