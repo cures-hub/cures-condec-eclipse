@@ -29,12 +29,12 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	public GitCommitImpl(RevCommit commit, String issueKeyBase) {
 		this.revCommit = commit;
 		this.issueKeyBase = issueKeyBase;
-		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(commit);
+		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(commit.getFullMessage());
 		for (DecisionKnowledgeElement knowledgeElement : decisionKnowledgeElements) {
 			this.addLinkedNode(knowledgeElement);
 			knowledgeElement.addLinkedNode(this);
 		}
-		this.issueKeys = CommitMessageParser.getAllMentionedIssueKeys(commit.getFullMessage(), this.issueKeyBase);
+		this.issueKeys = CommitMessageParser.getJiraIssueKeys(commit.getFullMessage(), this.issueKeyBase);
 	}
 
 	@Override

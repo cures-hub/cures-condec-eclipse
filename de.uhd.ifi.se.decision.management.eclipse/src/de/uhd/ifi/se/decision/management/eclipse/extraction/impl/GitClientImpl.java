@@ -186,8 +186,8 @@ public class GitClientImpl implements GitClient {
 	 *            a commit message that should contain an issue key
 	 * @return extracted issue key
 	 */
-	public static String getFirstIssueKey(String commitMessage, String issueKeyBase) {
-		List<String> keys = CommitMessageParser.getAllMentionedIssueKeys(commitMessage, issueKeyBase);
+	public static String getFirstJiraIssueKey(String commitMessage, String issueKeyBase) {
+		List<String> keys = CommitMessageParser.getJiraIssueKeys(commitMessage, issueKeyBase);
 		if (keys.size() > 0) {
 			return keys.get(0);
 		} else {

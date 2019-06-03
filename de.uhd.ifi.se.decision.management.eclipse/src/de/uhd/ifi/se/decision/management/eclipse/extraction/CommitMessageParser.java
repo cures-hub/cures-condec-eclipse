@@ -2,8 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.jgit.revwalk.RevCommit;
+import java.util.Locale;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
@@ -11,21 +10,26 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 
 public class CommitMessageParser {
 
-	public static List<DecisionKnowledgeElement> extractDecisionKnowledge(RevCommit commit) {
-		return extractDecisionKnowledge(commit.getFullMessage());
-	}
-
+	/**
+	 * Returns all decision knowledge elements explicitly marked in a message, for
+	 * example, [issue] How to ...? [/issue] [decision] Let's do ...! [/decision].
+	 * 
+	 * @param message
+	 *            commit message that is parsed for explicitly marked decision
+	 *            knowledge elements.
+	 * @return list of all decision knowledge elements explicitly marked in a
+	 *         message.
+	 */
 	public static List<DecisionKnowledgeElement> extractDecisionKnowledge(String message) {
 		List<DecisionKnowledgeElement> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElement>();
-		List<String> parts = CommitMessageParser.getTags(message);
+		List<String> partsOfMessage = CommitMessageParser.getPartsOfMessage(message);
 		String description = "";
 		KnowledgeType type = null;
 		boolean foundType = false;
-		for (String part : parts) {
+		for (String part : partsOfMessage) {
 			if (foundType) {
 				if (part.startsWith("/")) {
-					decisionKnowledgeElements.add(
-							new DecisionKnowledgeElementImpl(type, description.trim()));
+					decisionKnowledgeElements.add(new DecisionKnowledgeElementImpl(type, description.trim()));
 					description = "";
 					foundType = false;
 				} else {
@@ -36,44 +40,45 @@ public class CommitMessageParser {
 				if (type != KnowledgeType.OTHER) {
 					foundType = true;
 				}
-			}			
+			}
 		}
 		return decisionKnowledgeElements;
 	}
 
+	private static List<String> getPartsOfMessage(String message) {
+		List<String> parts = new ArrayList<String>();
+		String[] split = message.split("\\[");
+		for (String i : split) {
+			for (String j : i.split("\\]")) {
+				parts.add(j);
+			}
+		}
+		return parts;
+	}
+
 	/**
-	 * Returns all Issue-Keys which are mentioned in a message.
+	 * Returns all JIRA issue keys mentioned in a message.
 	 * 
-	 * @param commitMessage
-	 *            All mentioned IssueKeys must not contain a space. Positive
-	 *            Example: "Example-123"
-	 * @return List of all mentioned IssueKeys. May contain duplicates; Ordered by
-	 *         apperance in message.
+	 * @param message
+	 *            commit message that is parsed for JIRA issue keys.
+	 * @param projectKey
+	 *            key of the JIRA project that every JIRA issue key starts with.
+	 * @return list of all mentioned JIRA issue keys in upper case (might contain
+	 *         duplicates and is ordered by their appearance in the message).
 	 */
-	public static List<String> getAllMentionedIssueKeys(String commitMessage, String issueKeyBase) {
+	public static List<String> getJiraIssueKeys(String message, String projectKey) {
 		List<String> keys = new ArrayList<String>();
-		commitMessage = commitMessage.replace("\r\n", " ").replace("\n", " ");
-		String[] words = commitMessage.toLowerCase().split(" ");
-		if (issueKeyBase == null) {
+		if (projectKey == null) {
 			return keys;
 		}
-		String basekey = issueKeyBase.toLowerCase();
+		String[] words = message.split("[\\s,:]+");
+		String baseKey = projectKey.toUpperCase(Locale.ENGLISH);
 		for (String word : words) {
-			if (word.contains(basekey + "-")) {
+			word = word.toUpperCase(Locale.ENGLISH);
+			if (word.contains(baseKey + "-")) {
 				keys.add(word);
 			}
 		}
 		return keys;
-	}
-
-	public static List<String> getTags(String commitMessage) {
-		List<String> tags = new ArrayList<String>();
-		String[] split = commitMessage.split("\\[");
-		for (String i : split) {
-			for (String j : i.split("\\]")) {
-				tags.add(j);
-			}
-		}
-		return tags;
 	}
 }

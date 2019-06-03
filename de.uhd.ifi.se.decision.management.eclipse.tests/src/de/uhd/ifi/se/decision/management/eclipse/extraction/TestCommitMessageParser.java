@@ -24,5 +24,22 @@ public class TestCommitMessageParser {
 		assertEquals(1, elements.size());
 		assertEquals("This is a decision!", elements.get(0).getDescription());
 	}
+	
+	@Test
+	public void testGetJiraIssueKeys() {
+		String message = "ConDec-1: Improve almost everything... ConDec-2 even this!";
+		List<String> keys = CommitMessageParser.getJiraIssueKeys(message, "condec");
+		assertEquals(2, keys.size());
+		assertEquals("CONDEC-1", keys.get(0));
+		assertEquals("CONDEC-2", keys.get(1));
+	}
+	
+
+	@Test
+	public void testGetJiraIssueKeysProjectKeyNull() {
+		String message = "ConDec-1: Improve almost everything... ConDec-2 even this!";
+		List<String> keys = CommitMessageParser.getJiraIssueKeys(message, null);
+		assertEquals(0, keys.size());
+	}
 
 }
