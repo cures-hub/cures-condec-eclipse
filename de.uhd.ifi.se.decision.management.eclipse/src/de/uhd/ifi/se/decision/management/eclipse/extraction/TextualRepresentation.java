@@ -130,7 +130,7 @@ public class TextualRepresentation {
 	 */
 	public static String produceDecisionExploration(IPath pathOfFile, int line) {
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClient.getOrCreate();
+		GitClient gitClient = GitClient.getOrCreate(); 
 
 		String commitForLine = gitClient
 				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
@@ -140,7 +140,7 @@ public class TextualRepresentation {
 
 		Issue issue = jiraClient.getJiraIssue(issueKey);
 
-		String start = "Line " + line++ + " of the current file is used for knowledge exploration.\n\n";
+		String start = "Line " + (line + 1) + " of the current file is used for knowledge exploration.\n\n";
 		start += "The last commit message of the commit that changed this line is:\n" + commitToString(commitForLine)
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
