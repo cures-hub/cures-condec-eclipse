@@ -13,7 +13,7 @@ public class MapDesignerSettingsProvider {
 		return Color.RED;
 	}
 
-	public static Color getIssueColor() {
+	public static Color getJiraIssueColor() {
 		return Color.GREEN;
 	}
 
@@ -27,9 +27,5 @@ public class MapDesignerSettingsProvider {
 
 	public static Color getCodeMethodColor() {
 		return Color.WHITE;
-	}
-
-	public static Color getFeatureElementColor() {
-		return Color.LIGHT_GRAY;
 	}
 }

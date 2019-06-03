@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,4 +48,6 @@ public interface JiraIssue extends Node {
 	Issue getJiraIssue();
 
 	String getJiraIssueKey();
+
+	URI getUri();
 }

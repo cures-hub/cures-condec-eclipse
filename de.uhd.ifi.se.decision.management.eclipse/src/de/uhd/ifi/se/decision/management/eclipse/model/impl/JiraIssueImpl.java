@@ -1,5 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
+import java.net.URI;
+
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
@@ -7,7 +9,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	private Issue issue;
-	
+
 	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
 	}
@@ -25,5 +27,19 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	@Override
 	public String toString() {
 		return this.getJiraIssueKey() + ":" + this.issue.getSummary();
+	}
+
+	@Override
+	public URI getUri() {
+		String restUri = issue.getSelf().toString();
+		String jiraIssueUri = "";
+		for (String uriPart : restUri.split("/")) {
+			if (uriPart.equals("rest")) {
+				jiraIssueUri += "projects/" + issue.getProject().getKey() + "/issues/" + issue.getKey();
+				break;
+			}
+			jiraIssueUri += uriPart + "/";
+		}
+		return URI.create(jiraIssueUri);
 	}
 }

@@ -10,7 +10,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -234,7 +233,7 @@ public class MapDesignerImpl implements MapDesigner {
 		} else if (node instanceof DecisionKnowledgeElementImpl) {
 			gephiNode.setColor(MapDesignerSettingsProvider.getDecisionKnowledgeElementColor());
 		} else if (node instanceof JiraIssueImpl) {
-			gephiNode.setColor(MapDesignerSettingsProvider.getIssueColor());
+			gephiNode.setColor(MapDesignerSettingsProvider.getJiraIssueColor());
 		} else if (node instanceof CodeClassImpl) {
 			gephiNode.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
 		} else if (node instanceof CodeMethodImpl) {
@@ -391,7 +390,6 @@ public class MapDesignerImpl implements MapDesigner {
 		this.previewSketch.refresh();
 	}
 
-	// TODO - Make the arrangement of the components more beautiful
 	private void setOverlay(JFrame frame) {
 		JPanel panel = new JPanel();
 		panel.setMaximumSize(new Dimension(400, 1000));
@@ -683,7 +681,7 @@ public class MapDesignerImpl implements MapDesigner {
 									.getNodeById(id);
 							if (iN instanceof JiraIssueImpl) {
 								JiraIssue ji = (JiraIssue) iN;
-								OpenWebbrowser.openWebpage(new URI(extractIssueUri(ji)));
+								OpenWebbrowser.openWebpage(ji);
 							}
 						}
 					}
@@ -715,7 +713,7 @@ public class MapDesignerImpl implements MapDesigner {
 
 	private void resetFilters() {
 		if (tfSearch != null)
-			tfSearch.setText("Search...");
+			tfSearch.setToolTipText("Search...");
 		if (tfInteraction != null)
 			tfInteraction.setText("ID");
 		if (fClasses != null)
@@ -760,21 +758,5 @@ public class MapDesignerImpl implements MapDesigner {
 		bShowFiles = true;
 		bShowCFClasses = true;
 		bShowCFOther = true;
-	}
-
-	private String extractIssueUri(JiraIssue issue) {
-		String fullRestApiUri = issue.getJiraIssue().getSelf().toString();
-		String[] uriSplits = fullRestApiUri.split("/");
-		String uri = "";
-		for (String s : uriSplits) {
-			if (s.equals("rest")) {
-				uri += "projects/" + issue.getJiraIssue().getProject().getKey() + "/issues/"
-						+ issue.getJiraIssue().getKey();
-				return uri;
-			} else {
-				uri += s + "/";
-			}
-		}
-		return "";
 	}
 }
