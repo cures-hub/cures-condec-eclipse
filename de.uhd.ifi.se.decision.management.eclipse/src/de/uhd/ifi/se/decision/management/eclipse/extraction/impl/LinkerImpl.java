@@ -34,33 +34,13 @@ public class LinkerImpl implements Linker {
 	}
 
 	@Override
-	public GitClient getGitClient() {
-		return gitClient;
-	}
-
-	@Override
-	public void setGitClient(GitClient gitClient) {
-		this.gitClient = gitClient;
-	}
-
-	@Override
-	public JiraClient getJiraClient() {
-		return jiraClient;
-	}
-
-	@Override
-	public void setJiraClient(JiraClient jiraClient) {
-		this.jiraClient = jiraClient;
-	}
-
-	@Override
-	public Map<Node, Set<Node>> createFullMap() {
+	public Map<Node, Set<Node>> createKnowledgeGraph() {
 		Map<Node, Set<Node>> map = new HashMap<Node, Set<Node>>();
 		for (GitCommit gitCommit : gitClient.getCommits()) {
 			gitCommit.extractChangedClasses(gitClient);
 			createLinks(gitCommit, 1);
 			map.put(gitCommit, gitCommit.getLinkedNodes());
-			for (DecisionKnowledgeElement dke : gitCommit.getCommitDecisions()) {
+			for (DecisionKnowledgeElement dke : gitCommit.getDecisionKnowledgeFromMessage()) {
 				Set<Node> n = new HashSet<Node>();
 				n.add(gitCommit);
 				map.put(dke, n);
@@ -84,17 +64,6 @@ public class LinkerImpl implements Linker {
 		return map;
 	}
 
-	/**
-	 * @param node
-	 *            The node, which should be analyzed for further links.
-	 * @param maxDepth
-	 *            How deep is the function allowed to go to through the nodes.
-	 * @return Returns a Set of all visited nodes.
-	 * 
-	 * @issue There is no known API for getting all Commits touching a given
-	 *        codeline. Only the last commit, which changed a specific line, can be
-	 *        retrieved.
-	 */
 	@Override
 	public Set<Node> createLinks(Node node, int maxDepth) {
 		for (GitCommit gitCommit : gitClient.getCommits()) {
@@ -119,7 +88,7 @@ public class LinkerImpl implements Linker {
 						createLinks(ji, currentDepth + 1, maxDepth, visitedNodes);
 					}
 				}
-				for (DecisionKnowledgeElement cd : gc.getCommitDecisions()) {
+				for (DecisionKnowledgeElement cd : gc.getDecisionKnowledgeFromMessage()) {
 					createLinks(cd, currentDepth + 1, maxDepth, visitedNodes);
 				}
 			}
@@ -161,4 +130,25 @@ public class LinkerImpl implements Linker {
 		node1.addLinkedNode(node2);
 		node2.addLinkedNode(node1);
 	}
+	
+	@Override
+	public GitClient getGitClient() {
+		return gitClient;
+	}
+
+	@Override
+	public void setGitClient(GitClient gitClient) {
+		this.gitClient = gitClient;
+	}
+
+	@Override
+	public JiraClient getJiraClient() {
+		return jiraClient;
+	}
+
+	@Override
+	public void setJiraClient(JiraClient jiraClient) {
+		this.jiraClient = jiraClient;
+	}
+
 }

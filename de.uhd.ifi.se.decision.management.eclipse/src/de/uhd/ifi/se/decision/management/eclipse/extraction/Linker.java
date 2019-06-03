@@ -7,7 +7,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public interface Linker {
 
-	Map<Node, Set<Node>> createFullMap();
+	Map<Node, Set<Node>> createKnowledgeGraph();
 
 	/**
 	 * @param node The node, which should be analyzed for further links.

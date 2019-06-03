@@ -70,25 +70,9 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	// CommitDecision-Section
 	@Override
-	public List<DecisionKnowledgeElement> getCommitDecisions() {
+	public List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage() {
 		return this.decisionKnowledgeElements;
 	}
-
-	@Override
-	public void setCommitDecisions(List<DecisionKnowledgeElement> decisionKnowledgeElements) {
-		this.decisionKnowledgeElements = decisionKnowledgeElements;
-	}
-
-	@Override
-	public boolean addCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement) {
-		return this.decisionKnowledgeElements.add(decisionKnowledgeElement);
-	}
-
-	@Override
-	public boolean removeCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement) {
-		return this.decisionKnowledgeElements.remove(decisionKnowledgeElement);
-	}
-	// END CommitDecision-Section
 
 	// ChangedClasses-Section
 	@Override

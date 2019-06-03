@@ -56,8 +56,8 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
-import de.uhd.ifi.se.decision.management.eclipse.view.MapDesignerSettingsProvider;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
+import de.uhd.ifi.se.decision.management.eclipse.view.MapDesignerSettingsProvider;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
 public class MapDesignerImpl implements MapDesigner {
@@ -213,7 +213,7 @@ public class MapDesignerImpl implements MapDesigner {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
-		this.map = linker.createFullMap();
+		this.map = linker.createKnowledgeGraph();
 		generateGraph(map.keySet());
 		generateLayout();
 		resetFilters();
@@ -425,7 +425,7 @@ public class MapDesignerImpl implements MapDesigner {
 			return false;
 		} else if (node instanceof CodeClassImpl && bShowFiles) {
 			CodeClass cc = (CodeClass) node;
-			if (cc.getFullClassPath().toLowerCase().endsWith(".java")) {
+			if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
 				if (bShowCFClasses) {
 					return true;
 				} else {

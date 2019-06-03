@@ -4,11 +4,13 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AnnotationExpr;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
@@ -19,22 +21,20 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 	private String className;
 	private String packageName;
 	private String project;
-	private String fullClassPath;
-	private boolean hasLoadedFeatures;
+	private IPath path;
 	private String pathToGit = "";
 	private String fileLocation = "";
 	private List<CodeMethod> methodsInClass;
 
 	public CodeClassImpl(String fullClassPath, String pathToGit) {
 		this.methodsInClass = new ArrayList<CodeMethod>();
-		this.fullClassPath = fullClassPath;
+		this.path = new Path(fullClassPath);
 		this.pathToGit = pathToGit;
-		String repoPath = pathToGit.toString();
 		char directorySeperator = '\\';
-		if (repoPath.contains("/")) {
+		if (pathToGit.contains("/")) {
 			directorySeperator = '/';
 		}
-		repoPath = repoPath.substring(0, repoPath.lastIndexOf(directorySeperator));
+		String repoPath = pathToGit.substring(0, pathToGit.lastIndexOf(directorySeperator));
 		String modifiedFullClassPath = fullClassPath.replace('\\', directorySeperator).replace('/', directorySeperator);
 		if (modifiedFullClassPath.startsWith(String.valueOf(directorySeperator))) {
 			modifiedFullClassPath = modifiedFullClassPath.substring(1);
@@ -54,8 +54,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 				this.packageName += splits[i] + "/";
 			}
 		}
-		this.hasLoadedFeatures = false;
-		if (this.fullClassPath.endsWith(".java")) {
+		if (this.path.getFileExtension().equalsIgnoreCase("java")) {
 			if (repoPath != null && !repoPath.isEmpty() && pathToGit.endsWith(directorySeperator + ".git")) {
 				try {
 					FileInputStream fileInputStream = new FileInputStream(this.fileLocation);
@@ -76,19 +75,10 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 						this.methodsInClass.add(cm);
 						this.addLinkedNode(cm);
 						cm.addLinkedNode(this);
-						for (AnnotationExpr ae : md.getAnnotations()) {
-							String annotation = ae.getTokenRange().get().toString();
-							if (annotation.startsWith("@Feature")) {
-								String feature = annotation.replaceFirst("@Feature", "").replaceAll("\"", "");
-								feature = feature.substring(feature.indexOf("(") + 1);
-								feature = feature.substring(0, feature.lastIndexOf(")"));
-							}
-						}
 					}
 				} catch (Exception ex) {
 				}
 			}
-			this.hasLoadedFeatures = true;
 		}
 	}
 
@@ -109,13 +99,9 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 		return this.pathToGit;
 	}
 
-	public boolean hasLoadedFeatures() {
-		return this.hasLoadedFeatures;
-	}
-
 	@Override
 	public String toString() {
-		return this.fullClassPath;
+		return this.path.toString();
 	}
 
 	@Override
@@ -134,7 +120,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 	}
 
 	@Override
-	public String getFullClassPath() {
-		return this.fullClassPath;
+	public IPath getPath() {
+		return this.path;
 	}
 }

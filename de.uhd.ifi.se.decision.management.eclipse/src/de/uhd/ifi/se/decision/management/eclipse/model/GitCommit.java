@@ -8,6 +8,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
@@ -47,17 +48,15 @@ public interface GitCommit extends Node {
 	boolean removeReferencedJiraIssue(Issue issue);
 	// END ReferencedIssues-Section
 
-	// CommitDecision-Section
-	List<DecisionKnowledgeElement> getCommitDecisions();
+	/**
+	 * Retrieves decision knowledge elements documented in the commit message.
+	 * 
+	 * @see CommitMessageParser
+	 * @return list of all decision knowledge elements explicitly marked in a
+	 *         message.
+	 */
+	List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage();
 
-	void setCommitDecisions(List<DecisionKnowledgeElement> decisionKnowledgeElements);
-
-	boolean addCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement);
-
-	boolean removeCommitDecision(DecisionKnowledgeElement decisionKnowledgeElement);
-	// END CommitDecision-Section
-
-	// ChangedClasses-Section
 	List<CodeClass> getChangedClasses();
 
 	void setChangedClasses(List<CodeClass> changedClasses);

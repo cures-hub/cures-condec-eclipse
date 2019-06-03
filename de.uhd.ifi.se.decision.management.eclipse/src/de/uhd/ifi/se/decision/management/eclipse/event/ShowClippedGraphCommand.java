@@ -36,7 +36,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 		Linker linker = new LinkerImpl(GitClient.getOrCreate(), jiraClient);
 		// Just to load all elements and look for the invoked .java file in the
 		// CodeClass-instances
-		linker.createFullMap();
+		linker.createKnowledgeGraph();
 		Node rootNode = null;
 		for (CodeClass cc : CodeClass.getInstances()) {
 			IPath fileloc = new Path(cc.getFileLocation());

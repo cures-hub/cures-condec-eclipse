@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.diff.DiffEntry;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
@@ -40,7 +41,7 @@ public interface CodeClass extends Node {
 
 	String getProject();
 
-	String getFullClassPath();
+	IPath getPath();
 
 	String getFileLocation();
 }
