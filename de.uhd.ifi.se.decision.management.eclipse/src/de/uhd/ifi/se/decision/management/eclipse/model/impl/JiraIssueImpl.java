@@ -34,7 +34,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 		String restUri = issue.getSelf().toString();
 		String jiraIssueUri = "";
 		for (String uriPart : restUri.split("/")) {
-			if (uriPart.equals("rest")) {
+			if ("rest".equals(uriPart)) {
 				jiraIssueUri += "projects/" + issue.getProject().getKey() + "/issues/" + issue.getKey();
 				break;
 			}

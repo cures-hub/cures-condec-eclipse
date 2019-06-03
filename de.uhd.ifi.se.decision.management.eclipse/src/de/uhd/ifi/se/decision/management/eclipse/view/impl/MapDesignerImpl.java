@@ -40,36 +40,18 @@ import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
+import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
 public class MapDesignerImpl implements MapDesigner {
 	private String searchString = "";
 	private long interactionID = -1;
-	private boolean bShowCommits = true;
-	private boolean bShowKnowledgeItems = true;
-	private boolean bShowKIDecision = true;
-	private boolean bShowKIIssue = true;
-	private boolean bShowKIAlternative = true;
-	private boolean bShowKICon = true;
-	private boolean bShowKIPro = true;
-	private boolean bShowKIGoal = true;
-	private boolean bShowKIOther = true;
-	private boolean bShowIssues = true;
-	private boolean bShowMethods = true;
-	private boolean bShowFiles = true;
-	private boolean bShowCFClasses = true;
-	private boolean bShowCFOther = true;
 	private JTextField tfSearch;
 	private JTextField tfInteraction;
 	private JCheckBox fClasses;
@@ -97,6 +79,7 @@ public class MapDesignerImpl implements MapDesigner {
 	private JFrame frame;
 	private PreviewModel previewModel;
 	private Linker linker = null;
+	public GraphFiltering graphFiltering;
 
 	public MapDesignerImpl() {
 		this.projectController = Lookup.getDefault().lookup(ProjectController.class);
@@ -116,6 +99,7 @@ public class MapDesignerImpl implements MapDesigner {
 		this.previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
 		this.previewModel.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 50);
 		this.previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
+		this.graphFiltering = new GraphFiltering();
 	}
 
 	@Override
@@ -193,7 +177,7 @@ public class MapDesignerImpl implements MapDesigner {
 			directedGraph.addNode(gephiNode);
 		}
 		updateNodeSizes();
-		createEdges();		
+		createEdges();
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {
@@ -208,7 +192,7 @@ public class MapDesignerImpl implements MapDesigner {
 		gephiNode.setX((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
 		gephiNode.setY((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
 	}
-	
+
 	private void createEdges() {
 		for (Map.Entry<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>> entry : map
 				.entrySet()) {
@@ -236,65 +220,6 @@ public class MapDesignerImpl implements MapDesigner {
 		}
 	}
 
-	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
-		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssueImpl && bShowIssues
-				|| node instanceof CodeMethodImpl && bShowMethods) {
-			return true;
-		} else if (node instanceof DecisionKnowledgeElementImpl && bShowKnowledgeItems) {
-			DecisionKnowledgeElementImpl dke = (DecisionKnowledgeElementImpl) node;
-			switch (dke.getKnowledgeType()) {
-			case ALTERNATIVE:
-				if (bShowKIAlternative)
-					return true;
-				break;
-			case CON:
-				if (bShowKICon)
-					return true;
-				break;
-			case DECISION:
-				if (bShowKIDecision)
-					return true;
-				break;
-			case GOAL:
-				if (bShowKIGoal)
-					return true;
-				break;
-			case ISSUE:
-				if (bShowKIIssue)
-					return true;
-				break;
-			case PRO:
-				if (bShowKIPro)
-					return true;
-				break;
-			case OTHER:
-				if (bShowKIOther)
-					return true;
-				break;
-			default:
-				return true;
-			}
-			return false;
-		} else if (node instanceof CodeClassImpl && bShowFiles) {
-			CodeClass cc = (CodeClass) node;
-			if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
-				if (bShowCFClasses) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				if (bShowCFOther) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		} else {
-			return false;
-		}
-	}
-
 	/**
 	 * Resets the size of the given node.
 	 * 
@@ -307,7 +232,7 @@ public class MapDesignerImpl implements MapDesigner {
 		// first - should the node be even visible?
 		// inside the if/else:
 		// is a filter active, which must be regarded?
-		if (shouldBeVisible(iN)) {
+		if (graphFiltering.shouldBeVisible(this, iN)) {
 			if (searchString == null || searchString.isEmpty()) {
 				float size = (float) Math.sqrt(Double.valueOf(iN.getLinkedNodes().size()));
 				node.setSize((size > 0 ? size : 0.75f));
@@ -421,9 +346,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowCommits = false;
+					graphFiltering.bShowCommits = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowCommits = true;
+					graphFiltering.bShowCommits = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -438,9 +363,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowIssues = false;
+					graphFiltering.bShowIssues = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowIssues = true;
+					graphFiltering.bShowIssues = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -449,15 +374,15 @@ public class MapDesignerImpl implements MapDesigner {
 		fIssues.setMargin(new Insets(5, 5, 5, 5));
 		filter.add(fIssues);
 		// Filter: DecisionKnowledgeItems
-		fKnowledgeItems = new JCheckBox("Decision-Knowledge Items");
+		fKnowledgeItems = new JCheckBox("Decision Knowledge");
 		fKnowledgeItems.setSelected(true);
 		fKnowledgeItems.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowKnowledgeItems = false;
+					graphFiltering.bShowDecisionKnowledge = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowKnowledgeItems = true;
+					graphFiltering.bShowDecisionKnowledge = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -472,9 +397,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowKIDecision = false;
+					graphFiltering.bShowKIDecision = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowKIDecision = true;
+					graphFiltering.bShowKIDecision = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -489,9 +414,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowKIIssue = false;
+					graphFiltering.bShowKIIssue = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowKIIssue = true;
+					graphFiltering.bShowKIIssue = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -506,9 +431,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowKICon = false;
+					graphFiltering.bShowKICon = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowKICon = true;
+					graphFiltering.bShowKICon = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -523,9 +448,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowKIPro = false;
+					graphFiltering.bShowKIPro = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowKIPro = true;
+					graphFiltering.bShowKIPro = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -540,9 +465,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowKIOther = false;
+					graphFiltering.bShowKIOther = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowKIOther = true;
+					graphFiltering.bShowKIOther = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -557,9 +482,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowFiles = false;
+					graphFiltering.bShowFiles = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowFiles = true;
+					graphFiltering.bShowFiles = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -574,9 +499,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowCFClasses = false;
+					graphFiltering.bShowCFClasses = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowCFClasses = true;
+					graphFiltering.bShowCFClasses = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -591,9 +516,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowCFOther = false;
+					graphFiltering.bShowCFOther = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowCFOther = true;
+					graphFiltering.bShowCFOther = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -608,9 +533,9 @@ public class MapDesignerImpl implements MapDesigner {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					bShowMethods = false;
+					graphFiltering.bShowMethods = false;
 				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					bShowMethods = true;
+					graphFiltering.bShowMethods = true;
 				}
 				updateNodeSizes();
 				refresh();
@@ -731,19 +656,6 @@ public class MapDesignerImpl implements MapDesigner {
 			fKnowledgeItems.setSelected(true);
 		searchString = "";
 		interactionID = -1;
-		bShowCommits = true;
-		bShowKnowledgeItems = true;
-		bShowKIDecision = true;
-		bShowKIIssue = true;
-		bShowKIAlternative = true;
-		bShowKICon = true;
-		bShowKIPro = true;
-		bShowKIGoal = true;
-		bShowKIOther = true;
-		bShowIssues = true;
-		bShowMethods = true;
-		bShowFiles = true;
-		bShowCFClasses = true;
-		bShowCFOther = true;
+		graphFiltering = new GraphFiltering();
 	}
 }

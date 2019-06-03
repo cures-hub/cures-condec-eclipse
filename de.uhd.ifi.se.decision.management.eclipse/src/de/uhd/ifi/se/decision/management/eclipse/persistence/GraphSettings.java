@@ -2,12 +2,12 @@ package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
 import java.awt.Color;
 
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 
 public class GraphSettings {
@@ -36,15 +36,15 @@ public class GraphSettings {
 	}
 
 	public static Color getColor(Node node) {
-		if (node instanceof GitCommitImpl) {
+		if (node instanceof GitCommit) {
 			return GraphSettings.getCommitColor();
-		} else if (node instanceof DecisionKnowledgeElementImpl) {
+		} else if (node instanceof DecisionKnowledgeElement) {
 			return GraphSettings.getDecisionKnowledgeElementColor();
-		} else if (node instanceof JiraIssueImpl) {
+		} else if (node instanceof JiraIssue) {
 			return GraphSettings.getJiraIssueColor();
-		} else if (node instanceof CodeClassImpl) {
+		} else if (node instanceof CodeClass) {
 			return GraphSettings.getChangedFilesColor();
-		} else if (node instanceof CodeMethodImpl) {
+		} else if (node instanceof CodeMethod) {
 			return GraphSettings.getCodeMethodColor();
 		}
 		return Color.PINK;
