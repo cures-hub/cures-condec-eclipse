@@ -62,9 +62,8 @@ public abstract class NodeImpl implements Node {
 		if (this.linkedNodes.contains(node)) {
 			this.linkedNodes.remove(node);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Override

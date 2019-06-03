@@ -108,11 +108,10 @@ public class MapDesigner {
 		String path = ConfigPersistenceManager.getPathToGit().toString().toLowerCase();
 		if (instances.containsKey(path)) {
 			return instances.get(path);
-		} else {
-			MapDesigner mapDesigner = new MapDesigner();
-			instances.put(path, mapDesigner);
-			return mapDesigner;
 		}
+		MapDesigner mapDesigner = new MapDesigner();
+		instances.put(path, mapDesigner);
+		return mapDesigner;
 	}
 
 	private MapDesigner() {
@@ -337,7 +336,7 @@ public class MapDesigner {
 		// second, create nodes...
 		for (de.uhd.ifi.se.decision.management.eclipse.model.Node node : nodes) {
 			Node gephiNode = createNode(node);
-			setPosition(gephiNode, nodes.size());			
+			setPosition(gephiNode, nodes.size());
 			directedGraph.addNode(gephiNode);
 		}
 		updateNodeSizes();
@@ -386,7 +385,7 @@ public class MapDesigner {
 		}
 		return gephiNode;
 	}
-	
+
 	void setPosition(Node gephiNode, int numberOfNodes) {
 		gephiNode.setX((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
 		gephiNode.setY((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));

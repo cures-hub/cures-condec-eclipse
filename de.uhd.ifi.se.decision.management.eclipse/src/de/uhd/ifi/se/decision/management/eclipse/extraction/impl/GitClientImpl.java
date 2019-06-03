@@ -41,7 +41,6 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -204,8 +203,7 @@ public class GitClientImpl implements GitClient {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses
-						.add(CodeClassImpl.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
+				changedClasses.add(CodeClass.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

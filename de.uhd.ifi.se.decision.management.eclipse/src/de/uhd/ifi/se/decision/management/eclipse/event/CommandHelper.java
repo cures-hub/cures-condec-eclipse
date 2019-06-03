@@ -28,9 +28,6 @@ public class CommandHelper {
 
 	public static boolean isValidSelection(ExecutionEvent event) {
 		CompilationUnit compilationUnit = getCompilationUnit(event);
-		if (compilationUnit != null) {
-			return true;
-		}
-		return false;
+		return compilationUnit != null;
 	}
 }

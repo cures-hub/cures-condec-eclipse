@@ -36,10 +36,11 @@ import de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView;
 public class DecisionCompletionProposalComputer implements IJavaCompletionProposalComputer {
 
 	/**
-	 * The sessionStarted method acts when the session is started
+	 * Informs the computer that a content assist session has started.
 	 */
 	@Override
 	public void sessionStarted() {
+		// Currently not used in this plug-in.
 	}
 
 	/**

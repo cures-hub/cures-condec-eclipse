@@ -74,7 +74,7 @@ public class JiraClientImpl implements JiraClient {
 	private boolean isValidProject(String projectKey) {
 		boolean isValidProject = true;
 		try {
-			this.getJiraRestClient().getProjectClient().getProject(ConfigPersistenceManager.getProjectKey());
+			this.getJiraRestClient().getProjectClient().getProject(projectKey);
 		} catch (Exception e) {
 			isValidProject = false;
 			System.err.println("The JIRA project is unknown. Message: " + e.getMessage());

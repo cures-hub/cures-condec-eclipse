@@ -6,23 +6,27 @@ import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKnowledgeElement {
 	private KnowledgeType knowledgeType;
 	private String knowledgeMessage;
-	
-	public DecisionKnowledgeElementImpl() {/* Default constructor*/ }
-	
+
+	public DecisionKnowledgeElementImpl() {
+		/* Default constructor */ }
+
 	public DecisionKnowledgeElementImpl(KnowledgeType knowledgeType, String knowledgeMessage) {
 		this.knowledgeType = knowledgeType;
 		this.knowledgeMessage = knowledgeMessage;
 	}
-	
+
 	public KnowledgeType getKnowledgeType() {
 		return knowledgeType;
 	}
+
 	public void setKnowledgeType(KnowledgeType knowledgeType) {
 		this.knowledgeType = knowledgeType;
 	}
+
 	public String getKnowledgeMessage() {
 		return knowledgeMessage.replace("\r\n", " ").replace("\n", " ");
 	}
+
 	public void setKnowledgeMessage(String knowledgeMessage) {
 		this.knowledgeMessage = knowledgeMessage;
 	}
@@ -46,11 +50,9 @@ public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKn
 	public void setDescription(String description) {
 		// Not intended to be used so far
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.knowledgeType.name() + ": " + this.knowledgeMessage;
 	}
 }
-
-

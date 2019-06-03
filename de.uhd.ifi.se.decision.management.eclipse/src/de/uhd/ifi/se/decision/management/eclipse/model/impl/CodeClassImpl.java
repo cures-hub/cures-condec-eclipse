@@ -2,13 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.eclipse.jgit.diff.DiffEntry;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -21,7 +15,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 
 public class CodeClassImpl extends NodeImpl implements CodeClass {
-	private static Map<String, CodeClass> instances = new HashMap<String, CodeClass>();
+
 	private String className;
 	private String packageName;
 	private String project;
@@ -31,26 +25,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 	private String fileLocation = "";
 	private List<CodeMethod> methodsInClass;
 
-	public static Set<CodeClass> getInstances() {
-		Set<CodeClass> output = new HashSet<CodeClass>();
-		for (Map.Entry<String, CodeClass> entry : instances.entrySet()) {
-			output.add(entry.getValue());
-		}
-		return output;
-	}
-
-	public static CodeClass getOrCreate(DiffEntry diffEntry, String pathToGit) {
-		String fullClassPath = diffEntry.getNewPath();
-		if (instances.containsKey(fullClassPath)) {
-			return instances.get(fullClassPath);
-		} else {
-			CodeClass cc = new CodeClassImpl(fullClassPath, pathToGit);
-			instances.put(fullClassPath, cc);
-			return cc;
-		}
-	}
-
-	private CodeClassImpl(String fullClassPath, String pathToGit) {
+	public CodeClassImpl(String fullClassPath, String pathToGit) {
 		this.methodsInClass = new ArrayList<CodeMethod>();
 		this.fullClassPath = fullClassPath;
 		this.pathToGit = pathToGit;

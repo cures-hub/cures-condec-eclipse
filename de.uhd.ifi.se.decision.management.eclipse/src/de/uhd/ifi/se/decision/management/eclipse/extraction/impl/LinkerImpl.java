@@ -67,11 +67,11 @@ public class LinkerImpl implements Linker {
 			}
 		}
 		// All commits needed to be loaded first
-		for (CodeClass codeClass : CodeClassImpl.getInstances()) {
+		for (CodeClass codeClass : CodeClass.getInstances()) {
 			map.put(codeClass, codeClass.getLinkedNodes());
 		}
 		// All commits needed to be loaded first
-		for (CodeMethod cm : CodeMethodImpl.getInstances()) {
+		for (CodeMethod cm : CodeMethod.getInstances()) {
 			map.put(cm, cm.getLinkedNodes());
 		}
 		for (JiraIssue ji : jiraClient.getAllJiraIssues()) {
