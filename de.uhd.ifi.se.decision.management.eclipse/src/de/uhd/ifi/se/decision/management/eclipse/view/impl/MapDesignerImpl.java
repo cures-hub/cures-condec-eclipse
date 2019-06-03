@@ -28,7 +28,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.Node;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
@@ -43,13 +42,14 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
-import de.uhd.ifi.se.decision.management.eclipse.persistence.MapDesignerSettingsProvider;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
@@ -85,7 +85,7 @@ public class MapDesignerImpl implements MapDesigner {
 	private JCheckBox fKIOther;
 	private JCheckBox fKIPro;
 	private JCheckBox fKnowledgeItems;
-	private Map<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>> map;
+	private Map<Node, Set<Node>> map;
 	private ProjectController projectController;
 	private Workspace workspace;
 	private GraphModel graphModel;
@@ -125,7 +125,7 @@ public class MapDesignerImpl implements MapDesigner {
 		}
 		this.map = linker.createKnowledgeGraph();
 		generateGraph(map.keySet());
-		MapDesignerSettingsProvider.getLayoutType().generateLayout(graphModel, map.size());
+		GraphSettings.getLayoutType().generateLayout(graphModel, map.size());
 		resetFilters();
 		initJFrame("Full map for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
 		refresh();
@@ -153,7 +153,7 @@ public class MapDesignerImpl implements MapDesigner {
 			map.put(n, links);
 		}
 		generateGraph(nodes);
-		MapDesignerSettingsProvider.getLayoutType().generateLayout(graphModel, map.size());
+		GraphSettings.getLayoutType().generateLayout(graphModel, map.size());
 		resetFilters();
 		initJFrame("Current Map for \"" + rootNode.toString() + "\" with range " + depth);
 		refresh();
@@ -186,19 +186,30 @@ public class MapDesignerImpl implements MapDesigner {
 		this.frame.setVisible(true);
 	}
 
-	private void generateGraph(Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> nodes) {
-		// first, check load existing node-IDs
-		// for preventing errors when re-creating a graph
-		directedGraph.clear();
-		directedGraph.clearEdges();
-		// second, create nodes...
-		for (de.uhd.ifi.se.decision.management.eclipse.model.Node node : nodes) {
-			Node gephiNode = createNode(node);
+	private void generateGraph(Set<Node> nodes) {
+		for (Node node : nodes) {
+			org.gephi.graph.api.Node gephiNode = createNode(node);
 			setPosition(gephiNode, nodes.size());
 			directedGraph.addNode(gephiNode);
 		}
 		updateNodeSizes();
-		// third, create edges...
+		createEdges();		
+	}
+
+	private org.gephi.graph.api.Node createNode(Node node) {
+		org.gephi.graph.api.Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
+		gephiNode.setLabel("[" + String.valueOf(node.getId()) + "] " + node.toString());
+		GraphSettings.getColor(node);
+		gephiNode.setColor(GraphSettings.getColor(node));
+		return gephiNode;
+	}
+
+	private void setPosition(org.gephi.graph.api.Node gephiNode, int numberOfNodes) {
+		gephiNode.setX((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
+		gephiNode.setY((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
+	}
+	
+	private void createEdges() {
 		for (Map.Entry<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>> entry : map
 				.entrySet()) {
 			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : entry.getValue()) {
@@ -223,30 +234,6 @@ public class MapDesignerImpl implements MapDesigner {
 				}
 			}
 		}
-	}
-
-	private Node createNode(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
-		Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
-		gephiNode.setLabel("[" + String.valueOf(node.getId()) + "] " + node.toString());
-		if (node instanceof GitCommitImpl) {
-			gephiNode.setColor(MapDesignerSettingsProvider.getCommitColor());
-		} else if (node instanceof DecisionKnowledgeElementImpl) {
-			gephiNode.setColor(MapDesignerSettingsProvider.getDecisionKnowledgeElementColor());
-		} else if (node instanceof JiraIssueImpl) {
-			gephiNode.setColor(MapDesignerSettingsProvider.getJiraIssueColor());
-		} else if (node instanceof CodeClassImpl) {
-			gephiNode.setColor(MapDesignerSettingsProvider.getChangedFilesColor());
-		} else if (node instanceof CodeMethodImpl) {
-			gephiNode.setColor(MapDesignerSettingsProvider.getCodeMethodColor());
-		} else {
-			gephiNode.setColor(Color.PINK);
-		}
-		return gephiNode;
-	}
-
-	void setPosition(Node gephiNode, int numberOfNodes) {
-		gephiNode.setX((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
-		gephiNode.setY((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
 	}
 
 	private boolean shouldBeVisible(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
@@ -314,7 +301,7 @@ public class MapDesignerImpl implements MapDesigner {
 	 * @param node
 	 *            The node which size should be reset
 	 */
-	private void updateNodeSize(Node node) {
+	private void updateNodeSize(org.gephi.graph.api.Node node) {
 		de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
 				.getNodeById(Long.valueOf(node.getId().toString()));
 		// first - should the node be even visible?
@@ -340,7 +327,7 @@ public class MapDesignerImpl implements MapDesigner {
 		de.uhd.ifi.se.decision.management.eclipse.model.Node inode = de.uhd.ifi.se.decision.management.eclipse.model.Node
 				.getNodeById(interactionID);
 		if (inode != null) {
-			for (Node n : directedGraph.getNodes()) {
+			for (org.gephi.graph.api.Node n : directedGraph.getNodes()) {
 				n.setSize(0f);
 			}
 			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
@@ -368,14 +355,14 @@ public class MapDesignerImpl implements MapDesigner {
 	}
 
 	/**
-	 * Resets the sizes of all nodes depending on the amount of links binded to the
+	 * Resets the sizes of all nodes depending on the amount of links bound to the
 	 * node.
 	 * 
 	 * @see updateNodeSize(Node node)
 	 */
 	private void updateNodeSizes() {
 		if (interactionID < 0) {
-			for (Node gephiNode : directedGraph.getNodes()) {
+			for (org.gephi.graph.api.Node gephiNode : directedGraph.getNodes()) {
 				updateNodeSize(gephiNode);
 			}
 		} else {
@@ -675,7 +662,7 @@ public class MapDesignerImpl implements MapDesigner {
 				try {
 					long id = Long.parseLong(tfInteraction.getText());
 					if (id > 0) {
-						Node n = directedGraph.getNode(tfInteraction.getText());
+						org.gephi.graph.api.Node n = directedGraph.getNode(tfInteraction.getText());
 						if (n != null) {
 							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
 									.getNodeById(id);

@@ -5,11 +5,13 @@ import static org.junit.Assert.fail;
 
 import java.net.URL;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestOpenWebbrowser {
 
 	@Test
+	@Ignore
 	public void testWithURL() {
 		try {
 			URL url = new URL("https://www.google.com");
