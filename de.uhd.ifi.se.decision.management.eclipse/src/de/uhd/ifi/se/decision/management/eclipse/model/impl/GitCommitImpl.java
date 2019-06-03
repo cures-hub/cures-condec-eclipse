@@ -1,11 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -25,30 +21,12 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	private List<CodeClass> changedClasses = new ArrayList<CodeClass>();
 	private RevCommit revCommit;
 	private String issueKeyBase = "";
-	private static Map<RevCommit, GitCommitImpl> instances = new HashMap<RevCommit, GitCommitImpl>();
 
-	public static Set<GitCommitImpl> getInstances() {
-		Set<GitCommitImpl> output = new HashSet<GitCommitImpl>();
-		for (Map.Entry<RevCommit, GitCommitImpl> entry : instances.entrySet()) {
-			output.add(entry.getValue());
-		}
-		return output;
-	}
-
-	public static GitCommitImpl getOrCreate(RevCommit commit, String issueKeyBase) {
-		if (instances.containsKey(commit)) {
-			return instances.get(commit);
-		} else {
-			return new GitCommitImpl(commit, issueKeyBase);
-		}
-	}
-
-	private GitCommitImpl(RevCommit commit) {
+	public GitCommitImpl(RevCommit commit) {
 		this(commit, null);
 	}
 
-	private GitCommitImpl(RevCommit commit, String issueKeyBase) {
-		instances.put(commit, this);
+	public GitCommitImpl(RevCommit commit, String issueKeyBase) {
 		this.revCommit = commit;
 		this.issueKeyBase = issueKeyBase;
 		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledgeFromCommit(commit);

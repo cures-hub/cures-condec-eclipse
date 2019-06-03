@@ -37,7 +37,9 @@ public interface JiraIssue extends Node {
 
 		Issue issue = jiraClient.getJiraIssue(key);
 		if (issue != null) {
-			return new JiraIssueImpl(issue);
+			JiraIssue jiraIssue = new JiraIssueImpl(issue);
+			instances.put(issue.getKey(), jiraIssue);
+			return jiraIssue;
 		}
 		return null;
 	}

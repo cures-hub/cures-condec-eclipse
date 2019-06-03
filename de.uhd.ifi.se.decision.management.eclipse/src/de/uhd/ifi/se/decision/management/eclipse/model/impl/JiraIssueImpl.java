@@ -10,7 +10,6 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	
 	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
-		instances.put(issue.getKey(), this);
 	}
 
 	@Override

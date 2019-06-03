@@ -42,7 +42,6 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -129,7 +128,7 @@ public class GitClientImpl implements GitClient {
 		try {
 			Iterable<RevCommit> commits = this.git.log().all().call();
 			for (RevCommit rc : commits) {
-				allCommits.add(GitCommitImpl.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
+				allCommits.add(GitCommit.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to load all commits of the current branch");
@@ -153,7 +152,7 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public GitCommit getCommitForLine(IPath filePath, int line) {
 		BlameResult blameResult = getGitBlameForFile(filePath);
-		return GitCommitImpl.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
+		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
 	}
 
 	@Override
@@ -170,8 +169,7 @@ public class GitClientImpl implements GitClient {
 			while (iterator.hasNext()) {
 				RevCommit revCommit = iterator.next();
 				if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
-					GitCommit commit = GitCommitImpl.getOrCreate(iterator.next(),
-							ConfigPersistenceManager.getProjectKey());
+					GitCommit commit = GitCommit.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
 					commitsForIssueKey.add(commit);
 				}
 			}
