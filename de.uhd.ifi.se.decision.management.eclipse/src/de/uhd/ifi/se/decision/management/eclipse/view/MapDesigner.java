@@ -2,7 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 
-public interface MaspDesigner {
+public interface MapDesigner {
 
 	void createFullMap(Linker linker);
 

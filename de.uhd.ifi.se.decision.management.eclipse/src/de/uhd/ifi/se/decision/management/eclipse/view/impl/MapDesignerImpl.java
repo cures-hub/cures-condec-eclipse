@@ -57,10 +57,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesignerSettingsProvider;
-import de.uhd.ifi.se.decision.management.eclipse.view.MaspDesigner;
+import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
-public class MapDesignerImpl implements MaspDesigner {
+public class MapDesignerImpl implements MapDesigner {
 	private String searchString = "";
 	private long interactionID = -1;
 	private boolean bShowCommits = true;

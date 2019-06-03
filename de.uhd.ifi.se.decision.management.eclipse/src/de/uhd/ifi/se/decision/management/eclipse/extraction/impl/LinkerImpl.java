@@ -66,17 +66,20 @@ public class LinkerImpl implements Linker {
 				map.put(dke, n);
 			}
 		}
-		// All commits needed to be loaded first
+		
+		// All commits need to be loaded first
 		for (CodeClass codeClass : CodeClass.getInstances()) {
 			map.put(codeClass, codeClass.getLinkedNodes());
 		}
-		// All commits needed to be loaded first
-		for (CodeMethod cm : CodeMethod.getInstances()) {
-			map.put(cm, cm.getLinkedNodes());
+		
+		// All commits need to be loaded first
+		for (CodeMethod codeMethod : CodeMethod.getInstances()) {
+			map.put(codeMethod, codeMethod.getLinkedNodes());
 		}
-		for (JiraIssue ji : jiraClient.getAllJiraIssues()) {
-			createLinks(ji, 1);
-			map.put(ji, ji.getLinkedNodes());
+		
+		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
+			createLinks(jiraIssue, 1);
+			map.put(jiraIssue, jiraIssue.getLinkedNodes());
 		}
 		return map;
 	}
@@ -84,8 +87,8 @@ public class LinkerImpl implements Linker {
 	/**
 	 * @param node
 	 *            The node, which should be analyzed for further links.
-	 * @param How
-	 *            deep is the function allowed to go to through the nodes.
+	 * @param maxDepth
+	 *            How deep is the function allowed to go to through the nodes.
 	 * @return Returns a Set of all visited nodes.
 	 * 
 	 * @issue There is no known API for getting all Commits touching a given

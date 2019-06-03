@@ -41,7 +41,7 @@ public interface Node {
 	void setVisibility(boolean isVisible);
 
 	/**
-	 * Add a reference to another node for creating a link
+	 * Add a reference to another node to create a link/an edge.
 	 * 
 	 * @param node
 	 *            is the node, where the link is pointing to.
@@ -89,8 +89,7 @@ public interface Node {
 	public static Node getNodeById(long id) {
 		if (NodeImpl.nodes.containsKey(id)) {
 			return NodeImpl.nodes.get(id);
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

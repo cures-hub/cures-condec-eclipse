@@ -8,7 +8,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
-import de.uhd.ifi.se.decision.management.eclipse.view.MaspDesigner;
+import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.MapDesignerImpl;
 
 public class ShowFullGraphCommand extends AbstractHandler {
@@ -25,7 +25,7 @@ public class ShowFullGraphCommand extends AbstractHandler {
 		}
 		GitClient gitClient = GitClient.getOrCreate();
 		Linker linker = new LinkerImpl(gitClient, jiraClient);
-		MaspDesigner mapDesigner = new MapDesignerImpl();
+		MapDesigner mapDesigner = new MapDesignerImpl();
 		mapDesigner.createFullMap(linker);
 		return null;
 	}
