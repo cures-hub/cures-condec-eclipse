@@ -10,8 +10,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,10 +30,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
-import org.gephi.layout.plugin.force.StepDisplacement;
-import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
-import org.gephi.layout.plugin.fruchterman.FruchtermanReingold;
-import org.gephi.layout.plugin.labelAdjust.LabelAdjust;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
@@ -56,8 +50,8 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.MapDesignerSettingsProvider;
 import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
-import de.uhd.ifi.se.decision.management.eclipse.view.MapDesignerSettingsProvider;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
 public class MapDesignerImpl implements MapDesigner {
@@ -114,89 +108,6 @@ public class MapDesignerImpl implements MapDesigner {
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		this.target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
 		this.previewSketch = new PreviewSketch(target);
-		// The Following lines are useless - they don't do what they are supposed to do
-		// Even the pre-defined mouseclick-handler didn't work.
-		// These lines can be removed, since the "interactivity" is implemented with the
-		// ID-Textbox and the Buttons below it.
-		this.previewSketch.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				/*
-				 * This method of creating a custom mouseClickEvent-Handler wasn't successfully.
-				 * Unfortunately, the provided MouseClickListener.java and
-				 * MouseClickRenderer.java do not work. The necessary steps given in the
-				 * GitHub-demo of gephi are done, but the EventHandler still does not work.
-				 */
-				Node selectedNode = null;
-				float clickedX = target.getTranslate().x + e.getX() / target.getScaling() / 2;
-				float clickedY = target.getTranslate().y + e.getY() / target.getScaling() / 2;
-				// System.out.println("Scaling: " + target.getScaling());
-				// System.out.println("Translated Target X=" + target.getTranslate().x);
-				// System.out.println("Translated Target Y=" + target.getTranslate().y);
-				// System.out.println("PrewviewSketch Width=" + previewSketch.getWidth());
-				// System.out.println("PreviewSketch Height=" + previewSketch.getHeight());
-				// System.out.println("MouseClickEvent X=" + e.getX());
-				// System.out.println("MouseClickEvent Y=" + e.getY());
-				// System.out.println("Scaled MouseClick X=" + e.getX()/target.getScaling());
-				// System.out.println("Scaled MouseClick Y=" + e.getY()/target.getScaling());
-				float rangeXMin = 0f;
-				float rangeXMax = 0f;
-				float rangeYMin = 0f;
-				float rangeYMax = 0f;
-				for (Node node : directedGraph.getNodes()) {
-					float x = node.x();
-					float y = node.y();
-					if (x < rangeXMin) {
-						rangeXMin = x;
-					}
-					if (x > rangeXMax) {
-						rangeXMax = x;
-					}
-					if (y < rangeYMin) {
-						rangeYMin = y;
-					}
-					if (y > rangeYMax) {
-						rangeYMax = y;
-					}
-					float size = node.size();
-					final int minX = Math.round(x - size);
-					final int maxX = Math.round(x + size);
-					final int minY = Math.round(y - size);
-					final int maxY = Math.round(y + size);
-					if (minX <= clickedX && clickedX <= maxX && minY <= clickedY && clickedY <= maxY) {
-						selectedNode = node;
-					}
-				}
-				// System.out.println("All nodes are between " + rangeXMin + " < X < " +
-				// rangeXMax + " and "
-				// + rangeYMin + " < Y < " + rangeYMax);
-				if (selectedNode != null) {
-					// System.out.println("Found a Node!: " + selectedNode.getLabel() + "\n(" +
-					// selectedNode.x() + ","
-					// + selectedNode.y() + ")");
-				} else {
-					// System.out.println("mouseClicked-Event hasn't found any node on position X="
-					// + clickedX + ", Y=" + clickedY);
-				}
-			}
-		});
 		this.graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
 		this.previewModel = previewController.getModel();
@@ -215,7 +126,7 @@ public class MapDesignerImpl implements MapDesigner {
 		}
 		this.map = linker.createKnowledgeGraph();
 		generateGraph(map.keySet());
-		generateLayout();
+		MapDesignerSettingsProvider.getLayoutType().generateLayout(graphModel, map.size());
 		resetFilters();
 		initJFrame("Full map for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
 		refresh();
@@ -243,7 +154,7 @@ public class MapDesignerImpl implements MapDesigner {
 			map.put(n, links);
 		}
 		generateGraph(nodes);
-		generateLayout();
+		MapDesignerSettingsProvider.getLayoutType().generateLayout(graphModel, map.size());
 		resetFilters();
 		initJFrame("Current Map for \"" + rootNode.toString() + "\" with range " + depth);
 		refresh();
@@ -274,51 +185,6 @@ public class MapDesignerImpl implements MapDesigner {
 			}
 		});
 		this.frame.setVisible(true);
-	}
-
-	private void generateLayout() {
-		switch (MapDesignerSettingsProvider.getLayoutType()) {
-		case FORCE_ATLAS:
-			// ForceAtlas atlas = new ForceAtlas();
-			// @issue There are no methods for atlas to feed the algorithm with the graph
-			break;
-		case FRUCHTERMAN_REINGOLD:
-			FruchtermanReingold fgold = new FruchtermanReingold(null);
-			fgold.setGraphModel(graphModel);
-			fgold.resetPropertiesValues();
-			fgold.setSpeed(100d);
-			fgold.setGravity(40d);
-			fgold.initAlgo();
-			for (int i = 0; i < 10 * Math.sqrt(map.size()) && fgold.canAlgo(); i++) {
-				fgold.goAlgo();
-			}
-			fgold.endAlgo();
-			break;
-		case LABEL_ADJUST:
-			LabelAdjust labelAdjust = new LabelAdjust(null);
-			labelAdjust.setGraphModel(graphModel);
-			labelAdjust.resetPropertiesValues();
-			labelAdjust.setSpeed(25d);
-			labelAdjust.initAlgo();
-			for (int i = 0; i < 10 * Math.sqrt(map.size()) && labelAdjust.canAlgo(); i++) {
-				labelAdjust.goAlgo();
-			}
-			labelAdjust.endAlgo();
-			break;
-		case YIFAN_HU:
-			YifanHuLayout yifanHu = new YifanHuLayout(null, new StepDisplacement(5f));
-			yifanHu.setGraphModel(graphModel);
-			yifanHu.resetPropertiesValues();
-			yifanHu.setOptimalDistance(200f);
-			yifanHu.initAlgo();
-			for (int i = 0; i < 10 * Math.sqrt(map.size()) && yifanHu.canAlgo(); i++) {
-				yifanHu.goAlgo();
-			}
-			yifanHu.endAlgo();
-			break;
-		default:
-			break;
-		}
 	}
 
 	private void generateGraph(Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> nodes) {

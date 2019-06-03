@@ -1,6 +1,8 @@
-package de.uhd.ifi.se.decision.management.eclipse.view;
+package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
 import java.awt.Color;
+
+import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 
 public class MapDesignerSettingsProvider {
 	public static LayoutType getLayoutType() {
