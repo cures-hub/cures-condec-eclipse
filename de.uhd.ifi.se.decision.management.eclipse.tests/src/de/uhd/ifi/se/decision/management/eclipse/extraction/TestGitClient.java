@@ -9,12 +9,10 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 
@@ -24,10 +22,6 @@ public class TestGitClient {
 	public void setUp() {
 		new GitClientImpl(".git", "HEAD");
 		new File("");
-	}
-
-	@After
-	public void tearDown() {
 	}
 
 	@Test

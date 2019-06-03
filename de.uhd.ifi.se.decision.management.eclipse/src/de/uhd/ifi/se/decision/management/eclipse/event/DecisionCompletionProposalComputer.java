@@ -36,10 +36,11 @@ import de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView;
 public class DecisionCompletionProposalComputer implements IJavaCompletionProposalComputer {
 
 	/**
-	 * The sessionStarted method acts when the session is started
+	 * Informs the computer that a content assist session has started.
 	 */
 	@Override
 	public void sessionStarted() {
+		// Currently not used in this plug-in.
 	}
 
 	/**
@@ -61,7 +62,7 @@ public class DecisionCompletionProposalComputer implements IJavaCompletionPropos
 			String writtenString = context.computeIdentifierPrefix().toString();
 
 			// the developer hasn't started to write something
-			if (writtenString.equals("")) {
+			if (writtenString.isEmpty()) {
 				showRelatedKnowledge();
 			}
 		} catch (BadLocationException e) {
@@ -112,9 +113,10 @@ public class DecisionCompletionProposalComputer implements IJavaCompletionPropos
 	}
 
 	/**
-	 * The sessionEnded method acts when the session is ended
+	 * Informs the computer that a content assist session has ended.
 	 */
 	@Override
 	public void sessionEnded() {
+		// Currently not used in this plug-in.
 	}
 }

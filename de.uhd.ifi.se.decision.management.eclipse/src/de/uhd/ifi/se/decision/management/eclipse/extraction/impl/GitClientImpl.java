@@ -36,11 +36,11 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -58,19 +58,6 @@ public class GitClientImpl implements GitClient {
 	private Repository repository;
 	private Git git;
 	private DiffFormatter diffFormatter;
-
-	private static Map<String, GitClient> instances = new HashMap<String, GitClient>();
-
-	public static GitClient getOrCreate() {
-		String path = ConfigPersistenceManager.getPathToGit().toString().toLowerCase();
-		if (instances.containsKey(path)) {
-			return instances.get(path);
-		} else {
-			GitClient gm = new GitClientImpl();
-			instances.put(path, gm);
-			return gm;
-		}
-	}
 
 	/**
 	 * Constructor for GitClient class
@@ -105,7 +92,7 @@ public class GitClientImpl implements GitClient {
 		}
 	}
 
-	private GitClientImpl() {
+	public GitClientImpl() {
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
 		repositoryBuilder.setGitDir(ConfigPersistenceManager.getPathToGit().toFile());
@@ -135,12 +122,12 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommitImpl> getAllCommits() {
-		Set<GitCommitImpl> allCommits = new HashSet<GitCommitImpl>();
+	public Set<GitCommit> getCommits() {
+		Set<GitCommit> allCommits = new HashSet<GitCommit>();
 		try {
 			Iterable<RevCommit> commits = this.git.log().all().call();
 			for (RevCommit rc : commits) {
-				allCommits.add(GitCommitImpl.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
+				allCommits.add(GitCommit.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to load all commits of the current branch");
@@ -164,7 +151,7 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public GitCommit getCommitForLine(IPath filePath, int line) {
 		BlameResult blameResult = getGitBlameForFile(filePath);
-		return GitCommitImpl.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
+		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
 	}
 
 	@Override
@@ -181,8 +168,7 @@ public class GitClientImpl implements GitClient {
 			while (iterator.hasNext()) {
 				RevCommit revCommit = iterator.next();
 				if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
-					GitCommit commit = GitCommitImpl.getOrCreate(iterator.next(),
-							ConfigPersistenceManager.getProjectKey());
+					GitCommit commit = GitCommit.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
 					commitsForIssueKey.add(commit);
 				}
 			}
@@ -200,8 +186,8 @@ public class GitClientImpl implements GitClient {
 	 *            a commit message that should contain an issue key
 	 * @return extracted issue key
 	 */
-	public static String getFirstIssueKey(String commitMessage, String issueKeyBase) {
-		List<String> keys = getAllMentionedIssueKeys(commitMessage, issueKeyBase);
+	public static String getFirstJiraIssueKey(String commitMessage, String issueKeyBase) {
+		List<String> keys = CommitMessageParser.getJiraIssueKeys(commitMessage, issueKeyBase);
 		if (keys.size() > 0) {
 			return keys.get(0);
 		} else {
@@ -209,41 +195,15 @@ public class GitClientImpl implements GitClient {
 		}
 	}
 
-	/**
-	 * Returns all Issue-Keys which are mentioned in a message.
-	 * 
-	 * @param commitMessage
-	 *            All mentioned IssueKeys must not contain a space. Positive
-	 *            Example: "Example-123"
-	 * @return List of all mentioned IssueKeys. May contain duplicates; Ordered by
-	 *         apperance in message.
-	 */
-	public static List<String> getAllMentionedIssueKeys(String commitMessage, String issueKeyBase) {
-		List<String> keys = new ArrayList<String>();
-		commitMessage = commitMessage.replace("\r\n", " ").replace("\n", " ");
-		String[] words = commitMessage.toLowerCase().split(" ");
-		if (issueKeyBase == null) {
-			return keys;
-		}
-		String basekey = issueKeyBase.toLowerCase();
-		for (String word : words) {
-			if (word.contains(basekey + "-")) {
-				keys.add(word);
-			}
-		}
-		return keys;
-	}
-
 	@Override
-	public List<CodeClassImpl> getDiffEntries(GitCommit commit) {
+	public List<CodeClass> getDiffEntries(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
-		List<CodeClassImpl> changedClasses = new ArrayList<CodeClassImpl>();
+		List<CodeClass> changedClasses = new ArrayList<CodeClass>();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses
-						.add(CodeClassImpl.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
+				changedClasses.add(CodeClass.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

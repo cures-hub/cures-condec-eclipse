@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,36 +13,50 @@ import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
+/**
+ * Interface to connect to a git repository associated with this Eclipse
+ * project. Retrieves commits and code changes (diffs) in git.
+ * 
+ * @see GitCommit
+ */
 public interface GitClient {
 
 	/**
-	 * 
-	 * @return Returns a Set with all commits of the current branch.
+	 * Instances of the GitClient that are identified by the path of the git
+	 * repository.
 	 */
-	Set<GitCommitImpl> getAllCommits();
+	public Map<IPath, GitClient> instances = new HashMap<IPath, GitClient>();
 
 	/**
-	 * Show what author and revision last modified each line of a file.
+	 * Retrieves an existing GitClient instance or creates a new instance if there
+	 * is no instance for the given path yet.
 	 * 
-	 * @param filePath
-	 *            path to the file to be blamed
-	 * @return git blame result for the given file
+	 * @return GitClient instance.
 	 */
-	BlameResult getGitBlameForFile(IPath filePath);
+	public static GitClient getOrCreate() {
+		IPath path = ConfigPersistenceManager.getPathToGit();
+		if (instances.containsKey(path)) {
+			return instances.get(path);
+		}
+		GitClient gitClient = new GitClientImpl();
+		instances.put(path, gitClient);
+		return gitClient;
+	}
 
 	/**
 	 * Retrieve the commit message for a given line from a blamed file as a
 	 * RevCommit.
 	 * 
 	 * @param filePath
-	 *            path to the file to be blamed
+	 *            path to the file to be blamed.
 	 * @param line
-	 *            the line that is to be analyzed
-	 * @return RevCommit returns all information about the commit as RevCommit
+	 *            the line that is to be analyzed.
+	 * @return GitCommit.
 	 */
 	GitCommit getCommitForLine(IPath filePath, int line);
 
@@ -57,6 +72,13 @@ public interface GitClient {
 	String getCommitMessageForLine(IPath filePath, int line);
 
 	/**
+	 * Retrieves all commits on the current branch.
+	 * 
+	 * @return set of all commits on the current branch.
+	 */
+	Set<GitCommit> getCommits();
+
+	/**
 	 * Retrieve the commits with the issue key in their commit message.
 	 * 
 	 * @param issueKey
@@ -66,22 +88,13 @@ public interface GitClient {
 	Set<GitCommit> getCommitsForIssueKey(String issueKey);
 
 	/**
-	 * Get the parent commit for a given commit.
-	 * 
-	 * @param revCommit
-	 *            commit as a RevCommit object
-	 * @return parent commit as a RevCommit object
-	 */
-	RevCommit getParent(RevCommit revCommit);
-
-	/**
 	 * Get a list of diff entries for a commit.
 	 * 
 	 * @param revCommit
 	 *            commit as a RevCommit object
 	 * @return list of diff entries
 	 */
-	List<CodeClassImpl> getDiffEntries(GitCommit commit);
+	List<CodeClass> getDiffEntries(GitCommit commit);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.
@@ -93,45 +106,13 @@ public interface GitClient {
 	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(GitCommit commit);
 
 	/**
-	 * Gets the changed methods in a diff entry
+	 * Get a map of diff entries and the respective edit lists for a commit.
 	 * 
-	 * @param diffEntry
-	 *            a git commit diff for one file
-	 * @param editList
-	 *            a list of changes for the file
-	 * @return Changed methods in a diff entry as a String
+	 * @param revCommit
+	 *            commit as a RevCommit object
+	 * @return map of diff entries and respective edit lists
 	 */
-	String whichMethodsChanged(DiffEntry diffEntry, EditList editList);
-
-	/**
-	 * Get the git object identifier, e.g., HEAD, refs/heads/master or commit id
-	 * 
-	 * @return git object identifier
-	 */
-	String getReference();
-
-	/**
-	 * Set the git object identifier, e.g., HEAD, refs/heads/master or commit id
-	 * 
-	 * @param reference
-	 *            git object identifier
-	 */
-	void setReference(String reference);
-
-	/**
-	 * Get the jgit repository object.
-	 * 
-	 * @return jgit repository object
-	 */
-	Repository getRepository();
-
-	/**
-	 * Set the jgit repository object.
-	 * 
-	 * @param repository
-	 *            jgit repository object
-	 */
-	void setRepository(Repository repository);
+	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit);
 
 	/**
 	 * Get the jgit git object.
@@ -141,12 +122,36 @@ public interface GitClient {
 	Git getGit();
 
 	/**
-	 * Set the jgit git object.
+	 * Show what author and revision last modified each line of a file.
 	 * 
-	 * @param git
-	 *            jgit git object
+	 * @param filePath
+	 *            path to the file to be blamed.
+	 * @return git blame result for the given file.
 	 */
-	void setGit(Git git);
+	BlameResult getGitBlameForFile(IPath filePath);
+
+	/**
+	 * Get the parent commit for a given commit.
+	 * 
+	 * @param revCommit
+	 *            commit as a RevCommit object
+	 * @return parent commit as a RevCommit object
+	 */
+	RevCommit getParent(RevCommit revCommit);
+
+	/**
+	 * Get the git object identifier, e.g., HEAD, refs/heads/master or commit id
+	 * 
+	 * @return git object identifier
+	 */
+	String getReference();
+
+	/**
+	 * Get the jgit repository object.
+	 * 
+	 * @return jgit repository object
+	 */
+	Repository getRepository();
 
 	/**
 	 * Retrieve the commit message for a given line from a blamed file as a
@@ -161,11 +166,37 @@ public interface GitClient {
 	RevCommit getRevCommitForLine(IPath filePath, int line);
 
 	/**
-	 * Get a map of diff entries and the respective edit lists for a commit.
+	 * Set the jgit git object.
 	 * 
-	 * @param revCommit
-	 *            commit as a RevCommit object
-	 * @return map of diff entries and respective edit lists
+	 * @param git
+	 *            jgit git object
 	 */
-	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit);
+	void setGit(Git git);
+
+	/**
+	 * Set the git object identifier, e.g., HEAD, refs/heads/master or commit id
+	 * 
+	 * @param reference
+	 *            git object identifier
+	 */
+	void setReference(String reference);
+
+	/**
+	 * Set the jgit repository object.
+	 * 
+	 * @param repository
+	 *            jgit repository object
+	 */
+	void setRepository(Repository repository);
+
+	/**
+	 * Gets the changed methods in a diff entry
+	 * 
+	 * @param diffEntry
+	 *            a git commit diff for one file
+	 * @param editList
+	 *            a list of changes for the file
+	 * @return Changed methods in a diff entry as a String
+	 */
+	String whichMethodsChanged(DiffEntry diffEntry, EditList editList);
 }

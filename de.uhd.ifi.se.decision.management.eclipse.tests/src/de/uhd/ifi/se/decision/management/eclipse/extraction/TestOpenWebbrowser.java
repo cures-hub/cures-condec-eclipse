@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URL;
 
@@ -11,7 +12,7 @@ public class TestOpenWebbrowser {
 
 	@Test
 	@Ignore
-	public void test() {
+	public void testWithURL() {
 		try {
 			URL url = new URL("https://www.google.com");
 			boolean webbrowserOpened = OpenWebbrowser.openWebpage(url);
@@ -20,5 +21,4 @@ public class TestOpenWebbrowser {
 			fail(ex.getMessage());
 		}
 	}
-
 }

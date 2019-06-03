@@ -1,17 +1,40 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 public interface GitCommit extends Node {
+
+	/**
+	 * Instances of GitCommit that are identified by the SHA-1 identifier.
+	 */
+	static Map<String, GitCommit> instances = new HashMap<String, GitCommit>();
+
+	/**
+	 * Retrieves an existing GitCommit instance or creates a new instance if there
+	 * is no instance for the given SHA-1 identifier.
+	 * 
+	 * @param commit
+	 *            RevCommit object.
+	 * @return either a new or already existing GitCommit instance.
+	 */
+	public static GitCommit getOrCreate(RevCommit commit, String issueKeyBase) {
+		if (instances.containsKey(commit.getName())) {
+			return instances.get(commit.getName());
+		}
+		GitCommit gitCommit = new GitCommitImpl(commit, issueKeyBase);
+		instances.put(commit.getName(), gitCommit);
+		return new GitCommitImpl(commit, issueKeyBase);
+	}
 
 	void setIssueKeyBase(String issueKeyBase);
 
@@ -20,41 +43,37 @@ public interface GitCommit extends Node {
 
 	void setReferencedJiraIssues(List<Issue> referencedIssues);
 
-	boolean addReferencedIssue(Issue issue);
+	boolean addReferencedJiraIssue(Issue issue);
 
-	boolean removeReferencedIssue(Issue issue);
+	boolean removeReferencedJiraIssue(Issue issue);
 	// END ReferencedIssues-Section
 
-	// CommitDecision-Section
-	List<DecisionKnowledgeElementImpl> getCommitDecisions();
+	/**
+	 * Retrieves decision knowledge elements documented in the commit message.
+	 * 
+	 * @see CommitMessageParser
+	 * @return list of all decision knowledge elements explicitly marked in a
+	 *         message.
+	 */
+	List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage();
 
-	void setCommitDecisions(List<DecisionKnowledgeElementImpl> decisionKnowledgeElements);
+	List<CodeClass> getChangedClasses();
 
-	boolean addCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement);
+	void setChangedClasses(List<CodeClass> changedClasses);
 
-	boolean removeCommitDecision(DecisionKnowledgeElementImpl decisionKnowledgeElement);
-	// END CommitDecision-Section
+	boolean addChangedClass(CodeClass changedClass);
 
-	// ChangedClasses-Section
-	List<CodeClassImpl> getChangedClasses();
-
-	void setChangedClasses(List<CodeClassImpl> changedClasses);
-
-	boolean addChangedClass(CodeClassImpl changedClass);
-
-	boolean removeChangedClass(CodeClassImpl changedClass);
+	boolean removeChangedClass(CodeClass changedClass);
 	// END CHangedClasses-Section
 
 	// IssueKey-Section
 	List<String> getJiraIssueKeys();
 
-	Set<String> getIssueKeysAsSet();
-
 	void setJiraIssueKeys(List<String> issueKeys);
 
 	boolean addJiraIssueKey(String issueKey);
 
-	boolean removeIssueKey(String issueKey);
+	boolean removeJiraIssueKey(String issueKey);
 	// END IssueKey-Section
 
 	RevCommit getRevCommit();

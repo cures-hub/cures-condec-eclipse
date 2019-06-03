@@ -1,7 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
+import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,145 +11,116 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
- * Connects with JIRA
+ * Class to connect to a JIRA project associated with this Eclipse project.
+ * Retrieves JIRA issues.
  */
 public class JiraClientImpl implements JiraClient {
 
-	private AsynchronousJiraRestClientFactory factory;
 	private JiraRestClient jiraRestClient;
-	private boolean isAuthenticated = false;
-	private static Map<String, JiraClient> instances = new HashMap<String, JiraClient>();
-
-	public static JiraClient getOrCreate() {
-		String url = ConfigPersistenceManager.getJiraUrl().toLowerCase();
-		if (instances.containsKey(url)) {
-			return instances.get(url);
-		} else {
-			JiraClient jm = new JiraClientImpl();
-			instances.put(url, jm);
-			return jm;
-		}
-	}
+	private boolean isWorking;
 
 	public JiraClientImpl() {
-		this.factory = new AsynchronousJiraRestClientFactory();
-	}
-
-	public static Map<String, JiraClient> getInstances() {
-		return instances;
-	}
-
-	@Override
-	public int authenticate(String jiraURL, String username, String password) {
-		int response = 0;
-
-		try {
-			this.jiraRestClient = this.factory.createWithBasicHttpAuthentication(new URI(jiraURL), username, password);
-			response = this.getAuthenticationResponse(username);
-
-			if (response == 0)
-				this.isAuthenticated = true;
-
-		} catch (URISyntaxException e) {
-			System.err.println("Authentication failed.");
-			e.printStackTrace();
-		}
-		return response;
+		boolean isValidUser = this.authenticate();
+		boolean isValidProject = isValidProject();
+		this.isWorking = isValidUser && isValidProject;
 	}
 
 	@Override
-	public int authenticate() {
-		return authenticate(ConfigPersistenceManager.getJiraUrl(), ConfigPersistenceManager.getJiraUser(),
+	public boolean authenticate() {
+		return authenticate(ConfigPersistenceManager.getJiraURI(), ConfigPersistenceManager.getJiraUser(),
 				ConfigPersistenceManager.getJiraPassword());
 	}
 
 	@Override
-	public int getAuthenticationResponse(String username) {
+	public boolean authenticate(URI jiraURI, String username, String password) {
+		this.jiraRestClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(jiraURI,
+				username, password);
+		return isValidUser(username);
+	}
+
+	private boolean isValidUser(String username) {
+		boolean isValidUser = true;
 		try {
 			this.getJiraRestClient().getUserClient().getUser(username).get().getSelf();
-		} catch (InterruptedException | ExecutionException e) {
-			System.err.println("The JIRA username seems to be wrong.");
-			System.err.println(e.getMessage());
-			return 1;
+		} catch (ExecutionException | InterruptedException e) {
+			isValidUser = false;
+			System.err.println("The JIRA username seems to be wrong. Message: " + e.getMessage());
 		}
 
 		try {
 			this.getJiraRestClient().getSessionClient().getCurrentSession().get().getUserUri().getPath();
 		} catch (Exception e) {
-			System.err.println("There is a problem with establishing the session.");
-			System.err.println(e.getMessage());
-			return 2;
+			isValidUser = false;
+			System.err.println("There is a problem with establishing the session. Message: " + e.getMessage());
 		}
+		return isValidUser;
+	}
 
+	private boolean isValidProject() {
+		return isValidProject(ConfigPersistenceManager.getProjectKey());
+	}
+
+	private boolean isValidProject(String projectKey) {
+		boolean isValidProject = true;
 		try {
-			this.getJiraRestClient().getProjectClient().getProject(ConfigPersistenceManager.getProjectKey());
+			this.getJiraRestClient().getProjectClient().getProject(projectKey);
 		} catch (Exception e) {
-			System.err.println("The project is unknown.");
-			System.err.println(e.getMessage());
-			return 3;
+			isValidProject = false;
+			System.err.println("The JIRA project is unknown. Message: " + e.getMessage());
 		}
-		return 0;
+		return isValidProject;
 	}
 
 	@Override
-	public Set<JiraIssue> getAllIssues() {
-		Set<JiraIssue> allIssues = new HashSet<JiraIssue>();
-		try {
-			for (BasicIssue issue : this.getJiraRestClient().getSearchClient()
-					.searchJql("project=\"" + ConfigPersistenceManager.getProjectKey() + "\"", -1, 0).claim()
-					.getIssues()) {
-				allIssues.add(JiraIssueImpl.getOrCreate(issue.getKey(), this));
-			}
-		} catch (Exception e) {
-
+	public Set<JiraIssue> getAllJiraIssues() {
+		Set<JiraIssue> jiraIssues = new HashSet<JiraIssue>();
+		for (BasicIssue jiraIssue : this.getJiraRestClient().getSearchClient()
+				.searchJql("project=\"" + ConfigPersistenceManager.getProjectKey() + "\"", -1, 0, null).claim()
+				.getIssues()) {
+			jiraIssues.add(JiraIssue.getOrCreate(jiraIssue.getKey(), this));
 		}
-		return allIssues;
+		return jiraIssues;
 	}
 
 	@Override
-	public Issue getIssue(String issueKey) {
-		// if (issueKey.getKeynumber() == 0) {
-		// return null;
-		// }
-		Issue issue = null;
+	public Issue getJiraIssue(String jiraIssueKey) {
+		Issue jiraIssue = null;
 		try {
-			issue = this.getJiraRestClient().getIssueClient().getIssue(issueKey).get();
+			jiraIssue = this.getJiraRestClient().getIssueClient().getIssue(jiraIssueKey).get();
 		} catch (InterruptedException | ExecutionException e) {
-			System.err.println(issueKey + ": " + e.getMessage());
-			e.printStackTrace();
+			System.err.println(jiraIssueKey + ": " + e.getMessage());
 		}
-		return issue;
+		return jiraIssue;
 	}
 
 	@Override
-	public Map<Issue, Integer> getLinkedIssues(Issue issue, int distance) {
+	public Map<Issue, Integer> getLinkedIssues(Issue jiraIssue, int distance) {
 		Map<Issue, Integer> linkedIssuesAtDistance = new HashMap<Issue, Integer>();
 
-		if (issue == null || distance == 0) {
+		if (jiraIssue == null || distance == 0) {
 			return linkedIssuesAtDistance;
 		}
 
 		List<String> analyzedIssueKeys = new ArrayList<String>();
-		analyzedIssueKeys.add(issue.getKey());
+		analyzedIssueKeys.add(jiraIssue.getKey());
 		for (int i = 1; i <= distance; i++) {
-			List<String> neighborIssueKeys = getKeysOfNeighborIssues(issue);
+			List<String> neighborIssueKeys = getKeysOfNeighborJiraIssues(jiraIssue);
 			for (String issueKey : neighborIssueKeys) {
 				if (!analyzedIssueKeys.contains(issueKey)) {
 					analyzedIssueKeys.add(issueKey);
-					issue = this.getIssue(issueKey);
-					linkedIssuesAtDistance.put(issue, i);
+					Issue linkedJiraIssue = this.getJiraIssue(issueKey);
+					linkedIssuesAtDistance.put(linkedJiraIssue, i);
 				}
 			}
 		}
@@ -157,15 +128,14 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public List<String> getKeysOfNeighborIssues(Issue issue) {
-
-		if (issue == null) {
-			return null;
-		}
-
+	public List<String> getKeysOfNeighborJiraIssues(Issue jiraIssue) {
 		List<String> neighborIssueKeys = new ArrayList<String>();
 
-		Iterable<IssueLink> issueLinkIterable = issue.getIssueLinks();
+		if (jiraIssue == null) {
+			return neighborIssueKeys;
+		}
+
+		Iterable<IssueLink> issueLinkIterable = jiraIssue.getIssueLinks();
 		Iterator<IssueLink> issueLinkIterator = issueLinkIterable.iterator();
 
 		while (issueLinkIterator.hasNext()) {
@@ -181,16 +151,10 @@ public class JiraClientImpl implements JiraClient {
 	@Override
 	public void close() {
 		try {
-			// Does not work with current JIRA-Rest-API:
-			// this.jiraRestClient.close();
-		} catch (Exception e) {
-			System.err.println("IOException during closing REST client. " + e.getMessage());
+			this.jiraRestClient.close();
+		} catch (IOException e) {
+			System.err.println("JIRA REST client could not be closed. Message: " + e.getMessage());
 		}
-	}
-
-	@Override
-	public boolean isAuthenticated() {
-		return this.isAuthenticated;
 	}
 
 	@Override
@@ -201,5 +165,10 @@ public class JiraClientImpl implements JiraClient {
 	@Override
 	public JiraRestClient getJiraRestClient() {
 		return this.jiraRestClient;
+	}
+
+	@Override
+	public boolean isWorking() {
+		return isWorking;
 	}
 }

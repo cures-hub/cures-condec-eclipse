@@ -21,6 +21,26 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class CurrentFile {
 
 	/**
+	 * Retrieves the editor content of the currently opened file
+	 * 
+	 * @return content as String
+	 */
+	public static String getCurrentEditorContent() {
+
+		final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.getActiveEditor();
+
+		if (!(editor instanceof ITextEditor)) {
+			return null;
+		}
+
+		ITextEditor textEditor = (ITextEditor) editor;
+		IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+
+		return document.get();
+	}
+
+	/**
 	 * Retrieves the current line of cursor position
 	 * 
 	 * @return current line of cursor position (workbench starts with line 0)
@@ -53,26 +73,6 @@ public class CurrentFile {
 		}
 
 		return lineNumber;
-	}
-
-	/**
-	 * Retrieves the editor content of the currently opened file
-	 * 
-	 * @return content as String
-	 */
-	public static String getCurrentEditorContent() {
-
-		final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.getActiveEditor();
-
-		if (!(editor instanceof ITextEditor)) {
-			return null;
-		}
-
-		ITextEditor textEditor = (ITextEditor) editor;
-		IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-
-		return document.get();
 	}
 
 	/**

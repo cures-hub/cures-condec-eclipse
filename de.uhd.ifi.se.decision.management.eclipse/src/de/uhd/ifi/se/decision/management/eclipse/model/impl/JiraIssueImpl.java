@@ -1,73 +1,17 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.net.URI;
 
-import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
-	private static Map<Issue, JiraIssueImpl> instances = new HashMap<Issue, JiraIssueImpl>();
-	private static Map<String, JiraIssueImpl> instances_alternative = new HashMap<String, JiraIssueImpl>();
 	private Issue issue;
-	private String issueKey;
 
-	public static Set<JiraIssueImpl> getInstances() {
-		Set<JiraIssueImpl> output = new HashSet<JiraIssueImpl>();
-		for (Map.Entry<Issue, JiraIssueImpl> entry : instances.entrySet()) {
-			output.add(entry.getValue());
-		}
-		return output;
-	}
-
-	public static JiraIssue getOrCreate(Issue issue) {
-		if (instances.containsKey(issue)) {
-			return instances.get(issue);
-		} else {
-			return new JiraIssueImpl(issue);
-		}
-	}
-
-	/**
-	 * 
-	 * @param issueKey
-	 *            The IssueKey which should be resolved to a JiraIssue-instance.
-	 * @param jiraManager
-	 *            The JiraManager which might be needed to pull the issue from the
-	 *            server and store it in a JiraIssue-object.
-	 * @return Might be null, if the given IssueKey couldn't be resolved to a
-	 *         JiraIssue-object.
-	 */
-	public static JiraIssueImpl getOrCreate(String issueKey, JiraClient jiraManager) {
-		if (issueKey == null) {
-			return null;
-		}
-		if (instances_alternative.containsKey(issueKey)) {
-			return instances_alternative.get(issueKey);
-		} else {
-			try {
-				Issue pulled_issue = jiraManager.getIssue(issueKey);
-				if (pulled_issue != null) {
-					return new JiraIssueImpl(pulled_issue);
-				} else {
-					return null;
-				}
-			} catch (Exception e) {
-				return null;
-			}
-		}
-	}
-
-	private JiraIssueImpl(Issue issue) {
+	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
-		this.issueKey = this.issue.getKey();
-		instances.put(this.issue, this);
-		instances_alternative.put(this.issue.getKey().toLowerCase(), this);
 	}
 
 	@Override
@@ -77,11 +21,25 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 
 	@Override
 	public String getJiraIssueKey() {
-		return this.issueKey;
+		return this.issue.getKey();
 	}
 
 	@Override
 	public String toString() {
-		return this.issueKey + ":" + this.issue.getSummary();
+		return this.getJiraIssueKey() + ":" + this.issue.getSummary();
+	}
+
+	@Override
+	public URI getUri() {
+		String restUri = issue.getSelf().toString();
+		String jiraIssueUri = "";
+		for (String uriPart : restUri.split("/")) {
+			if ("rest".equals(uriPart)) {
+				jiraIssueUri += "projects/" + issue.getProject().getKey() + "/issues/" + issue.getKey();
+				break;
+			}
+			jiraIssueUri += uriPart + "/";
+		}
+		return URI.create(jiraIssueUri);
 	}
 }

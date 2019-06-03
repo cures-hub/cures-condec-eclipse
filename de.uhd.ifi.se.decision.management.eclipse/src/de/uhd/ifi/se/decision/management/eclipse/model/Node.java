@@ -1,90 +1,95 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.NodeImpl;
 
+/**
+ * Interface for nodes of the knowledge graph.
+ */
 public interface Node {
+
 	/**
 	 * Get the id of the node.
 	 *
-	 * @return id of the decision knowledge element.
+	 * @return id of the node.
 	 */
 	long getId();
 
 	/**
-	 * Set the id of the node. This function should only be used when creating
-	 * a new Node-instance.
+	 * Set the id of the node. This function should only be used when creating a new
+	 * Node-instance.
 	 *
 	 * @param id
-	 *            of the decision knowledge element.
+	 *            of the node.
 	 */
 	void setId(long id);
-	
+
 	/**
 	 * Get the visibility of the current node.
-	 *  
-	 * @return True if node is visible, otherwise false.
+	 * 
+	 * @return true if node is visible, otherwise false.
 	 */
 	boolean getVisibility();
-	
+
 	/**
 	 * Set the node to visible or invisible.
+	 * 
 	 * @param visible
-	 * 				is true, if node is visible and false, if node is invisible.
+	 *            true if node is visible and false if node is invisible.
 	 */
 	void setVisibility(boolean isVisible);
-	
+
 	/**
-	 * Add a reference to another node for creating a link
-	 * @param node 
-	 * 			is the node, where the link is pointing to.
+	 * Add a reference to another node to create a link/an edge.
+	 * 
+	 * @param node
+	 *            is the node, where the link is pointing to.
 	 * @return is true, if linking was successful.
 	 */
 	boolean addLinkedNode(Node node);
-	
+
 	/**
 	 * Remove a reference to another node which is linked.
+	 * 
 	 * @param node
-	 * 			is the node, which is going to be removed from the linked list.
+	 *            node that is removed from the linked list.
 	 */
 	boolean removeLinkedNode(Node node);
-	
+
 	/**
-	 * Removes all links from a node. Other nodes might still point at this node.
+	 * Removes all outgoing links from a node. Other nodes might still point at this
+	 * node.
 	 */
-	void clearLinkedNodes();
-	
+	void removeLinkedNodes();
+
 	/**
 	 * Checks if the current node has a link to a given node.
+	 * 
 	 * @param node
-	 * 			is the node, which will be checked for having a link to.
-	 * @return
-	 * 		is true, if there is a link to the node and is false, if there is no link
-	 * 		to the given node.
+	 *            node that might be linked.
+	 * @return true if there is a link to the node, otherwise false.
 	 */
 	boolean isLinkedToNode(Node node);
-	
+
 	/**
 	 * Get the full list of all linked nodes.
-	 * @return
-	 * 		The ArrayList is never null. It contains all linked nodes.
+	 * 
+	 * @return The ArrayList is never null. It contains all linked nodes.
 	 */
-	HashSet<Node> getLinks();
-	
+	Set<Node> getLinkedNodes();
+
 	/**
-	 * Get a INode object by its id.
+	 * Get a node object by its id.
 	 * 
 	 * @param id
-	 *            is the id which needs to be looked for.
-	 * @return returns null, if the object wasn't found. Otherwise the node-object
-	 *         will be returned.
+	 *            that is looked for.
+	 * @return node-object or null, if the object was not found.
 	 */
 	public static Node getNodeById(long id) {
 		if (NodeImpl.nodes.containsKey(id)) {
 			return NodeImpl.nodes.get(id);
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

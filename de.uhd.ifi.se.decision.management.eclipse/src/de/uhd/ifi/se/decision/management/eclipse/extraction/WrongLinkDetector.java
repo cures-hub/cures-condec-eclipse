@@ -18,45 +18,10 @@ public class WrongLinkDetector {
 	 *            the project key of the JIRA project
 	 * @return String returns the verdict
 	 */
-	public static String tanglednessToString(String commitMessage, String projectKey) {
-		String tangledness = "heavily tangled";
-
-		double allVerdictsCombined = assessTangledness(commitMessage, projectKey);
-		allVerdictsCombined = allVerdictsCombined / 4;
-
-		if (allVerdictsCombined >= 0.5) {
-			tangledness = "tangled";
-		}
-
-		if (allVerdictsCombined >= 0.75) {
-			tangledness = "slightly tangled";
-		}
-
-		if (allVerdictsCombined >= 0.95) {
-			tangledness = "untangled";
-		}
-
-		return tangledness;
-	}
-	
-	public static String tanglednessToString(RevCommit commit, String projectKey) {
-		return tanglednessToString(commit.getFullMessage(), projectKey);
-	}
-
-	/**
-	 * Judges a commit message, untangledness resembles 1, tangling/wrong link
-	 * resembles 0
-	 * 
-	 * @param commitMessage
-	 *            the commit message to be analyzed
-	 * @param projectKey
-	 *            the project key of the JIRA project
-	 * @return String returns the verdict
-	 */
 	public static double assessTangledness(String commitMessage, String projectKey) {
 		return hasMultipleIds(commitMessage, projectKey) + includesAnd(commitMessage) + includesComma(commitMessage);
 	}
-
+	
 	/**
 	 * Looks if the commit message contains multiple issue keys, weight is 2/4
 	 * 
@@ -119,5 +84,40 @@ public class WrongLinkDetector {
 		}
 
 		return judge;
+	}
+
+	public static String tanglednessToString(RevCommit commit, String projectKey) {
+		return tanglednessToString(commit.getFullMessage(), projectKey);
+	}
+
+	/**
+	 * Judges a commit message, untangledness resembles 1, tangling/wrong link
+	 * resembles 0
+	 * 
+	 * @param commitMessage
+	 *            the commit message to be analyzed
+	 * @param projectKey
+	 *            the project key of the JIRA project
+	 * @return String returns the verdict
+	 */
+	public static String tanglednessToString(String commitMessage, String projectKey) {
+		String tangledness = "heavily tangled";
+
+		double allVerdictsCombined = assessTangledness(commitMessage, projectKey);
+		allVerdictsCombined = allVerdictsCombined / 4;
+
+		if (allVerdictsCombined >= 0.5) {
+			tangledness = "tangled";
+		}
+
+		if (allVerdictsCombined >= 0.75) {
+			tangledness = "slightly tangled";
+		}
+
+		if (allVerdictsCombined >= 0.95) {
+			tangledness = "untangled";
+		}
+
+		return tangledness;
 	}
 }

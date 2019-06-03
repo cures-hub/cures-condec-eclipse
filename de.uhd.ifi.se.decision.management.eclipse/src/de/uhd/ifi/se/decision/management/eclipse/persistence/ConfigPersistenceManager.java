@@ -1,5 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
+import java.net.URI;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
@@ -45,8 +47,8 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		return getPreference(BRANCH);
 	}
 
-	public static String getJiraUrl() {
-		return getPreference(JIRA_URL);
+	public static URI getJiraURI() {
+		return URI.create(getPreference(JIRA_URL));
 	}
 
 	public static String getJiraUser() {
