@@ -20,9 +20,8 @@ public class GephiGraph {
 	private GraphModel graphModel;
 	public DirectedGraph directedGraph;
 	private Map<Node, Set<Node>> graph;
-	private KnowledgeGraphView view;
 	
-	public GephiGraph(KnowledgeGraphView view) {
+	public GephiGraph() {
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		Workspace workspace = projectController.getCurrentWorkspace();
@@ -32,8 +31,6 @@ public class GephiGraph {
 		
 		GraphView graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
-		
-		this.view = view;
 	}
 	
 	public void createGephiGraph(Map<Node, Set<Node>> graph) {
@@ -48,7 +45,6 @@ public class GephiGraph {
 			setPosition(gephiNode, nodes.size());
 			directedGraph.addNode(gephiNode);
 		}
-		view.updateNodeSizes();
 		createEdges();
 	}
 	

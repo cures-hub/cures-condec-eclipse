@@ -65,7 +65,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	public GephiGraph gephiGraph;
 
 	public KnowledgeGraphViewImpl() {
-		this.gephiGraph = new GephiGraph(this);
+		this.gephiGraph = new GephiGraph();
 		
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
@@ -83,6 +83,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.graph = linker.createKnowledgeGraph();
 		this.gephiGraph.createGephiGraph(graph);
 
+		updateNodeSizes();
 		resetFilters();
 		initJFrame("Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
 		refresh();
@@ -109,6 +110,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			graph.put(n, links);
 		}
 		this.gephiGraph.createGephiGraph(graph);
+		
+		updateNodeSizes();
 		resetFilters();
 		initJFrame("Knowledge Graph for \"" + rootNode.toString() + "\" with Link Distance " + depth);
 		refresh();
