@@ -9,4 +9,6 @@ public interface KnowledgeGraphView {
 
 	void showSubGraph(Node rootNode, int depth, Linker linker);
 
+	void updateNodeSizes();
+
 }

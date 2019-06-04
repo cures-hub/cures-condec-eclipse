@@ -22,16 +22,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
@@ -41,6 +34,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
+import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
@@ -63,25 +57,20 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JCheckBox fKIOther;
 	private JCheckBox fKIPro;
 	private JCheckBox fKnowledgeItems;
-	private Map<Node, Set<Node>> map;
-	private GraphModel graphModel;
-	private DirectedGraph directedGraph;
+	private Map<Node, Set<Node>> graph;
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
 	private Linker linker = null;
 	public GraphFiltering graphFiltering;
+	public GephiGraph gephiGraph;
 
 	public KnowledgeGraphViewImpl() {
-		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-		projectController.newProject();
-		Workspace workspace = projectController.getCurrentWorkspace();
-		this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-		this.directedGraph = graphModel.getDirectedGraph();
+		this.gephiGraph = new GephiGraph(this);
+		
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
 		this.previewSketch = new PreviewSketch(target);
-		GraphView graphView = graphModel.getGraph().getView();
-		this.graphModel.setVisibleView(graphView);
+		
 		GraphSettings.initPreviewModel(previewController);
 		this.graphFiltering = new GraphFiltering();
 	}
@@ -91,9 +80,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
-		this.map = linker.createKnowledgeGraph();
-		generateGraph(map.keySet());
-		GraphSettings.getLayoutType().generateLayout(graphModel, map.size());
+		this.graph = linker.createKnowledgeGraph();
+		this.gephiGraph.createGephiGraph(graph);
+
 		resetFilters();
 		initJFrame("Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
 		refresh();
@@ -105,10 +94,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			this.linker = linker;
 		}
 		Set<Node> nodes = linker.createLinks(rootNode, depth);
-		if (map != null) {
-			map.clear();
+		if (graph != null) {
+			graph.clear();
 		} else {
-			map = new HashMap<Node, Set<Node>>();
+			graph = new HashMap<Node, Set<Node>>();
 		}
 		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
 			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> links = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
@@ -117,10 +106,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 					links.add(neighbor);
 				}
 			}
-			map.put(n, links);
+			graph.put(n, links);
 		}
-		generateGraph(nodes);
-		GraphSettings.getLayoutType().generateLayout(graphModel, map.size());
+		this.gephiGraph.createGephiGraph(graph);
 		resetFilters();
 		initJFrame("Knowledge Graph for \"" + rootNode.toString() + "\" with Link Distance " + depth);
 		refresh();
@@ -148,54 +136,52 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		frame.setVisible(true);
 	}
 
-	private void generateGraph(Set<Node> nodes) {
-		for (Node node : nodes) {
-			org.gephi.graph.api.Node gephiNode = createNode(node);
-			setPosition(gephiNode, nodes.size());
-			directedGraph.addNode(gephiNode);
+	private void highlightGraph() {
+		de.uhd.ifi.se.decision.management.eclipse.model.Node inode = de.uhd.ifi.se.decision.management.eclipse.model.Node
+				.getNodeById(interactionID);
+		if (inode != null) {
+			for (org.gephi.graph.api.Node n : gephiGraph.directedGraph.getNodes()) {
+				n.setSize(0f);
+			}
+			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
+			gephiGraph.directedGraph.getNode(String.valueOf(interactionID)).setSize(15f);
+			visitedNodes.add(inode);
+			highlightNodes(inode, 1, ConfigPersistenceManager.getLinkDistance(),
+					15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
 		}
-		updateNodeSizes();
-		createEdges();
 	}
 
-	private org.gephi.graph.api.Node createNode(Node node) {
-		org.gephi.graph.api.Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
-		gephiNode.setLabel("[" + String.valueOf(node.getId()) + "] " + node.toString());
-		GraphSettings.getColor(node);
-		gephiNode.setColor(GraphSettings.getColor(node));
-		return gephiNode;
-	}
-
-	private void setPosition(org.gephi.graph.api.Node gephiNode, int numberOfNodes) {
-		gephiNode.setX((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
-		gephiNode.setY((float) Math.random() * 100f * (float) Math.sqrt(numberOfNodes));
-	}
-
-	private void createEdges() {
-		for (Map.Entry<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>> entry : map
-				.entrySet()) {
-			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : entry.getValue()) {
-				try {
-					Edge e = graphModel.factory().newEdge(directedGraph.getNode(String.valueOf(entry.getKey().getId())),
-							directedGraph.getNode(String.valueOf(n.getId())), 0, 1.0, true);
-					directedGraph.addEdge(e);
-				} catch (Exception ex) {
-					if (entry.getKey() == null) {
-						System.out.println(
-								"NullPointerException in generateGraph(): Linker added a null-object to the Node-List.");
-					}
-					if (n == null) {
-						System.out.println(
-								"NullPointerException in generateGraph(): Linker added a null-object as a linked Node.");
-					}
-					if (n != null && entry.getKey() != null) {
-						System.out.println(
-								"Failed to link \"" + entry.getKey().toString() + "\" with \"" + n.toString() + "\"");
-					}
-					System.out.println("Error-Message: " + ex.getMessage());
-				}
+	private void highlightNodes(de.uhd.ifi.se.decision.management.eclipse.model.Node node, int currentDepth,
+			int maxDepth, float size, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes) {
+		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
+			if (!visitedNodes.contains(n)) {
+				gephiGraph.directedGraph.getNode(String.valueOf(n.getId())).setSize(size);
+				visitedNodes.add(n);
 			}
 		}
+		if (currentDepth + 1 < maxDepth) {
+			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
+				highlightNodes(n, currentDepth + 1, maxDepth, size / ConfigPersistenceManager.getDecreaseFactor(),
+						visitedNodes);
+			}
+		}
+	}
+
+	/**
+	 * Resets the sizes of all nodes depending on the amount of links bound to the
+	 * node.
+	 * 
+	 * @see updateNodeSize(Node node)
+	 */
+	public void updateNodeSizes() {
+		if (interactionID < 0) {
+			for (org.gephi.graph.api.Node gephiNode : gephiGraph.directedGraph.getNodes()) {
+				updateNodeSize(gephiNode);
+			}
+		} else {
+			highlightGraph();
+		}
+		refresh();
 	}
 
 	/**
@@ -204,7 +190,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * @param node
 	 *            The node which size should be reset
 	 */
-	private void updateNodeSize(org.gephi.graph.api.Node node) {
+	public void updateNodeSize(org.gephi.graph.api.Node node) {
 		de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
 				.getNodeById(Long.valueOf(node.getId().toString()));
 		// first - should the node be even visible?
@@ -224,54 +210,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		} else {
 			node.setSize(0f);
 		}
-	}
-
-	private void highlightGraph() {
-		de.uhd.ifi.se.decision.management.eclipse.model.Node inode = de.uhd.ifi.se.decision.management.eclipse.model.Node
-				.getNodeById(interactionID);
-		if (inode != null) {
-			for (org.gephi.graph.api.Node n : directedGraph.getNodes()) {
-				n.setSize(0f);
-			}
-			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
-			directedGraph.getNode(String.valueOf(interactionID)).setSize(15f);
-			visitedNodes.add(inode);
-			highlightNodes(inode, 1, ConfigPersistenceManager.getLinkDistance(),
-					15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
-		}
-	}
-
-	private void highlightNodes(de.uhd.ifi.se.decision.management.eclipse.model.Node node, int currentDepth,
-			int maxDepth, float size, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes) {
-		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
-			if (!visitedNodes.contains(n)) {
-				directedGraph.getNode(String.valueOf(n.getId())).setSize(size);
-				visitedNodes.add(n);
-			}
-		}
-		if (currentDepth + 1 < maxDepth) {
-			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
-				highlightNodes(n, currentDepth + 1, maxDepth, size / ConfigPersistenceManager.getDecreaseFactor(),
-						visitedNodes);
-			}
-		}
-	}
-
-	/**
-	 * Resets the sizes of all nodes depending on the amount of links bound to the
-	 * node.
-	 * 
-	 * @see updateNodeSize(Node node)
-	 */
-	private void updateNodeSizes() {
-		if (interactionID < 0) {
-			for (org.gephi.graph.api.Node gephiNode : directedGraph.getNodes()) {
-				updateNodeSize(gephiNode);
-			}
-		} else {
-			highlightGraph();
-		}
-		refresh();
 	}
 
 	private void refresh() {
@@ -564,7 +502,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				try {
 					long id = Long.parseLong(tfInteraction.getText());
 					if (id > 0) {
-						org.gephi.graph.api.Node n = directedGraph.getNode(tfInteraction.getText());
+						org.gephi.graph.api.Node n = gephiGraph.directedGraph.getNode(tfInteraction.getText());
 						if (n != null) {
 							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
 									.getNodeById(id);

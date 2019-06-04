@@ -69,7 +69,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	}
 
 	public void refresh() {
-		target.refresh();
+		this.target.refresh();
 		refreshLoop.refreshSketch();
 	}
 
