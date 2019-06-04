@@ -46,8 +46,8 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 			}
 		}
 		if (rootNode != null) {
-			KnowledgeGraphView mapDesigner = new KnowledgeGraphViewImpl();
-			mapDesigner.showSubGraph(rootNode, ConfigPersistenceManager.getLinkDistance(), linker);
+			KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
+			knowledgeGraphView.createView(rootNode, ConfigPersistenceManager.getLinkDistance(), linker);
 		} else {
 			JOptionPane optionPane = new JOptionPane("Could not find the selected file in the repository!",
 					JOptionPane.WARNING_MESSAGE);

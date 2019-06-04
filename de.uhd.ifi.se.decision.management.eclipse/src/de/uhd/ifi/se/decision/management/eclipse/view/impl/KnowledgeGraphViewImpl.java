@@ -41,7 +41,7 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private String searchString = "";
-	private long interactionID = -1;
+	private long selectedNodeId = -1;
 	private JTextField tfSearch;
 	private JTextField tfInteraction;
 	private JCheckBox fClasses;
@@ -75,7 +75,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void showGraph(Linker linker) {
+	public void createView(Linker linker) {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
@@ -89,15 +89,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void showSubGraph(Node rootNode, int depth, Linker linker) {
+	public void createView(Node rootNode, int depth, Linker linker) {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
 		Set<Node> nodes = linker.createLinks(rootNode, depth);
 		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
-		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
-			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> links = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
-			for (de.uhd.ifi.se.decision.management.eclipse.model.Node neighbor : n.getLinkedNodes()) {
+		for (Node n : nodes) {
+			Set<Node> links = new HashSet<Node>();
+			for (Node neighbor : n.getLinkedNodes()) {
 				if (nodes.contains(neighbor)) {
 					links.add(neighbor);
 				}
@@ -115,16 +115,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private void initJFrame(String title) {
 		JFrame frame = new JFrame(title);
 		frame.setLayout(new BorderLayout());
-
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(previewSketch, BorderLayout.CENTER);
-
 		setOverlay(frame);
-
 		frame.setSize(1600, 900);
-
-		// Wait for the frame to be visible before painting, or the result drawing will
-		// be strange
 		frame.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentShown(ComponentEvent e) {
@@ -134,27 +128,30 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		frame.setVisible(true);
 	}
 
-	private void highlightGraph() {
-		de.uhd.ifi.se.decision.management.eclipse.model.Node inode = de.uhd.ifi.se.decision.management.eclipse.model.Node
-				.getNodeById(interactionID);
-		if (inode != null) {
-			for (org.gephi.graph.api.Node n : gephiGraph.directedGraph.getNodes()) {
-				n.setSize(0f);
-			}
-			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
-			gephiGraph.directedGraph.getNode(String.valueOf(interactionID)).setSize(15f);
-			visitedNodes.add(inode);
-			highlightNodes(inode, 1, ConfigPersistenceManager.getLinkDistance(),
-					15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
+	private void highlightSelectedNode(Node node) {
+		if (node == null) {
+			return;
 		}
+		for (org.gephi.graph.api.Node gephiNode : gephiGraph.directedGraph.getNodes()) {
+			gephiNode.setSize(0f);
+		}
+		Set<Node> visitedNodes = new HashSet<Node>();
+		gephiGraph.directedGraph.getNode(String.valueOf(selectedNodeId)).setSize(15f);
+		visitedNodes.add(node);
+		highlightNodes(node, 1, ConfigPersistenceManager.getLinkDistance(),
+				15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
 	}
 
-	private void highlightNodes(de.uhd.ifi.se.decision.management.eclipse.model.Node node, int currentDepth,
-			int maxDepth, float size, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> visitedNodes) {
-		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
-			if (!visitedNodes.contains(n)) {
-				gephiGraph.directedGraph.getNode(String.valueOf(n.getId())).setSize(size);
-				visitedNodes.add(n);
+	private void highlightSelectedNode() {
+		Node node = Node.getNodeById(selectedNodeId);
+		highlightSelectedNode(node);
+	}
+
+	private void highlightNodes(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
+		for (Node linkedNode : node.getLinkedNodes()) {
+			if (!visitedNodes.contains(linkedNode)) {
+				gephiGraph.directedGraph.getNode(String.valueOf(linkedNode.getId())).setSize(size);
+				visitedNodes.add(linkedNode);
 			}
 		}
 		if (currentDepth + 1 < maxDepth) {
@@ -172,12 +169,12 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * @see updateNodeSize(Node node)
 	 */
 	public void updateNodeSizes() {
-		if (interactionID < 0) {
+		if (selectedNodeId < 0) {
 			for (org.gephi.graph.api.Node gephiNode : gephiGraph.directedGraph.getNodes()) {
 				updateNodeSize(gephiNode);
 			}
 		} else {
-			highlightGraph();
+			highlightSelectedNode();
 		}
 		refresh();
 	}
@@ -185,28 +182,27 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	/**
 	 * Resets the size of the given node.
 	 * 
-	 * @param node
+	 * @param gephiNode
 	 *            The node which size should be reset
 	 */
-	public void updateNodeSize(org.gephi.graph.api.Node node) {
-		de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
-				.getNodeById(Long.valueOf(node.getId().toString()));
+	public void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
+		Node node = Node.getNodeById(Long.valueOf(gephiNode.getId().toString()));
 		// first - should the node be even visible?
 		// inside the if/else:
 		// is a filter active, which must be regarded?
-		if (graphFiltering.shouldBeVisible(this, iN)) {
+		if (graphFiltering.shouldBeVisible(this, node)) {
 			if (searchString == null || searchString.isEmpty()) {
-				float size = (float) Math.sqrt(Double.valueOf(iN.getLinkedNodes().size()));
-				node.setSize((size > 0 ? size : 0.75f));
+				float size = (float) Math.sqrt(Double.valueOf(node.getLinkedNodes().size()));
+				gephiNode.setSize((size > 0 ? size : 0.75f));
 			} else {
-				if (node.getLabel().toLowerCase().contains(searchString.toLowerCase())) {
-					node.setSize(5f);
+				if (gephiNode.getLabel().toLowerCase().contains(searchString.toLowerCase())) {
+					gephiNode.setSize(5f);
 				} else {
-					node.setSize(0.75f);
+					gephiNode.setSize(0.75f);
 				}
 			}
 		} else {
-			node.setSize(0f);
+			gephiNode.setSize(0f);
 		}
 	}
 
@@ -476,9 +472,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				try {
 					String highlight = tfInteraction.getText();
 					if (highlight == null || highlight.isEmpty()) {
-						interactionID = -1;
+						selectedNodeId = -1;
 					} else {
-						interactionID = Long.parseLong(highlight);
+						selectedNodeId = Long.parseLong(highlight);
 					}
 					updateNodeSizes();
 				} catch (Exception ex) {
@@ -568,7 +564,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		if (fKnowledgeItems != null)
 			fKnowledgeItems.setSelected(true);
 		searchString = "";
-		interactionID = -1;
+		selectedNodeId = -1;
 		graphFiltering = new GraphFiltering();
 	}
 }

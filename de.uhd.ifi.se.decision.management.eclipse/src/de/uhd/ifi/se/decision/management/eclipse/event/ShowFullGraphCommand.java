@@ -25,8 +25,8 @@ public class ShowFullGraphCommand extends AbstractHandler {
 		}
 		GitClient gitClient = GitClient.getOrCreate();
 		Linker linker = new LinkerImpl(gitClient, jiraClient);
-		KnowledgeGraphView mapDesigner = new KnowledgeGraphViewImpl();
-		mapDesigner.showGraph(linker);
+		KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
+		knowledgeGraphView.createView(linker);
 		return null;
 	}
 }
