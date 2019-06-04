@@ -57,7 +57,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JCheckBox fKIOther;
 	private JCheckBox fKIPro;
 	private JCheckBox fKnowledgeItems;
-	private Map<Node, Set<Node>> graph;
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
 	private Linker linker = null;
@@ -66,11 +65,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	public KnowledgeGraphViewImpl() {
 		this.gephiGraph = new GephiGraph();
-		
+
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
 		this.previewSketch = new PreviewSketch(target);
-		
+
 		GraphSettings.initPreviewModel(previewController);
 		this.graphFiltering = new GraphFiltering();
 	}
@@ -80,7 +79,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
-		this.graph = linker.createKnowledgeGraph();
+		Map<Node, Set<Node>> graph = linker.createKnowledgeGraph();
 		this.gephiGraph.createGephiGraph(graph);
 
 		updateNodeSizes();
@@ -95,11 +94,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			this.linker = linker;
 		}
 		Set<Node> nodes = linker.createLinks(rootNode, depth);
-		if (graph != null) {
-			graph.clear();
-		} else {
-			graph = new HashMap<Node, Set<Node>>();
-		}
+		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
 		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
 			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> links = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
 			for (de.uhd.ifi.se.decision.management.eclipse.model.Node neighbor : n.getLinkedNodes()) {
@@ -110,7 +105,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			graph.put(n, links);
 		}
 		this.gephiGraph.createGephiGraph(graph);
-		
+
 		updateNodeSizes();
 		resetFilters();
 		initJFrame("Knowledge Graph for \"" + rootNode.toString() + "\" with Link Distance " + depth);
