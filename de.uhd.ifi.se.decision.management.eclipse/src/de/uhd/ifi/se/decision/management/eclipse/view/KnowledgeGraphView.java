@@ -21,5 +21,5 @@ public interface KnowledgeGraphView {
 	 * 
 	 * @param linker
 	 */
-	void createView(Node rootNode, int distance, Linker linker);
+	void createView(Node selectedNode, int distance, Linker linker);
 }

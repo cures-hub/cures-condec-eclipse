@@ -49,7 +49,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JCheckBox fCFOther;
 	private JCheckBox fCodeMethods;
 	private JCheckBox fCommit;
-	private JCheckBox fFeature;
 	private JCheckBox fIssues;
 	private JCheckBox fKICon;
 	private JCheckBox fKIDecision;
@@ -59,12 +58,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JCheckBox fKnowledgeItems;
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
-	private Linker linker = null;
 	public GraphFiltering graphFiltering;
 	public GephiGraph gephiGraph;
 
 	public KnowledgeGraphViewImpl() {
-		this.gephiGraph = new GephiGraph();
+		this.gephiGraph = new GephiGraphImpl();
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
@@ -76,24 +74,17 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	@Override
 	public void createView(Linker linker) {
-		if (this.linker == null) {
-			this.linker = linker;
-		}
 		Map<Node, Set<Node>> graph = linker.createKnowledgeGraph();
 		this.gephiGraph.createGephiGraph(graph);
 
 		updateNodeSizes();
-		resetFilters();
 		initJFrame("Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
 		refresh();
 	}
 
 	@Override
-	public void createView(Node rootNode, int depth, Linker linker) {
-		if (this.linker == null) {
-			this.linker = linker;
-		}
-		Set<Node> nodes = linker.createLinks(rootNode, depth);
+	public void createView(Node selectedNode, int distance, Linker linker) {
+		Set<Node> nodes = linker.createLinks(selectedNode, distance);
 		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
 		for (Node n : nodes) {
 			Set<Node> links = new HashSet<Node>();
@@ -106,9 +97,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		}
 		this.gephiGraph.createGephiGraph(graph);
 
+		selectedNodeId = selectedNode.getId();
+
 		updateNodeSizes();
-		resetFilters();
-		initJFrame("Knowledge Graph for \"" + rootNode.toString() + "\" with Link Distance " + depth);
+		initJFrame("Knowledge Graph for \"" + selectedNode.toString() + "\" with Link Distance " + distance);
 		refresh();
 	}
 
@@ -128,34 +120,18 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		frame.setVisible(true);
 	}
 
-	private void highlightSelectedNode(Node node) {
-		if (node == null) {
-			return;
-		}
-		for (org.gephi.graph.api.Node gephiNode : gephiGraph.directedGraph.getNodes()) {
-			gephiNode.setSize(0f);
-		}
-		Set<Node> visitedNodes = new HashSet<Node>();
-		gephiGraph.directedGraph.getNode(String.valueOf(selectedNodeId)).setSize(15f);
-		visitedNodes.add(node);
-		highlightNodes(node, 1, ConfigPersistenceManager.getLinkDistance(),
-				15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
-	}
-
-	private void highlightSelectedNode() {
-		Node node = Node.getNodeById(selectedNodeId);
-		highlightSelectedNode(node);
-	}
-
 	private void highlightNodes(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
 		for (Node linkedNode : node.getLinkedNodes()) {
 			if (!visitedNodes.contains(linkedNode)) {
-				gephiGraph.directedGraph.getNode(String.valueOf(linkedNode.getId())).setSize(size);
+				org.gephi.graph.api.Node gephiNode = gephiGraph.getGephiNode(linkedNode);
+				if (gephiNode != null) {
+					gephiNode.setSize(size);
+				}
 				visitedNodes.add(linkedNode);
 			}
 		}
 		if (currentDepth + 1 < maxDepth) {
-			for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : node.getLinkedNodes()) {
+			for (Node n : node.getLinkedNodes()) {
 				highlightNodes(n, currentDepth + 1, maxDepth, size / ConfigPersistenceManager.getDecreaseFactor(),
 						visitedNodes);
 			}
@@ -170,7 +146,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 */
 	public void updateNodeSizes() {
 		if (selectedNodeId < 0) {
-			for (org.gephi.graph.api.Node gephiNode : gephiGraph.directedGraph.getNodes()) {
+			for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
 				updateNodeSize(gephiNode);
 			}
 		} else {
@@ -190,7 +166,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		// first - should the node be even visible?
 		// inside the if/else:
 		// is a filter active, which must be regarded?
-		if (graphFiltering.shouldBeVisible(this, node)) {
+		if (graphFiltering.shouldBeVisible(node)) {
 			if (searchString == null || searchString.isEmpty()) {
 				float size = (float) Math.sqrt(Double.valueOf(node.getLinkedNodes().size()));
 				gephiNode.setSize((size > 0 ? size : 0.75f));
@@ -496,7 +472,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				try {
 					long id = Long.parseLong(tfInteraction.getText());
 					if (id > 0) {
-						org.gephi.graph.api.Node n = gephiGraph.directedGraph.getNode(tfInteraction.getText());
+						org.gephi.graph.api.Node n = gephiGraph.getGephiNode(tfInteraction.getText());
 						if (n != null) {
 							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
 									.getNodeById(id);
@@ -547,8 +523,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			fCodeMethods.setSelected(true);
 		if (fCommit != null)
 			fCommit.setSelected(true);
-		if (fFeature != null)
-			fFeature.setSelected(true);
 		if (fIssues != null)
 			fIssues.setSelected(true);
 		if (fKICon != null)
@@ -566,5 +540,24 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		searchString = "";
 		selectedNodeId = -1;
 		graphFiltering = new GraphFiltering();
+	}
+
+	private void highlightSelectedNode(Node node) {
+		if (node == null) {
+			return;
+		}
+		for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
+			gephiNode.setSize(0f);
+		}
+		Set<Node> visitedNodes = new HashSet<Node>();
+		gephiGraph.getGephiNode(selectedNodeId).setSize(15f);
+		visitedNodes.add(node);
+		highlightNodes(node, 1, ConfigPersistenceManager.getLinkDistance(),
+				15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
+	}
+
+	private void highlightSelectedNode() {
+		Node node = Node.getNodeById(selectedNodeId);
+		highlightSelectedNode(node);
 	}
 }

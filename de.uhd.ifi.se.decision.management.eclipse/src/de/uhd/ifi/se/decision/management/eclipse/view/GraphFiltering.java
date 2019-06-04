@@ -1,13 +1,11 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
-import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class GraphFiltering {
 
@@ -26,12 +24,12 @@ public class GraphFiltering {
 	public boolean bShowCFClasses = true;
 	public boolean bShowCFOther = true;
 
-	public boolean shouldBeVisible(KnowledgeGraphViewImpl mapDesignerImpl, Node node) {
-		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssueImpl && bShowIssues
-				|| node instanceof CodeMethodImpl && bShowMethods) {
+	public boolean shouldBeVisible(Node node) {
+		if (node instanceof GitCommit && bShowCommits || node instanceof JiraIssue && bShowIssues
+				|| node instanceof CodeMethod && bShowMethods) {
 			return true;
-		} else if (node instanceof DecisionKnowledgeElementImpl && bShowDecisionKnowledge) {
-			DecisionKnowledgeElementImpl dke = (DecisionKnowledgeElementImpl) node;
+		} else if (node instanceof DecisionKnowledgeElement && bShowDecisionKnowledge) {
+			DecisionKnowledgeElement dke = (DecisionKnowledgeElement) node;
 			switch (dke.getKnowledgeType()) {
 			case ALTERNATIVE:
 				if (bShowKIAlternative)
@@ -65,7 +63,7 @@ public class GraphFiltering {
 				return true;
 			}
 			return false;
-		} else if (node instanceof CodeClassImpl && bShowFiles) {
+		} else if (node instanceof CodeClass && bShowFiles) {
 			CodeClass cc = (CodeClass) node;
 			if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
 				if (bShowCFClasses) {
