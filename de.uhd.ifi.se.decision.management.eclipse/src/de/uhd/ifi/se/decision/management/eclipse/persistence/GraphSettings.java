@@ -2,6 +2,11 @@ package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
 import java.awt.Color;
 
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.types.DependantOriginalColor;
+
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -48,5 +53,16 @@ public class GraphSettings {
 			return GraphSettings.getCodeMethodColor();
 		}
 		return Color.PINK;
+	}
+	
+	public static PreviewModel initPreviewModel(PreviewController previewController) {
+		PreviewModel previewModel = previewController.getModel();
+		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
+		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_COLOR,
+				new DependantOriginalColor(Color.WHITE));
+		previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
+		previewModel.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 50);
+		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
+		return previewModel;
 	}
 }

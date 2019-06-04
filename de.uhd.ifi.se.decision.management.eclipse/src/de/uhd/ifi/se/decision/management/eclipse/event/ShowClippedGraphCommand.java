@@ -16,8 +16,8 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
-import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
-import de.uhd.ifi.se.decision.management.eclipse.view.impl.MapDesignerImpl;
+import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
+import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class ShowClippedGraphCommand extends AbstractHandler {
 
@@ -46,8 +46,8 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 			}
 		}
 		if (rootNode != null) {
-			MapDesigner mapDesigner = new MapDesignerImpl();
-			mapDesigner.createSelectedMap(rootNode, ConfigPersistenceManager.getLinkDistance(), linker);
+			KnowledgeGraphView mapDesigner = new KnowledgeGraphViewImpl();
+			mapDesigner.showSubGraph(rootNode, ConfigPersistenceManager.getLinkDistance(), linker);
 		} else {
 			JOptionPane optionPane = new JOptionPane("Could not find the selected file in the repository!",
 					JOptionPane.WARNING_MESSAGE);

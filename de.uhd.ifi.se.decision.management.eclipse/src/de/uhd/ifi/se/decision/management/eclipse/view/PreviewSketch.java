@@ -69,6 +69,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	}
 
 	public void refresh() {
+		target.refresh();
 		refreshLoop.refreshSketch();
 	}
 
@@ -193,7 +194,6 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	}
 
 	private class RefreshLoop {
-
 		private final long DELAY = 100;
 		private final AtomicBoolean running = new AtomicBoolean();
 		private final AtomicBoolean refresh = new AtomicBoolean();

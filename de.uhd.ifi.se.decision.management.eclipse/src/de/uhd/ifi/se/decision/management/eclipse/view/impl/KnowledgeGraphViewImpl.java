@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -30,10 +29,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.types.DependantOriginalColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
@@ -46,10 +42,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
-import de.uhd.ifi.se.decision.management.eclipse.view.MapDesigner;
+import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
-public class MapDesignerImpl implements MapDesigner {
+public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private String searchString = "";
 	private long interactionID = -1;
 	private JTextField tfSearch;
@@ -68,42 +64,30 @@ public class MapDesignerImpl implements MapDesigner {
 	private JCheckBox fKIPro;
 	private JCheckBox fKnowledgeItems;
 	private Map<Node, Set<Node>> map;
-	private ProjectController projectController;
-	private Workspace workspace;
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
-	private GraphView graphView;
 	private PreviewController previewController;
-	private G2DTarget target;
-	private final PreviewSketch previewSketch;
-	private JFrame frame;
-	private PreviewModel previewModel;
+	private PreviewSketch previewSketch;
 	private Linker linker = null;
 	public GraphFiltering graphFiltering;
 
-	public MapDesignerImpl() {
-		this.projectController = Lookup.getDefault().lookup(ProjectController.class);
-		this.projectController.newProject();
-		this.workspace = projectController.getCurrentWorkspace();
+	public KnowledgeGraphViewImpl() {
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
 		this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
 		this.directedGraph = graphModel.getDirectedGraph();
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
-		this.target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
+		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
 		this.previewSketch = new PreviewSketch(target);
-		this.graphView = graphModel.getGraph().getView();
+		GraphView graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
-		this.previewModel = previewController.getModel();
-		this.previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-		this.previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_COLOR,
-				new DependantOriginalColor(Color.WHITE));
-		this.previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
-		this.previewModel.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 50);
-		this.previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
+		GraphSettings.initPreviewModel(previewController);
 		this.graphFiltering = new GraphFiltering();
 	}
 
 	@Override
-	public void createFullMap(Linker linker) {
+	public void showGraph(Linker linker) {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
@@ -111,21 +95,20 @@ public class MapDesignerImpl implements MapDesigner {
 		generateGraph(map.keySet());
 		GraphSettings.getLayoutType().generateLayout(graphModel, map.size());
 		resetFilters();
-		initJFrame("Full map for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
+		initJFrame("Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
 		refresh();
 	}
 
 	@Override
-	public void createSelectedMap(de.uhd.ifi.se.decision.management.eclipse.model.Node rootNode, int depth,
-			Linker linker) {
+	public void showSubGraph(Node rootNode, int depth, Linker linker) {
 		if (this.linker == null) {
 			this.linker = linker;
 		}
-		Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> nodes = linker.createLinks(rootNode, depth);
+		Set<Node> nodes = linker.createLinks(rootNode, depth);
 		if (map != null) {
 			map.clear();
 		} else {
-			map = new HashMap<de.uhd.ifi.se.decision.management.eclipse.model.Node, Set<de.uhd.ifi.se.decision.management.eclipse.model.Node>>();
+			map = new HashMap<Node, Set<Node>>();
 		}
 		for (de.uhd.ifi.se.decision.management.eclipse.model.Node n : nodes) {
 			Set<de.uhd.ifi.se.decision.management.eclipse.model.Node> links = new HashSet<de.uhd.ifi.se.decision.management.eclipse.model.Node>();
@@ -139,35 +122,30 @@ public class MapDesignerImpl implements MapDesigner {
 		generateGraph(nodes);
 		GraphSettings.getLayoutType().generateLayout(graphModel, map.size());
 		resetFilters();
-		initJFrame("Current Map for \"" + rootNode.toString() + "\" with range " + depth);
+		initJFrame("Knowledge Graph for \"" + rootNode.toString() + "\" with Link Distance " + depth);
 		refresh();
 	}
 
 	private void initJFrame(String title) {
-		// If frame is already initialized - destroy it and create new frame
-		if (this.frame != null && this.frame.isActive()) {
-			this.frame.dispose();
-		}
-		// Add the applet to a JFrame and display
-		this.frame = new JFrame(title);
-		this.frame.setLayout(new BorderLayout());
+		JFrame frame = new JFrame(title);
+		frame.setLayout(new BorderLayout());
 
-		this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.frame.add(previewSketch, BorderLayout.CENTER);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.add(previewSketch, BorderLayout.CENTER);
 
-		setOverlay(this.frame);
+		setOverlay(frame);
 
-		this.frame.setSize(1600, 900);
+		frame.setSize(1600, 900);
 
 		// Wait for the frame to be visible before painting, or the result drawing will
 		// be strange
-		this.frame.addComponentListener(new ComponentAdapter() {
+		frame.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentShown(ComponentEvent e) {
 				previewSketch.resetZoom();
 			}
 		});
-		this.frame.setVisible(true);
+		frame.setVisible(true);
 	}
 
 	private void generateGraph(Set<Node> nodes) {
@@ -298,7 +276,6 @@ public class MapDesignerImpl implements MapDesigner {
 
 	private void refresh() {
 		this.previewController.refreshPreview();
-		this.target.refresh();
 		this.previewSketch.refresh();
 	}
 

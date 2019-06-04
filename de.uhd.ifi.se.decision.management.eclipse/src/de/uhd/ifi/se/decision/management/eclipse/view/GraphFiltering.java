@@ -7,7 +7,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
-import de.uhd.ifi.se.decision.management.eclipse.view.impl.MapDesignerImpl;
+import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class GraphFiltering {
 
@@ -25,8 +25,8 @@ public class GraphFiltering {
 	public boolean bShowFiles = true;
 	public boolean bShowCFClasses = true;
 	public boolean bShowCFOther = true;
-	
-	public boolean shouldBeVisible(MapDesignerImpl mapDesignerImpl, Node node) {
+
+	public boolean shouldBeVisible(KnowledgeGraphViewImpl mapDesignerImpl, Node node) {
 		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssueImpl && bShowIssues
 				|| node instanceof CodeMethodImpl && bShowMethods) {
 			return true;
