@@ -80,6 +80,26 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		filterCheckBoxes.put("nonJava", new JCheckBox("No Java-Files"));
 		filterCheckBoxes.put("class", new JCheckBox("Classes"));
 		filterCheckBoxes.put("method", new JCheckBox("Methods"));
+
+		for (Map.Entry<String, JCheckBox> entry : filterCheckBoxes.entrySet()) {
+			String key = entry.getKey();
+			JCheckBox checkBox = entry.getValue();
+			checkBox.setSelected(true);
+			checkBox.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.DESELECTED) {
+						graphFiltering.filters.put(key, false);
+					} else if (e.getStateChange() == ItemEvent.SELECTED) {
+						graphFiltering.filters.put(key, true);
+					}
+					updateNodeSizes();
+					refresh();
+				}
+			});
+			checkBox.setMargin(new Insets(5, 5, 5, 5));
+		}
+
 		return filterCheckBoxes;
 	}
 
@@ -235,194 +255,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		filter.setLayout(new BoxLayout(filter, BoxLayout.PAGE_AXIS));
 		JLabel label1 = new JLabel("Filter:");
 		filter.add(label1);
-		// Filter: Commits
-		JCheckBox fCommit = this.filterCheckBoxes.get("commit");
-		fCommit.setSelected(true);
-		fCommit.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowCommits = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowCommits = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fCommit.setMargin(new Insets(5, 5, 5, 5));
-		filter.add(fCommit);
-		// Filter: Jira-Issues
-		JCheckBox fIssues = this.filterCheckBoxes.get("jiraIssue");
-		fIssues.setSelected(true);
-		fIssues.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowIssues = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowIssues = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fIssues.setMargin(new Insets(5, 5, 5, 5));
-		filter.add(fIssues);
-		// Filter: Decision Knowledge
-		JCheckBox fKnowledgeItems = this.filterCheckBoxes.get("decisionKnowledge");
-		fKnowledgeItems.setSelected(true);
-		fKnowledgeItems.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowDecisionKnowledge = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowDecisionKnowledge = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fKnowledgeItems.setMargin(new Insets(5, 5, 1, 5));
-		filter.add(fKnowledgeItems);
-		// Filter: Decision Knowledge -> Decisions
-		JCheckBox fKIDecision = this.filterCheckBoxes.get("decision");
-		fKIDecision.setSelected(true);
-		fKIDecision.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowKIDecision = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowKIDecision = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fKIDecision.setMargin(new Insets(1, 15, 1, 5));
-		filter.add(fKIDecision);
-		// Filter: Decision Knowledge -> Issue
-		JCheckBox fKIIssue = this.filterCheckBoxes.get("issue");
-		fKIIssue.setSelected(true);
-		fKIIssue.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowKIIssue = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowKIIssue = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fKIIssue.setMargin(new Insets(1, 15, 1, 5));
-		filter.add(fKIIssue);
-		// Filter: Decision Knowledge -> Con
-		JCheckBox fKICon = this.filterCheckBoxes.get("con");
-		fKICon.setSelected(true);
-		fKICon.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowKICon = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowKICon = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fKICon.setMargin(new Insets(1, 15, 1, 5));
-		filter.add(fKICon);
-		// Filter: Decision Knowledge -> Pro
-		JCheckBox fKIPro = this.filterCheckBoxes.get("pro");
-		fKIPro.setSelected(true);
-		fKIPro.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowKIPro = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowKIPro = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fKIPro.setMargin(new Insets(1, 15, 1, 5));
-		filter.add(fKIPro);
 
-		// Filter: Changed Files
-		JCheckBox fClasses = this.filterCheckBoxes.get("file");
-		fClasses.setSelected(true);
-		fClasses.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowFiles = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowFiles = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fClasses.setMargin(new Insets(5, 5, 5, 5));
-		filter.add(fClasses);
-		// Filter: Changed Files -> Classes
-		JCheckBox fCFClasses = this.filterCheckBoxes.get("class");
-		fCFClasses.setSelected(true);
-		fCFClasses.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowCFClasses = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowCFClasses = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fCFClasses.setMargin(new Insets(1, 15, 1, 5));
-		filter.add(fCFClasses);
-		// Filter: Changed Files -> Other
-		JCheckBox fCFOther = this.filterCheckBoxes.get("nonJava");
-		fCFOther.setSelected(true);
-		fCFOther.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowCFOther = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowCFOther = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fCFOther.setMargin(new Insets(1, 15, 5, 5));
-		filter.add(fCFOther);
-		// Filter: Coded Methods
-		JCheckBox fCodeMethods = this.filterCheckBoxes.get("method");
-		fCodeMethods.setSelected(true);
-		fCodeMethods.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowMethods = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowMethods = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fCodeMethods.setMargin(new Insets(5, 5, 5, 5));
-		filter.add(fCodeMethods);
+		for (JCheckBox checkBox : filterCheckBoxes.values()) {
+			filter.add(checkBox);
+		}
 
 		// Interaction
 		tfInteraction = new JTextField();
