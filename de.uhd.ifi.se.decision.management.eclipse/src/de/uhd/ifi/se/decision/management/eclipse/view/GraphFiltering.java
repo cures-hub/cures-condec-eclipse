@@ -79,17 +79,9 @@ public class GraphFiltering {
 					}
 					CodeClass cc = (CodeClass) node;
 					if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
-						if (filters.get("class").isActivated()) {
-							return true;
-						} else {
-							return false;
-						}
+						return filters.get("class").isActivated();
 					} else {
-						if (filters.get("nonJava").isActivated()) {
-							return true;
-						} else {
-							return false;
-						}
+						return filters.get("nonJava").isActivated();
 					}
 				}
 				return true;

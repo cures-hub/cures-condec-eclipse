@@ -40,10 +40,12 @@ import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
-	private String searchString = "";
+	private String searchString;
+	private JTextField searchTextField;
+
 	private long selectedNodeId = -1;
-	private JTextField tfSearch;
-	private JTextField tfInteraction;
+	private JTextField selectedNodeTextField;
+
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
 	private GraphFiltering graphFiltering;
@@ -111,7 +113,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(previewSketch, BorderLayout.CENTER);
-		initJPanel(frame);
+		JPanel panel = initJPanel();
+		frame.add(panel, BorderLayout.WEST);
 		frame.setSize(1600, 900);
 		frame.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -122,81 +125,87 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		frame.setVisible(true);
 	}
 
-	private void initJPanel(JFrame frame) {
+	private JPanel initJPanel() {
 		JPanel panel = new JPanel();
 		panel.setMaximumSize(new Dimension(400, 1000));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-		// Search-Field
-		tfSearch = createTextField("Search...");
-		panel.add(tfSearch);
+		// Search Field
+		searchTextField = createTextField("Search...");
+		panel.add(searchTextField);
 
-		// Search-Button
+		// Search Button
 		panel.add(initSearchButton());
 
-		// Filters
-		JPanel filterPanel = new JPanel();
-		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.PAGE_AXIS));
-		JLabel label = new JLabel("Filter:");
-		filterPanel.add(label);
-		for (Filter filter : graphFiltering.filters.values()) {
-			filterPanel.add(filter.getCheckBox());
-		}
-
 		// Interaction
-		tfInteraction = createTextField("ID");
-		panel.add(tfInteraction);
+		selectedNodeTextField = createTextField("ID");
+		panel.add(selectedNodeTextField);
 
-		// Highlight-Button
-		JButton btnHighlight = new JButton();
-		btnHighlight.setSize(400, 40);
-		btnHighlight.setText("Highlight");
-		btnHighlight.setVisible(true);
-		btnHighlight.addActionListener(new ActionListener() {
+		// Highlight Node Button
+		JButton highlightNodeButton = createHighlightNodeButton();
+		panel.add(highlightNodeButton);
+
+		// JumpTo Button
+		JButton jumpToButton = createJumpToButton();
+		panel.add(jumpToButton);
+
+		// Reset Button
+		JButton resetButton = createResetButton();
+		panel.add(resetButton);
+
+		// Filters
+		JPanel filterPanel = createFilterPanel();
+		panel.add(filterPanel);
+		return panel;
+	}
+
+	private JButton createHighlightNodeButton() {
+		JButton selectedNodeButton = createButton("Highlight Node");
+		selectedNodeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String highlight = tfInteraction.getText();
+				String highlight = selectedNodeTextField.getText();
 				if (highlight == null || highlight.isEmpty()) {
 					selectedNodeId = -1;
-				} else {
-					try {
-						selectedNodeId = Long.parseLong(highlight);
-					} catch (Exception ex) {
-						System.err.println(ex.getMessage());
-					}
+					return;
+				}
+				try {
+					selectedNodeId = Long.parseLong(highlight);
+				} catch (Exception ex) {
+					selectedNodeId = -1;
 				}
 				updateNodeSizes();
 			}
 		});
-		btnHighlight.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(btnHighlight);
+		return selectedNodeButton;
+	}
 
-		// JumpTo-Button
-		JButton btnJumpTo = createButton("Jump to");
-		btnJumpTo.addActionListener(new ActionListener() {
+	private JButton createJumpToButton() {
+		JButton jumpToButton = createButton("Jump to");
+		jumpToButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					long id = Long.parseLong(tfInteraction.getText());
-					if (id > 0) {
-						org.gephi.graph.api.Node n = gephiGraph.getGephiNode(tfInteraction.getText());
-						if (n != null) {
-							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
-									.getNodeById(id);
-							if (iN instanceof JiraIssueImpl) {
-								JiraIssue ji = (JiraIssue) iN;
-								OpenWebbrowser.openWebpage(ji);
-							}
-						}
-					}
+					selectedNodeId = Long.parseLong(selectedNodeTextField.getText());
 				} catch (Exception ex) {
-					System.err.println(ex.getMessage());
+					selectedNodeId = -1;
+				}
+				if (selectedNodeId <= 0) {
+					return;
+				}
+				Node node = Node.getNodeById(selectedNodeId);
+				if (node == null) {
+					return;
+				}
+				if (node instanceof JiraIssueImpl) {
+					OpenWebbrowser.openWebpage((JiraIssue) node);
 				}
 			}
 		});
-		panel.add(btnJumpTo);
+		return jumpToButton;
+	}
 
-		// Reset-Button
+	private JButton createResetButton() {
 		JButton resetButton = createButton("Reset");
 		resetButton.addActionListener(new ActionListener() {
 			@Override
@@ -205,9 +214,18 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
-		panel.add(resetButton);
-		panel.add(filterPanel);
-		frame.add(panel, BorderLayout.WEST);
+		return resetButton;
+	}
+
+	private JPanel createFilterPanel() {
+		JPanel filterPanel = new JPanel();
+		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.PAGE_AXIS));
+		JLabel label = new JLabel("Filters:");
+		filterPanel.add(label);
+		for (Filter filter : graphFiltering.filters.values()) {
+			filterPanel.add(filter.getCheckBox());
+		}
+		return filterPanel;
 	}
 
 	private JTextField createTextField(String text) {
@@ -233,10 +251,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		searchButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Mouse Button Click Event
-				searchString = tfSearch.getText();
+				searchString = searchTextField.getText();
 				if (searchString == null || searchString.isEmpty()) {
-					tfSearch.setText("Search...");
+					searchTextField.setText("Search...");
 				}
 				updateNodeSizes();
 			}
@@ -312,13 +329,13 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	private void resetFilters() {
-		if (tfSearch != null)
-			tfSearch.setToolTipText("Search...");
-		if (tfInteraction != null)
-			tfInteraction.setText("ID");
-		resetFilterCheckboxes();
 		searchString = "";
+		searchTextField.setText("Search...");
+
 		selectedNodeId = -1;
+		selectedNodeTextField.setText("ID");
+
+		resetFilterCheckboxes();
 	}
 
 	private void resetFilterCheckboxes() {
