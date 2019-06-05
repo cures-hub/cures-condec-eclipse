@@ -16,7 +16,6 @@ import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,6 +33,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
+import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
@@ -46,9 +46,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JTextField tfInteraction;
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
-	public GraphFiltering graphFiltering;
-	public GephiGraph gephiGraph;
-	public Map<String, JCheckBox> filterCheckBoxes;
+	private GraphFiltering graphFiltering;
+	private GephiGraph gephiGraph;
 
 	public KnowledgeGraphViewImpl() {
 		this.gephiGraph = new GephiGraphImpl();
@@ -59,48 +58,20 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 		GraphSettings.initPreviewModel(previewController);
 		this.graphFiltering = new GraphFiltering();
-
-		this.filterCheckBoxes = initFilterCheckBoxes();
-	}
-
-	private Map<String, JCheckBox> initFilterCheckBoxes() {
-		Map<String, JCheckBox> filterCheckBoxes = new HashMap<String, JCheckBox>();
-
-		filterCheckBoxes.put("commit", new JCheckBox("Commits"));
-		filterCheckBoxes.put("jiraIssue", new JCheckBox("JIRA Issues"));
-
-		filterCheckBoxes.put("decisionKnowledge", new JCheckBox("Decision Knowledge"));
-		filterCheckBoxes.put("issue", new JCheckBox("Issues"));
-		filterCheckBoxes.put("decision", new JCheckBox("Decisions"));
-		filterCheckBoxes.put("alternative", new JCheckBox("Alternatives"));
-		filterCheckBoxes.put("pro", new JCheckBox("Pros"));
-		filterCheckBoxes.put("con", new JCheckBox("Cons"));
-
-		filterCheckBoxes.put("file", new JCheckBox("Files"));
-		filterCheckBoxes.put("nonJava", new JCheckBox("No Java-Files"));
-		filterCheckBoxes.put("class", new JCheckBox("Classes"));
-		filterCheckBoxes.put("method", new JCheckBox("Methods"));
-
-		for (Map.Entry<String, JCheckBox> entry : filterCheckBoxes.entrySet()) {
-			String key = entry.getKey();
-			JCheckBox checkBox = entry.getValue();
-			checkBox.setSelected(true);
-			checkBox.addItemListener(new ItemListener() {
+		for (Filter filter : graphFiltering.filters.values()) {
+			filter.getCheckBox().addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.DESELECTED) {
-						graphFiltering.filters.put(key, false);
+						filter.setActivated(false);
 					} else if (e.getStateChange() == ItemEvent.SELECTED) {
-						graphFiltering.filters.put(key, true);
+						filter.setActivated(true);
 					}
 					updateNodeSizes();
 					refresh();
 				}
 			});
-			checkBox.setMargin(new Insets(5, 5, 5, 5));
 		}
-
-		return filterCheckBoxes;
 	}
 
 	@Override
@@ -251,13 +222,13 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		panel.add(b);
 
 		// Combobox for Filter
-		JPanel filter = new JPanel();
-		filter.setLayout(new BoxLayout(filter, BoxLayout.PAGE_AXIS));
+		JPanel filterPanel = new JPanel();
+		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.PAGE_AXIS));
 		JLabel label1 = new JLabel("Filter:");
-		filter.add(label1);
+		filterPanel.add(label1);
 
-		for (JCheckBox checkBox : filterCheckBoxes.values()) {
-			filter.add(checkBox);
+		for (Filter filter : graphFiltering.filters.values()) {
+			filterPanel.add(filter.getCheckBox());
 		}
 
 		// Interaction
@@ -335,7 +306,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		btnReset.setMargin(new Insets(5, 5, 5, 5));
 		panel.add(btnReset);
-		panel.add(filter);
+		panel.add(filterPanel);
 		frame.add(panel, BorderLayout.WEST);
 	}
 
@@ -351,8 +322,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	private void resetFilterCheckboxes() {
-		for (JCheckBox checkBox : filterCheckBoxes.values()) {
-			checkBox.setSelected(true);
+		for (Filter filter : graphFiltering.filters.values()) {
+			filter.getCheckBox().setSelected(true);
 		}
 	}
 
