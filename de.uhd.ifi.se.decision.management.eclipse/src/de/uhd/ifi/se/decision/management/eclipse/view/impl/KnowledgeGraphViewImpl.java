@@ -44,22 +44,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private long selectedNodeId = -1;
 	private JTextField tfSearch;
 	private JTextField tfInteraction;
-	private JCheckBox fClasses;
-	private JCheckBox fCFClasses;
-	private JCheckBox fCFOther;
-	private JCheckBox fCodeMethods;
-	private JCheckBox fCommit;
-	private JCheckBox fIssues;
-	private JCheckBox fKICon;
-	private JCheckBox fKIDecision;
-	private JCheckBox fKIIssue;
-	private JCheckBox fKIOther;
-	private JCheckBox fKIPro;
-	private JCheckBox fKnowledgeItems;
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
 	public GraphFiltering graphFiltering;
 	public GephiGraph gephiGraph;
+	public Map<String, JCheckBox> filterCheckBoxes;
 
 	public KnowledgeGraphViewImpl() {
 		this.gephiGraph = new GephiGraphImpl();
@@ -70,6 +59,28 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 		GraphSettings.initPreviewModel(previewController);
 		this.graphFiltering = new GraphFiltering();
+
+		this.filterCheckBoxes = initFilterCheckBoxes();
+	}
+
+	private Map<String, JCheckBox> initFilterCheckBoxes() {
+		Map<String, JCheckBox> filterCheckBoxes = new HashMap<String, JCheckBox>();
+
+		filterCheckBoxes.put("commit", new JCheckBox("Commits"));
+		filterCheckBoxes.put("jiraIssue", new JCheckBox("JIRA Issues"));
+
+		filterCheckBoxes.put("decisionKnowledge", new JCheckBox("Decision Knowledge"));
+		filterCheckBoxes.put("issue", new JCheckBox("Issues"));
+		filterCheckBoxes.put("decision", new JCheckBox("Decisions"));
+		filterCheckBoxes.put("alternative", new JCheckBox("Alternatives"));
+		filterCheckBoxes.put("pro", new JCheckBox("Pros"));
+		filterCheckBoxes.put("con", new JCheckBox("Cons"));
+
+		filterCheckBoxes.put("file", new JCheckBox("Files"));
+		filterCheckBoxes.put("nonJava", new JCheckBox("No Java-Files"));
+		filterCheckBoxes.put("class", new JCheckBox("Classes"));
+		filterCheckBoxes.put("method", new JCheckBox("Methods"));
+		return filterCheckBoxes;
 	}
 
 	@Override
@@ -225,7 +236,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JLabel label1 = new JLabel("Filter:");
 		filter.add(label1);
 		// Filter: Commits
-		fCommit = new JCheckBox("Commits");
+		JCheckBox fCommit = this.filterCheckBoxes.get("commit");
 		fCommit.setSelected(true);
 		fCommit.addItemListener(new ItemListener() {
 			@Override
@@ -242,7 +253,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		fCommit.setMargin(new Insets(5, 5, 5, 5));
 		filter.add(fCommit);
 		// Filter: Jira-Issues
-		fIssues = new JCheckBox("Jira Issues");
+		JCheckBox fIssues = this.filterCheckBoxes.get("jiraIssue");
 		fIssues.setSelected(true);
 		fIssues.addItemListener(new ItemListener() {
 			@Override
@@ -258,8 +269,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		fIssues.setMargin(new Insets(5, 5, 5, 5));
 		filter.add(fIssues);
-		// Filter: DecisionKnowledgeItems
-		fKnowledgeItems = new JCheckBox("Decision Knowledge");
+		// Filter: Decision Knowledge
+		JCheckBox fKnowledgeItems = this.filterCheckBoxes.get("decisionKnowledge");
 		fKnowledgeItems.setSelected(true);
 		fKnowledgeItems.addItemListener(new ItemListener() {
 			@Override
@@ -275,8 +286,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		fKnowledgeItems.setMargin(new Insets(5, 5, 1, 5));
 		filter.add(fKnowledgeItems);
-		// Filter: DecisionKnowledgeItems -> Decisions
-		fKIDecision = new JCheckBox("Decisions");
+		// Filter: Decision Knowledge -> Decisions
+		JCheckBox fKIDecision = this.filterCheckBoxes.get("decision");
 		fKIDecision.setSelected(true);
 		fKIDecision.addItemListener(new ItemListener() {
 			@Override
@@ -292,8 +303,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		fKIDecision.setMargin(new Insets(1, 15, 1, 5));
 		filter.add(fKIDecision);
-		// Filter: DecisionKnowledgeItems -> Issue
-		fKIIssue = new JCheckBox("Issues");
+		// Filter: Decision Knowledge -> Issue
+		JCheckBox fKIIssue = this.filterCheckBoxes.get("issue");
 		fKIIssue.setSelected(true);
 		fKIIssue.addItemListener(new ItemListener() {
 			@Override
@@ -309,8 +320,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		fKIIssue.setMargin(new Insets(1, 15, 1, 5));
 		filter.add(fKIIssue);
-		// Filter: DecisionKnowledgeItems -> Con
-		fKICon = new JCheckBox("Cons");
+		// Filter: Decision Knowledge -> Con
+		JCheckBox fKICon = this.filterCheckBoxes.get("con");
 		fKICon.setSelected(true);
 		fKICon.addItemListener(new ItemListener() {
 			@Override
@@ -326,8 +337,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		fKICon.setMargin(new Insets(1, 15, 1, 5));
 		filter.add(fKICon);
-		// Filter: DecisionKnowledgeItems -> Pro
-		fKIPro = new JCheckBox("Pros");
+		// Filter: Decision Knowledge -> Pro
+		JCheckBox fKIPro = this.filterCheckBoxes.get("pro");
 		fKIPro.setSelected(true);
 		fKIPro.addItemListener(new ItemListener() {
 			@Override
@@ -343,25 +354,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		fKIPro.setMargin(new Insets(1, 15, 1, 5));
 		filter.add(fKIPro);
-		// Filter: DecisionKnowledgeItems -> Other
-		fKIOther = new JCheckBox("Other");
-		fKIOther.setSelected(true);
-		fKIOther.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.DESELECTED) {
-					graphFiltering.bShowKIOther = false;
-				} else if (e.getStateChange() == ItemEvent.SELECTED) {
-					graphFiltering.bShowKIOther = true;
-				}
-				updateNodeSizes();
-				refresh();
-			}
-		});
-		fKIOther.setMargin(new Insets(1, 15, 5, 5));
-		filter.add(fKIOther);
+
 		// Filter: Changed Files
-		fClasses = new JCheckBox("Changed Files");
+		JCheckBox fClasses = this.filterCheckBoxes.get("file");
 		fClasses.setSelected(true);
 		fClasses.addItemListener(new ItemListener() {
 			@Override
@@ -378,7 +373,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		fClasses.setMargin(new Insets(5, 5, 5, 5));
 		filter.add(fClasses);
 		// Filter: Changed Files -> Classes
-		fCFClasses = new JCheckBox("Changed Classes");
+		JCheckBox fCFClasses = this.filterCheckBoxes.get("class");
 		fCFClasses.setSelected(true);
 		fCFClasses.addItemListener(new ItemListener() {
 			@Override
@@ -395,7 +390,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		fCFClasses.setMargin(new Insets(1, 15, 1, 5));
 		filter.add(fCFClasses);
 		// Filter: Changed Files -> Other
-		fCFOther = new JCheckBox("Other");
+		JCheckBox fCFOther = this.filterCheckBoxes.get("nonJava");
 		fCFOther.setSelected(true);
 		fCFOther.addItemListener(new ItemListener() {
 			@Override
@@ -412,7 +407,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		fCFOther.setMargin(new Insets(1, 15, 5, 5));
 		filter.add(fCFOther);
 		// Filter: Coded Methods
-		fCodeMethods = new JCheckBox("Coded Methods");
+		JCheckBox fCodeMethods = this.filterCheckBoxes.get("method");
 		fCodeMethods.setSelected(true);
 		fCodeMethods.addItemListener(new ItemListener() {
 			@Override
@@ -513,33 +508,16 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			tfSearch.setToolTipText("Search...");
 		if (tfInteraction != null)
 			tfInteraction.setText("ID");
-		if (fClasses != null)
-			fClasses.setSelected(true);
-		if (fCFClasses != null)
-			fCFClasses.setSelected(true);
-		if (fCFOther != null)
-			fCFOther.setSelected(true);
-		if (fCodeMethods != null)
-			fCodeMethods.setSelected(true);
-		if (fCommit != null)
-			fCommit.setSelected(true);
-		if (fIssues != null)
-			fIssues.setSelected(true);
-		if (fKICon != null)
-			fKICon.setSelected(true);
-		if (fKIDecision != null)
-			fKIDecision.setSelected(true);
-		if (fKIIssue != null)
-			fKIIssue.setSelected(true);
-		if (fKIOther != null)
-			fKIOther.setSelected(true);
-		if (fKIPro != null)
-			fKIPro.setSelected(true);
-		if (fKnowledgeItems != null)
-			fKnowledgeItems.setSelected(true);
+		resetFilterCheckboxes();
 		searchString = "";
 		selectedNodeId = -1;
 		graphFiltering = new GraphFiltering();
+	}
+
+	private void resetFilterCheckboxes() {
+		for (JCheckBox checkBox : filterCheckBoxes.values()) {
+			checkBox.setSelected(true);
+		}
 	}
 
 	private void highlightSelectedNode(Node node) {
