@@ -1,7 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -21,7 +21,7 @@ public class GraphFiltering {
 	}
 
 	private Map<String, Filter> initFilters() {
-		Map<String, Filter> filters = new TreeMap<String, Filter>();
+		Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
 		filters.put("commit", new Filter("Commits", GitCommitImpl.class));
 		filters.put("jiraIssue", new Filter("JIRA Issues", JiraIssueImpl.class));
 

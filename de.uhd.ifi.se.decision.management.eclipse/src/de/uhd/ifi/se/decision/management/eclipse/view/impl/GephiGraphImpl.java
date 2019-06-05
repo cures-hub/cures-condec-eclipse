@@ -17,6 +17,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 
+// @issue How can we use the filters that come with the gephi library instead of
+// building our own filters? Would using the gephi filters increase the
+// performance?
 public class GephiGraphImpl implements GephiGraph {
 
 	private GraphModel graphModel;

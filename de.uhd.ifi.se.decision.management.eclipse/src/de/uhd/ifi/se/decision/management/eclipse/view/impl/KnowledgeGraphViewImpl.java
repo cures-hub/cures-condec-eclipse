@@ -111,7 +111,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(previewSketch, BorderLayout.CENTER);
-		setOverlay(frame);
+		initJPanel(frame);
 		frame.setSize(1600, 900);
 		frame.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -120,6 +120,128 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		});
 		frame.setVisible(true);
+	}
+
+	private void initJPanel(JFrame frame) {
+		JPanel panel = new JPanel();
+		panel.setMaximumSize(new Dimension(400, 1000));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
+		// Search-Field
+		tfSearch = createTextField("Search...");
+		panel.add(tfSearch);
+
+		// Search-Button
+		panel.add(initSearchButton());
+
+		// Filters
+		JPanel filterPanel = new JPanel();
+		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.PAGE_AXIS));
+		JLabel label = new JLabel("Filter:");
+		filterPanel.add(label);
+		for (Filter filter : graphFiltering.filters.values()) {
+			filterPanel.add(filter.getCheckBox());
+		}
+
+		// Interaction
+		tfInteraction = createTextField("ID");
+		panel.add(tfInteraction);
+
+		// Highlight-Button
+		JButton btnHighlight = new JButton();
+		btnHighlight.setSize(400, 40);
+		btnHighlight.setText("Highlight");
+		btnHighlight.setVisible(true);
+		btnHighlight.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String highlight = tfInteraction.getText();
+				if (highlight == null || highlight.isEmpty()) {
+					selectedNodeId = -1;
+				} else {
+					try {
+						selectedNodeId = Long.parseLong(highlight);
+					} catch (Exception ex) {
+						System.err.println(ex.getMessage());
+					}
+				}
+				updateNodeSizes();
+			}
+		});
+		btnHighlight.setMargin(new Insets(5, 5, 5, 5));
+		panel.add(btnHighlight);
+
+		// JumpTo-Button
+		JButton btnJumpTo = createButton("Jump to");
+		btnJumpTo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					long id = Long.parseLong(tfInteraction.getText());
+					if (id > 0) {
+						org.gephi.graph.api.Node n = gephiGraph.getGephiNode(tfInteraction.getText());
+						if (n != null) {
+							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
+									.getNodeById(id);
+							if (iN instanceof JiraIssueImpl) {
+								JiraIssue ji = (JiraIssue) iN;
+								OpenWebbrowser.openWebpage(ji);
+							}
+						}
+					}
+				} catch (Exception ex) {
+					System.err.println(ex.getMessage());
+				}
+			}
+		});
+		panel.add(btnJumpTo);
+
+		// Reset-Button
+		JButton resetButton = createButton("Reset");
+		resetButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				resetFilters();
+				updateNodeSizes();
+			}
+		});
+		panel.add(resetButton);
+		panel.add(filterPanel);
+		frame.add(panel, BorderLayout.WEST);
+	}
+
+	private JTextField createTextField(String text) {
+		JTextField textField = new JTextField();
+		textField.setSize(400, 40);
+		textField.setVisible(true);
+		textField.setMargin(new Insets(5, 5, 5, 5));
+		textField.setText(text);
+		return textField;
+	}
+
+	private JButton createButton(String text) {
+		JButton button = new JButton();
+		button.setSize(400, 40);
+		button.setText(text);
+		button.setVisible(true);
+		button.setMargin(new Insets(5, 5, 5, 5));
+		return button;
+	}
+
+	private JButton initSearchButton() {
+		JButton searchButton = createButton("Search");
+		searchButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Mouse Button Click Event
+				searchString = tfSearch.getText();
+				if (searchString == null || searchString.isEmpty()) {
+					tfSearch.setText("Search...");
+				}
+				updateNodeSizes();
+			}
+		});
+		return searchButton;
 	}
 
 	private void highlightNodes(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
@@ -189,127 +311,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.previewSketch.refresh();
 	}
 
-	private void setOverlay(JFrame frame) {
-		JPanel panel = new JPanel();
-		panel.setMaximumSize(new Dimension(400, 1000));
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-		// Search-Field
-		tfSearch = new JTextField();
-		tfSearch.setSize(400, 40);
-		tfSearch.setText("Search...");
-		tfSearch.setVisible(true);
-		tfSearch.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(tfSearch);
-
-		// Search-Button
-		JButton b = new JButton();
-		b.setSize(400, 40);
-		b.setText("Search");
-		b.setVisible(true);
-		b.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Mouse Button Click Event
-				searchString = tfSearch.getText();
-				if (searchString == null || searchString.isEmpty()) {
-					tfSearch.setText("Search...");
-				}
-				updateNodeSizes();
-			}
-		});
-		b.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(b);
-
-		// Combobox for Filter
-		JPanel filterPanel = new JPanel();
-		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.PAGE_AXIS));
-		JLabel label1 = new JLabel("Filter:");
-		filterPanel.add(label1);
-
-		for (Filter filter : graphFiltering.filters.values()) {
-			filterPanel.add(filter.getCheckBox());
-		}
-
-		// Interaction
-		tfInteraction = new JTextField();
-		tfInteraction.setSize(400, 40);
-		tfInteraction.setText("ID");
-		tfInteraction.setVisible(true);
-		tfInteraction.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(tfInteraction);
-		// Highlight-Button
-		JButton btnHighlight = new JButton();
-		btnHighlight.setSize(400, 40);
-		btnHighlight.setText("Highlight");
-		btnHighlight.setVisible(true);
-		btnHighlight.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Mouse Button Click Event
-				try {
-					String highlight = tfInteraction.getText();
-					if (highlight == null || highlight.isEmpty()) {
-						selectedNodeId = -1;
-					} else {
-						selectedNodeId = Long.parseLong(highlight);
-					}
-					updateNodeSizes();
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
-			}
-		});
-		btnHighlight.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(btnHighlight);
-		// JumpTo-Button
-		JButton btnJumpTo = new JButton();
-		btnJumpTo.setSize(400, 40);
-		btnJumpTo.setText("Jump to");
-		btnJumpTo.setVisible(true);
-		btnJumpTo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Mouse Button Click Event
-				try {
-					long id = Long.parseLong(tfInteraction.getText());
-					if (id > 0) {
-						org.gephi.graph.api.Node n = gephiGraph.getGephiNode(tfInteraction.getText());
-						if (n != null) {
-							de.uhd.ifi.se.decision.management.eclipse.model.Node iN = de.uhd.ifi.se.decision.management.eclipse.model.Node
-									.getNodeById(id);
-							if (iN instanceof JiraIssueImpl) {
-								JiraIssue ji = (JiraIssue) iN;
-								OpenWebbrowser.openWebpage(ji);
-							}
-						}
-					}
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
-			}
-		});
-		btnJumpTo.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(btnJumpTo);
-		// Reset-Button
-		JButton btnReset = new JButton();
-		btnReset.setSize(400, 40);
-		btnReset.setText("Reset");
-		btnReset.setVisible(true);
-		btnReset.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Mouse Button Click Event
-				resetFilters();
-				updateNodeSizes();
-			}
-		});
-		btnReset.setMargin(new Insets(5, 5, 5, 5));
-		panel.add(btnReset);
-		panel.add(filterPanel);
-		frame.add(panel, BorderLayout.WEST);
-	}
-
 	private void resetFilters() {
 		if (tfSearch != null)
 			tfSearch.setToolTipText("Search...");
@@ -318,7 +319,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		resetFilterCheckboxes();
 		searchString = "";
 		selectedNodeId = -1;
-		graphFiltering = new GraphFiltering();
 	}
 
 	private void resetFilterCheckboxes() {
