@@ -90,14 +90,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	public void createView(Node selectedNode, int distance, Linker linker) {
 		Set<Node> nodes = linker.createLinks(selectedNode, distance);
 		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
-		for (Node n : nodes) {
+		for (Node node : nodes) {
 			Set<Node> links = new HashSet<Node>();
-			for (Node neighbor : n.getLinkedNodes()) {
+			for (Node neighbor : node.getLinkedNodes()) {
 				if (nodes.contains(neighbor)) {
 					links.add(neighbor);
 				}
 			}
-			graph.put(n, links);
+			graph.put(node, links);
 		}
 		this.gephiGraph.createGephiGraph(graph);
 

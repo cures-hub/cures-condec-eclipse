@@ -8,7 +8,7 @@ import java.util.Set;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public abstract class NodeImpl implements Node {
-	public static long nextId = 0;
+	public static long nextId;
 	public static Map<Long, Node> nodes = new HashMap<Long, Node>();
 	private static Set<Node> allNodes = new HashSet<Node>();
 
