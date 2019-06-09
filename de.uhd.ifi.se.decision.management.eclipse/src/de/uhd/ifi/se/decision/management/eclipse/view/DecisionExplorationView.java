@@ -19,12 +19,10 @@ public class DecisionExplorationView extends ViewPart {
 	@Override
 	@PostConstruct
 	public void createPartControl(Composite parent) {
-		scrolledComposite = new ScrolledComposite(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite = initScrolledComposite(parent);
 		Composite composite = new Composite(scrolledComposite, SWT.NONE);
 		scrolledComposite.setContent(composite);
 		composite.setLayout(new FillLayout());
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
 
 		label = new Label(composite, SWT.NONE);
 		label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
@@ -32,6 +30,13 @@ public class DecisionExplorationView extends ViewPart {
 				"This view shows the explored decision knowledge related to the line where content assist is triggered:\n");
 
 		scrolledComposite.setMinSize(scrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	}
+	
+	public static ScrolledComposite initScrolledComposite(Composite parent) {
+		ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		return scrolledComposite;
 	}
 
 	public void setContent(String text) {

@@ -61,4 +61,6 @@ public interface DecisionKnowledgeElement extends Node {
 	 *            of the decision knowledge element.
 	 */
 	void setDescription(String description);
+
+	KnowledgeType getKnowledgeType();
 }

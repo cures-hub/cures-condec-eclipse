@@ -1,88 +1,92 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
-import de.uhd.ifi.se.decision.management.eclipse.view.impl.MapDesignerImpl;
 
 public class GraphFiltering {
 
-	public boolean bShowCommits = true;
-	public boolean bShowDecisionKnowledge = true;
-	public boolean bShowKIDecision = true;
-	public boolean bShowKIIssue = true;
-	public boolean bShowKIAlternative = true;
-	public boolean bShowKICon = true;
-	public boolean bShowKIPro = true;
-	public boolean bShowKIGoal = true;
-	public boolean bShowKIOther = true;
-	public boolean bShowIssues = true;
-	public boolean bShowMethods = true;
-	public boolean bShowFiles = true;
-	public boolean bShowCFClasses = true;
-	public boolean bShowCFOther = true;
-	
-	public boolean shouldBeVisible(MapDesignerImpl mapDesignerImpl, Node node) {
-		if (node instanceof GitCommitImpl && bShowCommits || node instanceof JiraIssueImpl && bShowIssues
-				|| node instanceof CodeMethodImpl && bShowMethods) {
-			return true;
-		} else if (node instanceof DecisionKnowledgeElementImpl && bShowDecisionKnowledge) {
-			DecisionKnowledgeElementImpl dke = (DecisionKnowledgeElementImpl) node;
-			switch (dke.getKnowledgeType()) {
-			case ALTERNATIVE:
-				if (bShowKIAlternative)
-					return true;
-				break;
-			case CON:
-				if (bShowKICon)
-					return true;
-				break;
-			case DECISION:
-				if (bShowKIDecision)
-					return true;
-				break;
-			case GOAL:
-				if (bShowKIGoal)
-					return true;
-				break;
-			case ISSUE:
-				if (bShowKIIssue)
-					return true;
-				break;
-			case PRO:
-				if (bShowKIPro)
-					return true;
-				break;
-			case OTHER:
-				if (bShowKIOther)
-					return true;
-				break;
-			default:
-				return true;
-			}
-			return false;
-		} else if (node instanceof CodeClassImpl && bShowFiles) {
-			CodeClass cc = (CodeClass) node;
-			if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
-				if (bShowCFClasses) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				if (bShowCFOther) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		} else {
-			return false;
-		}
+	public Map<String, Filter> filters;
+
+	public GraphFiltering() {
+		this.filters = initFilters();
 	}
 
+	private Map<String, Filter> initFilters() {
+		Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
+		filters.put("commit", new Filter("Commits", GitCommitImpl.class));
+		filters.put("jiraIssue", new Filter("JIRA Issues", JiraIssueImpl.class));
+
+		filters.put("decisionKnowledge", new Filter("Decision Knowledge", DecisionKnowledgeElementImpl.class));
+		filters.put("issue", new Filter("Issues", DecisionKnowledgeElementImpl.class));
+		filters.put("decision", new Filter("Decisions", DecisionKnowledgeElementImpl.class));
+		filters.put("alternative", new Filter("Alternatives", DecisionKnowledgeElementImpl.class));
+		filters.put("pro", new Filter("Pros", DecisionKnowledgeElementImpl.class));
+		filters.put("con", new Filter("Cons", DecisionKnowledgeElementImpl.class));
+
+		filters.put("file", new Filter("Files", CodeClassImpl.class));
+		filters.put("nonJava", new Filter("No Java-Files", CodeClassImpl.class));
+		filters.put("class", new Filter("Classes", CodeClassImpl.class));
+		filters.put("method", new Filter("Methods", CodeMethodImpl.class));
+		return filters;
+	}
+
+	public boolean shouldBeVisible(Node node) {
+		for (Map.Entry<String, Filter> entry : filters.entrySet()) {
+			Filter filter = entry.getValue();
+			if (filter.getNodeClass() != null && node.getClass().equals(filter.getNodeClass())
+					&& filter.isActivated()) {
+				if (filter.getNodeClass().equals(DecisionKnowledgeElementImpl.class)) {
+					if (!filters.get("decisionKnowledge").isActivated()) {
+						return false;
+					}
+					DecisionKnowledgeElement dke = (DecisionKnowledgeElement) node;
+					switch (dke.getKnowledgeType()) {
+					case ALTERNATIVE:
+						if (!filters.get("alternative").isActivated())
+							return false;
+						break;
+					case CON:
+						if (!filters.get("con").isActivated())
+							return false;
+						break;
+					case DECISION:
+						if (!filters.get("decision").isActivated())
+							return false;
+						break;
+					case ISSUE:
+						if (!filters.get("issue").isActivated())
+							return false;
+						break;
+					case PRO:
+						if (!filters.get("pro").isActivated())
+							return false;
+						break;
+					default:
+						return true;
+					}
+				} else if (filter.getNodeClass().equals(CodeClassImpl.class)) {
+					if (!filters.get("file").isActivated()) {
+						return false;
+					}
+					CodeClass cc = (CodeClass) node;
+					if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
+						return filters.get("class").isActivated();
+					} else {
+						return filters.get("nonJava").isActivated();
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 }

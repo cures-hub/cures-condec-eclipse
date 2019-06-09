@@ -18,12 +18,10 @@ public class ChangeImpactAnalysisView extends ViewPart {
 	@Override
 	@PostConstruct
 	public void createPartControl(Composite parent) {
-		scrolledComposite = new ScrolledComposite(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite = DecisionExplorationView.initScrolledComposite(parent);
 		Composite composite = new Composite(scrolledComposite, SWT.NONE);
 		scrolledComposite.setContent(composite);
 		composite.setLayout(new FillLayout());
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
 
 		label = new Label(composite, SWT.NONE);
 		label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));

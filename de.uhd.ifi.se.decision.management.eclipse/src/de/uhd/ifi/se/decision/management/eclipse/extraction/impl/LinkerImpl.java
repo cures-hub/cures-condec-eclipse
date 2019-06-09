@@ -34,42 +34,51 @@ public class LinkerImpl implements Linker {
 	}
 
 	@Override
-	public Map<Node, Set<Node>> createKnowledgeGraph() {
-		Map<Node, Set<Node>> map = new HashMap<Node, Set<Node>>();
+	public Map<Node, Set<Node>> createGraph() {
+		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
+		Set<Node> visitedNodes = new HashSet<Node>();
+
 		for (GitCommit gitCommit : gitClient.getCommits()) {
 			gitCommit.extractChangedClasses(gitClient);
-			createLinks(gitCommit, 1);
-			map.put(gitCommit, gitCommit.getLinkedNodes());
-			for (DecisionKnowledgeElement dke : gitCommit.getDecisionKnowledgeFromMessage()) {
-				Set<Node> n = new HashSet<Node>();
-				n.add(gitCommit);
-				map.put(dke, n);
+			visitedNodes.add(gitCommit);
+			createLinks(gitCommit, 1, visitedNodes);
+			graph.put(gitCommit, gitCommit.getLinkedNodes());
+			for (DecisionKnowledgeElement element : gitCommit.getDecisionKnowledgeFromMessage()) {
+				Set<Node> nodes = new HashSet<Node>();
+				nodes.add(gitCommit);
+				graph.put(element, nodes);
+				visitedNodes.add(element);
 			}
 		}
-		
+
 		// All commits need to be loaded first
 		for (CodeClass codeClass : CodeClass.getInstances()) {
-			map.put(codeClass, codeClass.getLinkedNodes());
+			graph.put(codeClass, codeClass.getLinkedNodes());
+			visitedNodes.add(codeClass);
 		}
-		
+
 		// All commits need to be loaded first
 		for (CodeMethod codeMethod : CodeMethod.getInstances()) {
-			map.put(codeMethod, codeMethod.getLinkedNodes());
+			graph.put(codeMethod, codeMethod.getLinkedNodes());
+			visitedNodes.add(codeMethod);
 		}
-		
+
 		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
-			createLinks(jiraIssue, 1);
-			map.put(jiraIssue, jiraIssue.getLinkedNodes());
+			visitedNodes.add(jiraIssue);
+			createLinks(jiraIssue, 1, visitedNodes);
+			graph.put(jiraIssue, jiraIssue.getLinkedNodes());
 		}
-		return map;
+		return graph;
 	}
 
 	@Override
-	public Set<Node> createLinks(Node node, int maxDepth) {
-		for (GitCommit gitCommit : gitClient.getCommits()) {
-			gitCommit.extractChangedClasses(gitClient);
-		}
+	public Set<Node> createGraph(Node node, int maxDepth) {
 		Set<Node> visitedNodes = new HashSet<Node>();
+		createLinks(node, 0, maxDepth, visitedNodes);
+		return visitedNodes;
+	}
+
+	public Set<Node> createLinks(Node node, int maxDepth, Set<Node> visitedNodes) {
 		createLinks(node, 0, maxDepth, visitedNodes);
 		return visitedNodes;
 	}
@@ -79,17 +88,14 @@ public class LinkerImpl implements Linker {
 		if (currentDepth < maxDepth && !visitedNodes.contains(node)) {
 			visitedNodes.add(node);
 			if (node instanceof GitCommitImpl) {
-				GitCommit gc = (GitCommit) node;
-				List<String> keys = gc.getJiraIssueKeys();
+				GitCommit gitCommit = (GitCommit) node;
+				List<String> keys = gitCommit.getJiraIssueKeys();
 				if (keys.size() > 0) {
-					JiraIssue ji = JiraIssue.getOrCreate(keys.get(0), jiraClient);
-					if (ji != null) {
-						linkBidirectional(node, ji);
-						createLinks(ji, currentDepth + 1, maxDepth, visitedNodes);
+					JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.get(0), jiraClient);
+					if (jiraIssue != null) {
+						linkBidirectional(node, jiraIssue);
+						createLinks(jiraIssue, currentDepth + 1, maxDepth, visitedNodes);
 					}
-				}
-				for (DecisionKnowledgeElement cd : gc.getDecisionKnowledgeFromMessage()) {
-					createLinks(cd, currentDepth + 1, maxDepth, visitedNodes);
 				}
 			}
 			if (node instanceof DecisionKnowledgeElementImpl) {
@@ -130,7 +136,7 @@ public class LinkerImpl implements Linker {
 		node1.addLinkedNode(node2);
 		node2.addLinkedNode(node1);
 	}
-	
+
 	@Override
 	public GitClient getGitClient() {
 		return gitClient;

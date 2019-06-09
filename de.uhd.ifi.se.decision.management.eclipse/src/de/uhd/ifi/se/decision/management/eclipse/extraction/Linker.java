@@ -7,7 +7,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public interface Linker {
 
-	Map<Node, Set<Node>> createKnowledgeGraph();
+	Map<Node, Set<Node>> createGraph();
 
 	/**
 	 * @param node The node, which should be analyzed for further links.
@@ -18,7 +18,7 @@ public interface Linker {
 	 *        codeline. Only the last commit, which changed a specific line, can be
 	 *        retrieved.
 	 */
-	Set<Node> createLinks(Node node, int maxDepth);
+	Set<Node> createGraph(Node node, int maxDepth);
 
 	GitClient getGitClient();
 

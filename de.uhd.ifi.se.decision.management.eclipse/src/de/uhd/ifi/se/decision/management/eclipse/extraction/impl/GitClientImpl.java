@@ -44,14 +44,13 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
- * Class to connect git and eclipse
+ * Class to connect to a git repository associated with this Eclipse project.
+ * Retrieves commits and code changes (diffs) in git.
  * 
- * @decision The jgit library is used to access git repositories.
  * @issue How to access commits related to a JIRA issue?
+ * @decision The jgit library is used to access git repositories! *
  * @pro The jGit library is open source and no third party JIRA plug-in needs to
- *      be installed
- * @alternative Git repositories are connected via the Git Integration for JIRA
- *              Plug-in
+ *      be installed.
  */
 public class GitClientImpl implements GitClient {
 
@@ -80,9 +79,9 @@ public class GitClientImpl implements GitClient {
 			this.repository.resolve(reference);
 			this.git = new Git(this.repository);
 			StoredConfig config = this.repository.getConfig();
-			// @decision Disable system dependent new line statements
 			// @issue The internal representation of a file might add system dependent new
-			// line statements, for example CR LF in Windows
+			// line statements, for example CR LF in Windows. How to deal with new lines?
+			// @decision Disable system dependent new line statements!
 			config.setEnum(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_AUTOCRLF,
 					AutoCRLF.TRUE);
 			config.save();
@@ -124,13 +123,14 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public Set<GitCommit> getCommits() {
 		Set<GitCommit> allCommits = new HashSet<GitCommit>();
+		String projectKey = ConfigPersistenceManager.getProjectKey();
 		try {
-			Iterable<RevCommit> commits = this.git.log().all().call();
-			for (RevCommit rc : commits) {
-				allCommits.add(GitCommit.getOrCreate(rc, ConfigPersistenceManager.getProjectKey()));
+			Iterable<RevCommit> commits = this.git.log().call();
+			for (RevCommit revCommit : commits) {
+				allCommits.add(GitCommit.getOrCreate(revCommit, projectKey));
 			}
 		} catch (Exception e) {
-			System.out.println("Failed to load all commits of the current branch");
+			System.err.println("Failed to load all commits of the current branch.");
 		}
 		return allCommits;
 	}

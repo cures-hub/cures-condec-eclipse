@@ -87,9 +87,9 @@ public interface Node {
 	 * @return node-object or null, if the object was not found.
 	 */
 	public static Node getNodeById(long id) {
-		if (NodeImpl.nodes.containsKey(id)) {
-			return NodeImpl.nodes.get(id);
+		if (id < 0) {
+			return null;
 		}
-		return null;
+		return NodeImpl.nodes.get(id);
 	}
 }

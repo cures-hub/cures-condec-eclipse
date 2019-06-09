@@ -69,6 +69,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	}
 
 	public void refresh() {
+		this.target.refresh();
 		refreshLoop.refreshSketch();
 	}
 
@@ -99,10 +100,12 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		// Currently unused.
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// Currently unused.
 	}
 
 	@Override
@@ -146,6 +149,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		// Currently unused.
 	}
 
 	public void zoomPlus() {
@@ -193,17 +197,12 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	}
 
 	private class RefreshLoop {
-
 		private final long DELAY = 100;
 		private final AtomicBoolean running = new AtomicBoolean();
 		private final AtomicBoolean refresh = new AtomicBoolean();
 		// Timer
 		private long timeout = DELAY * 10;
 		private Timer timer;
-
-		public RefreshLoop() {
-			super();
-		}
 
 		public void refreshSketch() {
 			refresh.set(true);

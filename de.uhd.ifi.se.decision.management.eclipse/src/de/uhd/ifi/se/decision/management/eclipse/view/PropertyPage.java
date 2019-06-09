@@ -34,10 +34,6 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 	private Text textJiraUser;
 	private Text textJiraPassword;
 
-	public PropertyPage() {
-		super();
-	}
-
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -136,7 +132,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 	}
 
 	private void setProperty(QualifiedName key, String value) {
-		if (value.equals("")) {
+		if (value == null || value.isEmpty()) {
 			return;
 		}
 		IResource resource = getResource();
