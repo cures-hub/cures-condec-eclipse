@@ -19,4 +19,11 @@ public interface GephiGraph {
 
 	NodeIterable getNodes();
 
+	void setSizeOfAllNodes(float size);
+	
+	void setSizeOfNode(org.gephi.graph.api.Node gephiNode, float size);
+
+	void setSizeOfNode(long selectedNodeId, float size);
+	
+	void setSizeOfNode(Node node, float size);
 }

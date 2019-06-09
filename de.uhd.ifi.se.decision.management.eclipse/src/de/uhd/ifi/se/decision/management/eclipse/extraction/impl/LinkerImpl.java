@@ -34,7 +34,7 @@ public class LinkerImpl implements Linker {
 	}
 
 	@Override
-	public Map<Node, Set<Node>> createKnowledgeGraph() {
+	public Map<Node, Set<Node>> createGraph() {
 		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
 		Set<Node> visitedNodes = new HashSet<Node>();
 
@@ -72,7 +72,7 @@ public class LinkerImpl implements Linker {
 	}
 
 	@Override
-	public Set<Node> createLinks(Node node, int maxDepth) {
+	public Set<Node> createGraph(Node node, int maxDepth) {
 		Set<Node> visitedNodes = new HashSet<Node>();
 		createLinks(node, 0, maxDepth, visitedNodes);
 		return visitedNodes;

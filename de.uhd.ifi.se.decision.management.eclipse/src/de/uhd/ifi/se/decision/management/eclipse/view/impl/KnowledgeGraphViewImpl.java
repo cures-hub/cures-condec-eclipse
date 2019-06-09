@@ -51,6 +51,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private GraphFiltering graphFiltering;
 	private GephiGraph gephiGraph;
 
+	private int linkDistance;
+	private float decreaseFactor;
+
 	public KnowledgeGraphViewImpl() {
 		this.gephiGraph = new GephiGraphImpl();
 
@@ -74,11 +77,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				}
 			});
 		}
+
+		this.linkDistance = ConfigPersistenceManager.getLinkDistance();
+		this.decreaseFactor = ConfigPersistenceManager.getDecreaseFactor();
+		this.searchString = "";
 	}
 
 	@Override
 	public void createView(Linker linker) {
-		Map<Node, Set<Node>> graph = linker.createKnowledgeGraph();
+		Map<Node, Set<Node>> graph = linker.createGraph();
 		this.gephiGraph.createGephiGraph(graph);
 
 		updateNodeSizes();
@@ -88,7 +95,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	@Override
 	public void createView(Node selectedNode, int distance, Linker linker) {
-		Set<Node> nodes = linker.createLinks(selectedNode, distance);
+		Set<Node> nodes = linker.createGraph(selectedNode, distance);
 		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
 		for (Node node : nodes) {
 			Set<Node> links = new HashSet<Node>();
@@ -261,68 +268,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return searchButton;
 	}
 
-	private void highlightNodes(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
-		for (Node linkedNode : node.getLinkedNodes()) {
-			if (!visitedNodes.contains(linkedNode)) {
-				org.gephi.graph.api.Node gephiNode = gephiGraph.getGephiNode(linkedNode);
-				if (gephiNode != null) {
-					gephiNode.setSize(size);
-				}
-				visitedNodes.add(linkedNode);
-			}
-		}
-		if (currentDepth + 1 < maxDepth) {
-			for (Node n : node.getLinkedNodes()) {
-				highlightNodes(n, currentDepth + 1, maxDepth, size / ConfigPersistenceManager.getDecreaseFactor(),
-						visitedNodes);
-			}
-		}
-	}
-
-	/**
-	 * Resets the sizes of all nodes depending on the amount of links bound to the
-	 * node.
-	 * 
-	 * @see updateNodeSize(Node node)
-	 */
-	public void updateNodeSizes() {
-		if (selectedNodeId < 0) {
-			for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
-				updateNodeSize(gephiNode);
-			}
-		} else {
-			highlightSelectedNode();
-		}
-		refresh();
-	}
-
-	/**
-	 * Resets the size of the given node.
-	 * 
-	 * @param gephiNode
-	 *            The node which size should be reset
-	 */
-	public void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
-		Node node = Node.getNodeById(Long.valueOf(gephiNode.getId().toString()));
-		// first - should the node be even visible?
-		// inside the if/else:
-		// is a filter active, which must be regarded?
-		if (graphFiltering.shouldBeVisible(node)) {
-			if (searchString == null || searchString.isEmpty()) {
-				float size = (float) Math.sqrt(Double.valueOf(node.getLinkedNodes().size()));
-				gephiNode.setSize((size > 0 ? size : 0.75f));
-			} else {
-				if (gephiNode.getLabel().toLowerCase().contains(searchString.toLowerCase())) {
-					gephiNode.setSize(5f);
-				} else {
-					gephiNode.setSize(0.75f);
-				}
-			}
-		} else {
-			gephiNode.setSize(0f);
-		}
-	}
-
 	private void refresh() {
 		this.previewController.refreshPreview();
 		this.previewSketch.refresh();
@@ -344,22 +289,79 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		}
 	}
 
-	private void highlightSelectedNode(Node node) {
-		if (node == null) {
+	/**
+	 * Resets the sizes of all nodes depending on their amount of links.
+	 */
+	public void updateNodeSizes() {
+		if (selectedNodeId < 0) {
+			for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
+				updateNodeSize(gephiNode);
+			}
+		} else {
+			highlightSelectedNode();
+		}
+		refresh();
+	}
+
+	/**
+	 * Resets the size of the given node depending on its amount of links.
+	 * 
+	 * @param gephiNode
+	 *            node which size should be set.
+	 */
+	public void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
+		Node node = Node.getNodeById(Long.valueOf(gephiNode.getId().toString()));
+
+		if (!graphFiltering.shouldBeVisible(node)) {
+			gephiNode.setSize(0f);
 			return;
 		}
-		for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
-			gephiNode.setSize(0f);
+
+		float size = getNodeSizeByLinkNumber(node);
+
+		if (!searchString.isEmpty() && gephiNode.getLabel().contains(searchString)) {
+			gephiNode.setSize(size > 0 ? size * 3 : 0.75f);
+			return;
 		}
-		Set<Node> visitedNodes = new HashSet<Node>();
-		gephiGraph.getGephiNode(selectedNodeId).setSize(15f);
-		visitedNodes.add(node);
-		highlightNodes(node, 1, ConfigPersistenceManager.getLinkDistance(),
-				15f / ConfigPersistenceManager.getDecreaseFactor(), visitedNodes);
+
+		gephiNode.setSize(size > 0 ? size : 0.75f);
+	}
+
+	private float getNodeSizeByLinkNumber(Node node) {
+		int numberOfLinks = node.getLinkedNodes().size();
+		return (float) Math.sqrt(numberOfLinks) * 2;
 	}
 
 	private void highlightSelectedNode() {
 		Node node = Node.getNodeById(selectedNodeId);
 		highlightSelectedNode(node);
+	}
+
+	private void highlightSelectedNode(Node node) {
+		if (node == null) {
+			return;
+		}
+
+		Set<Node> visitedNodes = new HashSet<Node>();
+		visitedNodes.add(node);
+
+		gephiGraph.setSizeOfAllNodes(0f);
+		gephiGraph.setSizeOfNode(selectedNodeId, 5f);
+
+		highlightNode(node, 1, linkDistance, 5f / decreaseFactor, visitedNodes);
+	}
+
+	private void highlightNode(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
+		for (Node linkedNode : node.getLinkedNodes()) {
+			if (!visitedNodes.contains(linkedNode)) {
+				gephiGraph.setSizeOfNode(linkedNode, size);
+				visitedNodes.add(linkedNode);
+			}
+		}
+		if (currentDepth + 1 < maxDepth) {
+			for (Node n : node.getLinkedNodes()) {
+				highlightNode(n, currentDepth + 1, maxDepth, size / decreaseFactor, visitedNodes);
+			}
+		}
 	}
 }

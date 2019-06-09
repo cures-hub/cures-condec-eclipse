@@ -115,4 +115,30 @@ public class GephiGraphImpl implements GephiGraph {
 	public NodeIterable getNodes() {
 		return directedGraph.getNodes();
 	}
+
+	@Override
+	public void setSizeOfAllNodes(float size) {
+		for (org.gephi.graph.api.Node gephiNode : getNodes()) {
+			gephiNode.setSize(0f);
+		}
+	}
+	
+	@Override
+	public void setSizeOfNode(org.gephi.graph.api.Node gephiNode, float size) {
+		if (gephiNode != null) {
+			gephiNode.setSize(size);
+		}
+	}
+
+	@Override
+	public void setSizeOfNode(long nodeId, float size) {
+		org.gephi.graph.api.Node gephiNode = getGephiNode(nodeId);
+		setSizeOfNode(gephiNode, size);
+	}
+
+	@Override
+	public void setSizeOfNode(Node node, float size) {
+		org.gephi.graph.api.Node gephiNode = getGephiNode(node);
+		setSizeOfNode(gephiNode, size);
+	}
 }
