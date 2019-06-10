@@ -319,7 +319,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			return;
 		}
 
-		float size = getNodeSizeByLinkNumber(node);
+		float size = getNodeSizeByNodeDegree(node);
 
 		if (!searchString.isEmpty() && gephiNode.getLabel().contains(searchString)) {
 			gephiNode.setSize(size > 0 ? size * 3 : 0.75f);
@@ -329,9 +329,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		gephiNode.setSize(size > 0 ? size : 0.75f);
 	}
 
-	private float getNodeSizeByLinkNumber(Node node) {
-		int numberOfLinks = node.getLinkedNodes().size();
-		return (float) Math.sqrt(numberOfLinks) * 2;
+	private float getNodeSizeByNodeDegree(Node node) {
+		int degree = node.getLinkedNodes().size();
+		return (float) Math.sqrt(degree) * 2;
 	}
 
 	private void highlightSelectedNode() {
