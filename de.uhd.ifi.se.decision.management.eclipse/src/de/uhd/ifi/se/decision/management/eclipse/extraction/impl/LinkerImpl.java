@@ -1,10 +1,12 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
@@ -17,12 +19,14 @@ import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
 public class LinkerImpl implements Linker {
 	private GitClient gitClient;
@@ -33,41 +37,71 @@ public class LinkerImpl implements Linker {
 		this.jiraClient = jiraClient;
 	}
 
+	// Create the VertexFactory so the generator can create vertices
+	Supplier<String> vSupplier = new Supplier<String>() {
+		private int id = 0;
+
+		@Override
+		public String get() {
+			return "v" + id++;
+		}
+	};
+
 	@Override
-	public Map<Node, Set<Node>> createGraph() {
-		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
+	public Graph<Node, Link> createGraph() {
+		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
 		Set<Node> visitedNodes = new HashSet<Node>();
 
 		for (GitCommit gitCommit : gitClient.getCommits()) {
 			gitCommit.extractChangedClasses(gitClient);
 			visitedNodes.add(gitCommit);
-			createLinks(gitCommit, 1, visitedNodes);
-			graph.put(gitCommit, gitCommit.getLinkedNodes());
+
+			graph.addVertex(gitCommit);
+			for (Node node : gitCommit.getLinkedNodes()) {
+				graph.addVertex(node);
+				graph.addEdge(gitCommit, node);
+				visitedNodes.add(node);
+			}
+
 			for (DecisionKnowledgeElement element : gitCommit.getDecisionKnowledgeFromMessage()) {
-				Set<Node> nodes = new HashSet<Node>();
-				nodes.add(gitCommit);
-				graph.put(element, nodes);
+				graph.addVertex(element);
+				graph.addEdge(element, gitCommit);
 				visitedNodes.add(element);
 			}
 		}
 
 		// All commits need to be loaded first
 		for (CodeClass codeClass : CodeClass.getInstances()) {
-			graph.put(codeClass, codeClass.getLinkedNodes());
+			graph.addVertex(codeClass);
 			visitedNodes.add(codeClass);
+			for (Node node : codeClass.getLinkedNodes()) {
+				graph.addVertex(node);
+				graph.addEdge(codeClass, node);
+				visitedNodes.add(node);
+			}
 		}
 
 		// All commits need to be loaded first
 		for (CodeMethod codeMethod : CodeMethod.getInstances()) {
-			graph.put(codeMethod, codeMethod.getLinkedNodes());
+			graph.addVertex(codeMethod);
+			for (Node node : codeMethod.getLinkedNodes()) {
+				graph.addVertex(node);
+				graph.addEdge(codeMethod, node);
+				visitedNodes.add(node);
+			}
 			visitedNodes.add(codeMethod);
 		}
 
 		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
 			visitedNodes.add(jiraIssue);
-			createLinks(jiraIssue, 1, visitedNodes);
-			graph.put(jiraIssue, jiraIssue.getLinkedNodes());
+			graph.addVertex(jiraIssue);
+			for (Node node : jiraIssue.getLinkedNodes()) {
+				graph.addVertex(node);
+				graph.addEdge(jiraIssue, node);
+				visitedNodes.add(node);
+			}
 		}
+
 		return graph;
 	}
 

@@ -24,11 +24,13 @@ import javax.swing.JTextField;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
+import org.jgrapht.Graph;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
@@ -85,7 +87,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	@Override
 	public void createView(Linker linker) {
-		Map<Node, Set<Node>> graph = linker.createGraph();
+		Graph<Node, Link> graph = linker.createGraph();
 		this.gephiGraph.createGephiGraph(graph);
 
 		updateNodeSizes();

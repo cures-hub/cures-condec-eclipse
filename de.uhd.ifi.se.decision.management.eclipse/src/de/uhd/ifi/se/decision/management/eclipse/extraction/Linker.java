@@ -1,17 +1,21 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
-import java.util.Map;
 import java.util.Set;
 
+import org.jgrapht.Graph;
+
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public interface Linker {
 
-	Map<Node, Set<Node>> createGraph();
+	Graph<Node, Link> createGraph();
 
 	/**
-	 * @param node The node, which should be analyzed for further links.
-	 * @param How  deep is the function allowed to go to through the nodes.
+	 * @param node
+	 *            The node, which should be analyzed for further links.
+	 * @param How
+	 *            deep is the function allowed to go to through the nodes.
 	 * @return Returns a Set of all visited nodes.
 	 * 
 	 * @issue There is no known API for getting all Commits touching a given

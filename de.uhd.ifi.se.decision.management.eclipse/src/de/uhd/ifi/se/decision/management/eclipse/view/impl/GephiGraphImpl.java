@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,8 +12,11 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.jgrapht.Graph;
+import org.jgrapht.traverse.DepthFirstIterator;
 import org.openide.util.Lookup;
 
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
@@ -48,6 +52,29 @@ public class GephiGraphImpl implements GephiGraph {
 		}
 		createEdges(graph);
 		GraphSettings.getLayoutType().generateLayout(graphModel, graph.size());
+	}
+
+	@Override
+	public void createGephiGraph(Graph<Node, Link> graph) {
+		Set<Node> nodes = graph.vertexSet();
+		float positionOffset = (float) Math.sqrt(nodes.size());
+
+		Iterator<Node> iterator = new DepthFirstIterator<>(graph, nodes.iterator().next());
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
+			org.gephi.graph.api.Node gephiNode = createNode(node);
+			setPosition(gephiNode, positionOffset);
+			directedGraph.addNode(gephiNode);
+
+			Set<Link> outgoingEdges = graph.outgoingEdgesOf(node);
+			for (Link outgoingEdge : outgoingEdges) {
+				Edge edge = initEdge(node, outgoingEdge.getTarget());
+				if (edge != null) {
+					directedGraph.addEdge(edge);
+				}
+			}
+		}
+		GraphSettings.getLayoutType().generateLayout(graphModel, nodes.size());
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {
@@ -122,7 +149,7 @@ public class GephiGraphImpl implements GephiGraph {
 			gephiNode.setSize(0f);
 		}
 	}
-	
+
 	@Override
 	public void setSizeOfNode(org.gephi.graph.api.Node gephiNode, float size) {
 		if (gephiNode != null) {
