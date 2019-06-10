@@ -1,9 +1,9 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
@@ -31,53 +31,40 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 public class LinkerImpl implements Linker {
 	private GitClient gitClient;
 	private JiraClient jiraClient;
+	private List<Link> visitedLinks;
 
 	public LinkerImpl(GitClient gitClient, JiraClient jiraClient) {
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
+		this.visitedLinks = new ArrayList<Link>();
 	}
-
-	// Create the VertexFactory so the generator can create vertices
-	Supplier<String> vSupplier = new Supplier<String>() {
-		private int id = 0;
-
-		@Override
-		public String get() {
-			return "v" + id++;
-		}
-	};
 
 	@Override
 	public Graph<Node, Link> createGraph() {
 		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
-		Set<Node> visitedNodes = new HashSet<Node>();
 
 		for (GitCommit gitCommit : gitClient.getCommits()) {
 			gitCommit.extractChangedClasses(gitClient);
-			visitedNodes.add(gitCommit);
+			createGraph(gitCommit, 1);
 
 			graph.addVertex(gitCommit);
 			for (Node node : gitCommit.getLinkedNodes()) {
 				graph.addVertex(node);
-				graph.addEdge(gitCommit, node);
-				visitedNodes.add(node);
+				this.visitedLinks.add(graph.addEdge(gitCommit, node));
 			}
 
 			for (DecisionKnowledgeElement element : gitCommit.getDecisionKnowledgeFromMessage()) {
 				graph.addVertex(element);
 				graph.addEdge(element, gitCommit);
-				visitedNodes.add(element);
 			}
 		}
 
 		// All commits need to be loaded first
 		for (CodeClass codeClass : CodeClass.getInstances()) {
 			graph.addVertex(codeClass);
-			visitedNodes.add(codeClass);
 			for (Node node : codeClass.getLinkedNodes()) {
 				graph.addVertex(node);
 				graph.addEdge(codeClass, node);
-				visitedNodes.add(node);
 			}
 		}
 
@@ -87,18 +74,16 @@ public class LinkerImpl implements Linker {
 			for (Node node : codeMethod.getLinkedNodes()) {
 				graph.addVertex(node);
 				graph.addEdge(codeMethod, node);
-				visitedNodes.add(node);
 			}
-			visitedNodes.add(codeMethod);
 		}
 
 		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
-			visitedNodes.add(jiraIssue);
+			createGraph(jiraIssue, 1);
+
 			graph.addVertex(jiraIssue);
 			for (Node node : jiraIssue.getLinkedNodes()) {
 				graph.addVertex(node);
 				graph.addEdge(jiraIssue, node);
-				visitedNodes.add(node);
 			}
 		}
 

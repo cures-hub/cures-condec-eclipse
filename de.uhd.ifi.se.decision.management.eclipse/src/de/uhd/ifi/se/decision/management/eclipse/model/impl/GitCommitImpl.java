@@ -129,8 +129,8 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	}
 
 	@Override
-	public void extractChangedClasses(GitClient gm) {
-		this.changedClasses = gm.getDiffEntries(this);
+	public void extractChangedClasses(GitClient gitClient) {
+		this.changedClasses = gitClient.getDiffEntries(this);
 		for (Node node : this.changedClasses) {
 			this.addLinkedNode(node);
 			node.addLinkedNode(this);

@@ -199,11 +199,12 @@ public class GitClientImpl implements GitClient {
 	public List<CodeClass> getDiffEntries(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
 		List<CodeClass> changedClasses = new ArrayList<CodeClass>();
+		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses.add(CodeClass.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
+				changedClasses.add(CodeClass.getOrCreate(entry, pathToGit));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

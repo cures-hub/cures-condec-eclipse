@@ -7,7 +7,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
@@ -39,8 +38,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 		linker.createGraph();
 		Node rootNode = null;
 		for (CodeClass cc : CodeClass.getInstances()) {
-			IPath fileloc = new Path(cc.getFileLocation());
-			if (fileloc.equals(pathOfSelectedFile)) {
+			if (cc.getPath().equals(pathOfSelectedFile)) {
 				rootNode = cc;
 				break;
 			}
