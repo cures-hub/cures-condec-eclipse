@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.gephi.graph.api.DirectedGraph;
@@ -42,19 +41,6 @@ public class GephiGraphImpl implements GephiGraph {
 	}
 
 	@Override
-	public void createGephiGraph(Map<Node, Set<Node>> graph) {
-		Set<Node> nodes = graph.keySet();
-		float positionOffset = (float) Math.sqrt(nodes.size());
-		for (Node node : nodes) {
-			org.gephi.graph.api.Node gephiNode = createNode(node);
-			setPosition(gephiNode, positionOffset);
-			directedGraph.addNode(gephiNode);
-		}
-		createEdges(graph);
-		GraphSettings.getLayoutType().generateLayout(graphModel, graph.size());
-	}
-
-	@Override
 	public void createGephiGraph(Graph<Node, Link> graph) {
 		Set<Node> nodes = graph.vertexSet();
 		float positionOffset = (float) Math.sqrt(nodes.size());
@@ -91,20 +77,6 @@ public class GephiGraphImpl implements GephiGraph {
 	private void setPosition(org.gephi.graph.api.Node gephiNode, float positionOffset) {
 		gephiNode.setX((float) Math.random() * 100f * positionOffset);
 		gephiNode.setY((float) Math.random() * 100f * positionOffset);
-	}
-
-	private void createEdges(Map<Node, Set<Node>> graph) {
-		for (Map.Entry<Node, Set<Node>> entry : graph.entrySet()) {
-			for (Node node : entry.getValue()) {
-				Edge edge = initEdge(entry.getKey(), node);
-				if (edge != null) {
-					directedGraph.addEdge(edge);
-				} else {
-					System.out.println(
-							"Failed to link \"" + entry.getKey().toString() + "\" with \"" + node.toString() + "\"");
-				}
-			}
-		}
 	}
 
 	private Edge initEdge(Node node1, Node node2) {

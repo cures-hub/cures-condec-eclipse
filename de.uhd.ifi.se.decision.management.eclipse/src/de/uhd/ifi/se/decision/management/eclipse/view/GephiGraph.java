@@ -1,8 +1,5 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.gephi.graph.api.NodeIterable;
 import org.jgrapht.Graph;
 
@@ -12,8 +9,6 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public interface GephiGraph {
 
 	void createGephiGraph(Graph<Node, Link> graph);
-
-	void createGephiGraph(Map<Node, Set<Node>> graph);
 
 	org.gephi.graph.api.Node getGephiNode(Node node);
 

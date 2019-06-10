@@ -91,10 +91,19 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	@Override
-	public Set<Node> createGraph(Node node, int maxDepth) {
+	public Graph<Node, Link> createGraph(Node node, int maxDepth) {
+		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
+
 		Set<Node> visitedNodes = new HashSet<Node>();
-		createLinks(node, 0, maxDepth, visitedNodes);
-		return visitedNodes;
+		visitedNodes = createLinks(node, 0, maxDepth, visitedNodes);
+
+		graph.addVertex(node);
+		for (Node linkedNode : node.getLinkedNodes()) {
+			graph.addVertex(linkedNode);
+			graph.addEdge(node, linkedNode);
+		}
+
+		return graph;
 	}
 
 	public Set<Node> createLinks(Node node, int maxDepth, Set<Node> visitedNodes) {
@@ -102,7 +111,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		return visitedNodes;
 	}
 
-	private void createLinks(Node node, int currentDepth, int maxDepth, Set<Node> visitedNodes) {
+	private Set<Node> createLinks(Node node, int currentDepth, int maxDepth, Set<Node> visitedNodes) {
 		// Create Links, if node wasn't visited yet
 		if (currentDepth < maxDepth && !visitedNodes.contains(node)) {
 			visitedNodes.add(node);
@@ -149,6 +158,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 				}
 			}
 		}
+		return visitedNodes;
 	}
 
 	private void linkBidirectional(Node node1, Node node2) {

@@ -1,7 +1,5 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
-import java.util.Set;
-
 import org.jgrapht.Graph;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
@@ -22,7 +20,7 @@ public interface KnowledgeGraph {
 	 *        codeline. Only the last commit, which changed a specific line, can be
 	 *        retrieved.
 	 */
-	Set<Node> createGraph(Node node, int maxDepth);
+	Graph<Node, Link> createGraph(Node node, int maxDepth);
 
 	GitClient getGitClient();
 

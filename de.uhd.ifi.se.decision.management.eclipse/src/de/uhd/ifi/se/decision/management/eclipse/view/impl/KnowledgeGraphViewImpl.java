@@ -9,9 +9,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
@@ -86,34 +84,30 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void createView(KnowledgeGraph linker) {
-		Graph<Node, Link> graph = linker.createGraph();
-		this.gephiGraph.createGephiGraph(graph);
-
-		updateNodeSizes();
-		initJFrame("Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
-		refresh();
+	public void createView(KnowledgeGraph knowledgeGraph) {
+		Graph<Node, Link> graph = knowledgeGraph.createGraph();
+		String title = "Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"";
+		createView(graph, title);
 	}
 
 	@Override
-	public void createView(Node selectedNode, int distance, KnowledgeGraph linker) {
-		Set<Node> nodes = linker.createGraph(selectedNode, distance);
-		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
-		for (Node node : nodes) {
-			Set<Node> links = new HashSet<Node>();
-			for (Node neighbor : node.getLinkedNodes()) {
-				if (nodes.contains(neighbor)) {
-					links.add(neighbor);
-				}
-			}
-			graph.put(node, links);
-		}
-		this.gephiGraph.createGephiGraph(graph);
-
+	public void createView(Node selectedNode, int distance, KnowledgeGraph knowledgeGraph) {
+		Graph<Node, Link> graph = knowledgeGraph.createGraph(selectedNode, distance);
 		selectedNodeId = selectedNode.getId();
+		String title = "Knowledge Graph for \"" + selectedNode.toString() + "\" with Link Distance " + distance;
+		createView(graph, title);
+	}
+	
+	@Override
+	public void createView(Graph<Node, Link> graph) {
+		createView(graph, "Knowledge Graph");
+	}
 
+	@Override
+	public void createView(Graph<Node, Link> graph, String frameTitle) {
+		this.gephiGraph.createGephiGraph(graph);
 		updateNodeSizes();
-		initJFrame("Knowledge Graph for \"" + selectedNode.toString() + "\" with Link Distance " + distance);
+		initJFrame(frameTitle);
 		refresh();
 	}
 
