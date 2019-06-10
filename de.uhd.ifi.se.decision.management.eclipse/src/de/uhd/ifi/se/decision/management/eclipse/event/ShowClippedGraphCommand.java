@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.IPath;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
@@ -32,7 +32,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 			return null;
 		}
 
-		Linker linker = new LinkerImpl(GitClient.getOrCreate(), jiraClient);
+		KnowledgeGraph linker = new KnowledgeGraphImpl(GitClient.getOrCreate(), jiraClient);
 		// Just to load all elements and look for the invoked .java file in the
 		// CodeClass-instances
 		linker.createGraph();

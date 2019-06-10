@@ -13,7 +13,7 @@ import com.atlassian.jira.rest.client.api.domain.IssueLink;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -28,12 +28,12 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
-public class LinkerImpl implements Linker {
+public class KnowledgeGraphImpl implements KnowledgeGraph {
 	private GitClient gitClient;
 	private JiraClient jiraClient;
 	private List<Link> visitedLinks;
 
-	public LinkerImpl(GitClient gitClient, JiraClient jiraClient) {
+	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		this.visitedLinks = new ArrayList<Link>();

@@ -6,8 +6,8 @@ import org.eclipse.core.commands.ExecutionException;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.LinkerImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
@@ -24,7 +24,7 @@ public class ShowFullGraphCommand extends AbstractHandler {
 			return null;
 		}
 		GitClient gitClient = GitClient.getOrCreate();
-		Linker linker = new LinkerImpl(gitClient, jiraClient);
+		KnowledgeGraph linker = new KnowledgeGraphImpl(gitClient, jiraClient);
 		KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
 		knowledgeGraphView.createView(linker);
 		return null;

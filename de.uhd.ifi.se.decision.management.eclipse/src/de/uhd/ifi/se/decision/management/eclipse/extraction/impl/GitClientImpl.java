@@ -296,11 +296,10 @@ public class GitClientImpl implements GitClient {
 		String methodsToString = "";
 		for (Edit edit : editList) {
 			for (MethodDeclaration methodDeclaration : methodDeclarations)
-				if (edit.getEndB() >= methodDeclaration.getBegin().get().line) {
-					if (edit.getBeginB() <= methodDeclaration.getEnd().get().line) {
-						methodsToString = methodsToString + "An Insert happened in the method "
-								+ methodDeclaration.getNameAsString() + "\n";
-					}
+				if (edit.getEndB() >= methodDeclaration.getBegin().get().line
+						&& edit.getBeginB() <= methodDeclaration.getEnd().get().line) {
+					methodsToString = methodsToString + "An Insert happened in the method "
+							+ methodDeclaration.getNameAsString() + "\n";
 				}
 		}
 		return methodsToString;

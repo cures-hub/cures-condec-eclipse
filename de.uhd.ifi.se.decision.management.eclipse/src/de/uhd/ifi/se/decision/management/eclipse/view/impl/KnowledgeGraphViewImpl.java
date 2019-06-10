@@ -27,7 +27,7 @@ import org.gephi.preview.api.RenderTarget;
 import org.jgrapht.Graph;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
@@ -86,7 +86,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void createView(Linker linker) {
+	public void createView(KnowledgeGraph linker) {
 		Graph<Node, Link> graph = linker.createGraph();
 		this.gephiGraph.createGephiGraph(graph);
 
@@ -96,7 +96,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void createView(Node selectedNode, int distance, Linker linker) {
+	public void createView(Node selectedNode, int distance, KnowledgeGraph linker) {
 		Set<Node> nodes = linker.createGraph(selectedNode, distance);
 		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
 		for (Node node : nodes) {
