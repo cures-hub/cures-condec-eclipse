@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.jgit.revwalk.RevCommit;
+
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
 public class CommitMessageParser {
+
+	public static List<DecisionKnowledgeElement> extractDecisionKnowledge(RevCommit commit) {
+		return extractDecisionKnowledge(commit.getFullMessage());
+	}
 
 	/**
 	 * Returns all decision knowledge elements explicitly marked in a message, for
@@ -54,6 +60,10 @@ public class CommitMessageParser {
 			}
 		}
 		return parts;
+	}
+
+	public static List<String> getJiraIssueKeys(RevCommit revCommit, String projectKey) {
+		return getJiraIssueKeys(revCommit.getFullMessage(), projectKey);
 	}
 
 	/**

@@ -32,19 +32,42 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	private GitClient gitClient;
 	private JiraClient jiraClient;
 	private List<Link> visitedLinks;
+	private Graph<Node, Link> graph;
 
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		this.visitedLinks = new ArrayList<Link>();
+		this.graph = createGraph();
 	}
 
 	@Override
 	public Graph<Node, Link> createGraph() {
-		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
+		graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
 
+		addCommitsAndFiles();
+
+		// All commits need to be loaded first
+		addFiles();
+
+		// All commits need to be loaded first
+		addMethods();
+
+		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
+			createGraph(jiraIssue, 1);
+
+			graph.addVertex(jiraIssue);
+			for (Node node : jiraIssue.getLinkedNodes()) {
+				graph.addVertex(node);
+				graph.addEdge(jiraIssue, node);
+			}
+		}
+
+		return graph;
+	}
+
+	private void addCommitsAndFiles() {
 		for (GitCommit gitCommit : gitClient.getCommits()) {
-			gitCommit.extractChangedClasses(gitClient);
 			createGraph(gitCommit, 1);
 
 			graph.addVertex(gitCommit);
@@ -58,17 +81,9 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 				graph.addEdge(element, gitCommit);
 			}
 		}
+	}
 
-		// All commits need to be loaded first
-		for (CodeClass codeClass : CodeClass.getInstances()) {
-			graph.addVertex(codeClass);
-			for (Node node : codeClass.getLinkedNodes()) {
-				graph.addVertex(node);
-				graph.addEdge(codeClass, node);
-			}
-		}
-
-		// All commits need to be loaded first
+	private void addMethods() {
 		for (CodeMethod codeMethod : CodeMethod.getInstances()) {
 			graph.addVertex(codeMethod);
 			for (Node node : codeMethod.getLinkedNodes()) {
@@ -76,18 +91,16 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 				graph.addEdge(codeMethod, node);
 			}
 		}
+	}
 
-		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
-			createGraph(jiraIssue, 1);
-
-			graph.addVertex(jiraIssue);
-			for (Node node : jiraIssue.getLinkedNodes()) {
+	private void addFiles() {
+		for (CodeClass codeClass : CodeClass.getInstances()) {
+			graph.addVertex(codeClass);
+			for (Node node : codeClass.getLinkedNodes()) {
 				graph.addVertex(node);
-				graph.addEdge(jiraIssue, node);
+				graph.addEdge(codeClass, node);
 			}
 		}
-
-		return graph;
 	}
 
 	@Override
@@ -184,6 +197,14 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	@Override
 	public void setJiraClient(JiraClient jiraClient) {
 		this.jiraClient = jiraClient;
+	}
+
+	public Graph<Node, Link> getGraph() {
+		return graph;
+	}
+
+	public void setGraph(Graph<Node, Link> graph) {
+		this.graph = graph;
 	}
 
 }

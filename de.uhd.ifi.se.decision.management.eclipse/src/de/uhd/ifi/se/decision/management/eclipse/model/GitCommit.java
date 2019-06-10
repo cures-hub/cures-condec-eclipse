@@ -6,10 +6,7 @@ import java.util.Map;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import com.atlassian.jira.rest.client.api.domain.Issue;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 public interface GitCommit extends Node {
@@ -36,18 +33,6 @@ public interface GitCommit extends Node {
 		return new GitCommitImpl(commit, issueKeyBase);
 	}
 
-	void setIssueKeyBase(String issueKeyBase);
-
-	// ReferencedIssues-Section
-	List<Issue> getReferencedJiraIssues();
-
-	void setReferencedJiraIssues(List<Issue> referencedIssues);
-
-	boolean addReferencedJiraIssue(Issue issue);
-
-	boolean removeReferencedJiraIssue(Issue issue);
-	// END ReferencedIssues-Section
-
 	/**
 	 * Retrieves decision knowledge elements documented in the commit message.
 	 * 
@@ -61,23 +46,13 @@ public interface GitCommit extends Node {
 
 	void setChangedClasses(List<CodeClass> changedClasses);
 
-	boolean addChangedClass(CodeClass changedClass);
-
-	boolean removeChangedClass(CodeClass changedClass);
-	// END CHangedClasses-Section
-
-	// IssueKey-Section
 	List<String> getJiraIssueKeys();
 
-	void setJiraIssueKeys(List<String> issueKeys);
-
-	boolean addJiraIssueKey(String issueKey);
-
-	boolean removeJiraIssueKey(String issueKey);
-	// END IssueKey-Section
-
+	/**
+	 * Returns the RevCommit object associated with this GitCommit.
+	 * 
+	 * @see RevCommit
+	 * @return object of class {@link RevCommit};
+	 */
 	RevCommit getRevCommit();
-
-	void extractChangedClasses(GitClient gm);
-
 }

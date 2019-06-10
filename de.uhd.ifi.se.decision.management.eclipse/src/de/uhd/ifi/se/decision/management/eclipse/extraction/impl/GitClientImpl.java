@@ -127,7 +127,9 @@ public class GitClientImpl implements GitClient {
 		try {
 			Iterable<RevCommit> commits = this.git.log().call();
 			for (RevCommit revCommit : commits) {
-				allCommits.add(GitCommit.getOrCreate(revCommit, projectKey));
+				GitCommit gitCommit = GitCommit.getOrCreate(revCommit, projectKey);
+				gitCommit.setChangedClasses(getDiffEntries(gitCommit));
+				allCommits.add(gitCommit);
 			}
 		} catch (Exception e) {
 			System.err.println("Failed to load all commits of the current branch.");
