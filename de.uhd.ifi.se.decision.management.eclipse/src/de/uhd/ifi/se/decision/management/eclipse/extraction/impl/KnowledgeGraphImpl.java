@@ -103,7 +103,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 
 	private void addCommitsAndFiles() {
 		for (GitCommit gitCommit : gitClient.getCommits()) {
-			createGraph(gitCommit, 1);
+			createLinks(gitCommit, 0, 1);
 
 			graph.addVertex(gitCommit);
 			for (Node node : gitCommit.getLinkedNodes()) {
@@ -140,7 +140,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 
 	private void addJiraIssues() {
 		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
-			createGraph(jiraIssue, 1);
+			createLinks(jiraIssue, 0, 1);
 
 			graph.addVertex(jiraIssue);
 			for (Node node : jiraIssue.getLinkedNodes()) {
@@ -151,7 +151,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	private Graph<Node, Link> createGraph(Node node, int distance) {
-		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
+		graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
 		createLinks(node, 0, distance);
 
 		graph.addVertex(node);
