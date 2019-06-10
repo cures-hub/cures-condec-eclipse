@@ -1,29 +1,85 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.gephi.graph.api.NodeIterable;
+import org.jgrapht.Graph;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
+/**
+ * Interface to create a gephi graph from the knowledge graph. Used in the
+ * KnowledgeGraphView class.
+ * 
+ * @see KnowledgeGraph
+ * @see KnowledgeGraphView
+ */
 public interface GephiGraph {
 
-	void createGephiGraph(Map<Node, Set<Node>> graph);
+	/**
+	 * Creates a gephi graph from a JGraphT graph.
+	 * 
+	 * @see Graph
+	 * @param graph
+	 *            JGraphT graph.
+	 */
+	void createGephiGraph(Graph<Node, Link> graph);
 
+	/**
+	 * Creates a gephi graph from a knowledge graph. The knowledge covers decision
+	 * knowledge, JIRA issues such as requirements and work items, commits, and
+	 * files (e.g., classes and methods).
+	 * 
+	 * @see KnowledgeGraph
+	 * @param knowledgeGraph
+	 *            graph of decision knowledge, JIRA issues such as requirements and
+	 *            work items, commits, and files (e.g., classes and methods).
+	 */
+	void createGephiGraph(KnowledgeGraph knowledgeGraph);
+
+	/**
+	 * Returns a gephi node for a given model node object.
+	 * 
+	 * @see Node
+	 * @param node
+	 *            object of the model Node class.
+	 * @return gephi node.
+	 */
 	org.gephi.graph.api.Node getGephiNode(Node node);
 
+	/**
+	 * Returns a gephi node for a given model node object.
+	 * 
+	 * @see Node
+	 * @param nodeId
+	 *            id of an object of the model Node class.
+	 * @return gephi node.
+	 */
 	org.gephi.graph.api.Node getGephiNode(long nodeId);
 
+	/**
+	 * Returns a gephi node for a given model node object.
+	 * 
+	 * @see Node
+	 * @param nodeText
+	 *            text of an object of the model Node class.
+	 * @return gephi node.
+	 */
 	org.gephi.graph.api.Node getGephiNode(String nodeText);
 
+	/**
+	 * Returns all gephi nodes in the gephi graph.
+	 * 
+	 * @see NodeIterable
+	 * @return all gephi nodes in the gephi graph.
+	 */
 	NodeIterable getNodes();
 
 	void setSizeOfAllNodes(float size);
-	
+
 	void setSizeOfNode(org.gephi.graph.api.Node gephiNode, float size);
 
 	void setSizeOfNode(long selectedNodeId, float size);
-	
+
 	void setSizeOfNode(Node node, float size);
 }

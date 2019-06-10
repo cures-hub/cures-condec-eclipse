@@ -6,12 +6,13 @@ import java.util.Map;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import com.atlassian.jira.rest.client.api.domain.Issue;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
+/**
+ * Interface for git commits as part of the knowledge graph.
+ */
 public interface GitCommit extends Node {
 
 	/**
@@ -25,59 +26,60 @@ public interface GitCommit extends Node {
 	 * 
 	 * @param commit
 	 *            RevCommit object.
+	 * @param projectKey
+	 *            the commit message is parsed for to retrieve linked JIRA issues.
 	 * @return either a new or already existing GitCommit instance.
 	 */
-	public static GitCommit getOrCreate(RevCommit commit, String issueKeyBase) {
+	public static GitCommit getOrCreate(RevCommit commit, String projectKey) {
 		if (instances.containsKey(commit.getName())) {
 			return instances.get(commit.getName());
 		}
-		GitCommit gitCommit = new GitCommitImpl(commit, issueKeyBase);
+		GitCommit gitCommit = new GitCommitImpl(commit, projectKey);
 		instances.put(commit.getName(), gitCommit);
-		return new GitCommitImpl(commit, issueKeyBase);
+		return gitCommit;
 	}
 
-	void setIssueKeyBase(String issueKeyBase);
-
-	// ReferencedIssues-Section
-	List<Issue> getReferencedJiraIssues();
-
-	void setReferencedJiraIssues(List<Issue> referencedIssues);
-
-	boolean addReferencedJiraIssue(Issue issue);
-
-	boolean removeReferencedJiraIssue(Issue issue);
-	// END ReferencedIssues-Section
-
 	/**
-	 * Retrieves decision knowledge elements documented in the commit message.
+	 * Returns decision knowledge elements documented in the commit message.
 	 * 
 	 * @see CommitMessageParser
-	 * @return list of all decision knowledge elements explicitly marked in a
+	 * @return list of all decision knowledge elements explicitly marked in a commit
 	 *         message.
 	 */
 	List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage();
 
-	List<CodeClass> getChangedClasses();
+	/**
+	 * Returns the files changed by the commit (both java and other files).
+	 * 
+	 * @see CodeClass
+	 * @return list of changed files.
+	 */
+	List<CodeClass> getChangedFiles();
 
-	void setChangedClasses(List<CodeClass> changedClasses);
+	/**
+	 * Sets the files changed by the commit (both java and other files). This method
+	 * is used in the GitClient.
+	 * 
+	 * @param changedFiles
+	 *            list of changed files.
+	 * @see CodeClass
+	 * @see GitClient
+	 */
+	void setChangedFiles(List<CodeClass> changedFiles);
 
-	boolean addChangedClass(CodeClass changedClass);
-
-	boolean removeChangedClass(CodeClass changedClass);
-	// END CHangedClasses-Section
-
-	// IssueKey-Section
+	/**
+	 * Returns the JIRA issue keys mentioned in the commit message.
+	 * 
+	 * @see CommitMessageParser
+	 * @return list of the JIRA issue keys mentioned in a commit message.
+	 */
 	List<String> getJiraIssueKeys();
 
-	void setJiraIssueKeys(List<String> issueKeys);
-
-	boolean addJiraIssueKey(String issueKey);
-
-	boolean removeJiraIssueKey(String issueKey);
-	// END IssueKey-Section
-
+	/**
+	 * Returns the RevCommit object associated with this GitCommit.
+	 * 
+	 * @see RevCommit
+	 * @return object of class {@link RevCommit};
+	 */
 	RevCommit getRevCommit();
-
-	void extractChangedClasses(GitClient gm);
-
 }

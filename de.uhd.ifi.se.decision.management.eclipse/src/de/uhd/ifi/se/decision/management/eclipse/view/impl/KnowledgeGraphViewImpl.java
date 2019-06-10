@@ -9,9 +9,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
@@ -26,7 +24,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.Linker;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
@@ -39,6 +37,9 @@ import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
+/**
+ * Class to create a view for the knowledge graph model class.
+ */
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private String searchString;
 	private JTextField searchTextField;
@@ -84,34 +85,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void createView(Linker linker) {
-		Map<Node, Set<Node>> graph = linker.createGraph();
-		this.gephiGraph.createGephiGraph(graph);
-
-		updateNodeSizes();
-		initJFrame("Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"");
-		refresh();
+	public void createView(KnowledgeGraph knowledgeGraph) {
+		createView(knowledgeGraph, "Knowledge Graph");
 	}
 
 	@Override
-	public void createView(Node selectedNode, int distance, Linker linker) {
-		Set<Node> nodes = linker.createGraph(selectedNode, distance);
-		Map<Node, Set<Node>> graph = new HashMap<Node, Set<Node>>();
-		for (Node node : nodes) {
-			Set<Node> links = new HashSet<Node>();
-			for (Node neighbor : node.getLinkedNodes()) {
-				if (nodes.contains(neighbor)) {
-					links.add(neighbor);
-				}
-			}
-			graph.put(node, links);
-		}
-		this.gephiGraph.createGephiGraph(graph);
-
-		selectedNodeId = selectedNode.getId();
-
+	public void createView(KnowledgeGraph knowledgeGraph, String frameTitle) {
+		this.gephiGraph.createGephiGraph(knowledgeGraph);
 		updateNodeSizes();
-		initJFrame("Knowledge Graph for \"" + selectedNode.toString() + "\" with Link Distance " + distance);
+		initJFrame(frameTitle);
 		refresh();
 	}
 
@@ -317,7 +299,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			return;
 		}
 
-		float size = getNodeSizeByLinkNumber(node);
+		float size = getNodeSizeByNodeDegree(node);
 
 		if (!searchString.isEmpty() && gephiNode.getLabel().contains(searchString)) {
 			gephiNode.setSize(size > 0 ? size * 3 : 0.75f);
@@ -327,9 +309,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		gephiNode.setSize(size > 0 ? size : 0.75f);
 	}
 
-	private float getNodeSizeByLinkNumber(Node node) {
-		int numberOfLinks = node.getLinkedNodes().size();
-		return (float) Math.sqrt(numberOfLinks) * 2;
+	private float getNodeSizeByNodeDegree(Node node) {
+		int degree = node.getLinkedNodes().size();
+		return (float) Math.sqrt(degree) * 2;
 	}
 
 	private void highlightSelectedNode() {

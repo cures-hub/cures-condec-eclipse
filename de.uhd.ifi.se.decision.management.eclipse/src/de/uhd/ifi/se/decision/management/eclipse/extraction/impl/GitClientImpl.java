@@ -127,7 +127,9 @@ public class GitClientImpl implements GitClient {
 		try {
 			Iterable<RevCommit> commits = this.git.log().call();
 			for (RevCommit revCommit : commits) {
-				allCommits.add(GitCommit.getOrCreate(revCommit, projectKey));
+				GitCommit gitCommit = GitCommit.getOrCreate(revCommit, projectKey);
+				gitCommit.setChangedFiles(getDiffEntries(gitCommit));
+				allCommits.add(gitCommit);
 			}
 		} catch (Exception e) {
 			System.err.println("Failed to load all commits of the current branch.");
@@ -199,11 +201,12 @@ public class GitClientImpl implements GitClient {
 	public List<CodeClass> getDiffEntries(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
 		List<CodeClass> changedClasses = new ArrayList<CodeClass>();
+		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses.add(CodeClass.getOrCreate(entry, ConfigPersistenceManager.getPathToGit().toString()));
+				changedClasses.add(CodeClass.getOrCreate(entry, pathToGit));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -295,11 +298,10 @@ public class GitClientImpl implements GitClient {
 		String methodsToString = "";
 		for (Edit edit : editList) {
 			for (MethodDeclaration methodDeclaration : methodDeclarations)
-				if (edit.getEndB() >= methodDeclaration.getBegin().get().line) {
-					if (edit.getBeginB() <= methodDeclaration.getEnd().get().line) {
-						methodsToString = methodsToString + "An Insert happened in the method "
-								+ methodDeclaration.getNameAsString() + "\n";
-					}
+				if (edit.getEndB() >= methodDeclaration.getBegin().get().line
+						&& edit.getBeginB() <= methodDeclaration.getEnd().get().line) {
+					methodsToString = methodsToString + "An Insert happened in the method "
+							+ methodDeclaration.getNameAsString() + "\n";
 				}
 		}
 		return methodsToString;

@@ -1,6 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
-import java.util.Map;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.gephi.graph.api.DirectedGraph;
@@ -11,15 +11,24 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.jgrapht.Graph;
+import org.jgrapht.traverse.DepthFirstIterator;
 import org.openide.util.Lookup;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 
-// @issue How can we use the filters that come with the gephi library instead of
-// building our own filters? Would using the gephi filters increase the
-// performance?
+/**
+ * Class to create a gephi graph from the knowledge graph. Used in the
+ * KnowledgeGraphView class.
+ * 
+ * @issue How can we use the filters that come with the gephi library instead of
+ *        building our own filters? Would using the gephi filters increase the
+ *        performance?
+ */
 public class GephiGraphImpl implements GephiGraph {
 
 	private GraphModel graphModel;
@@ -38,16 +47,31 @@ public class GephiGraphImpl implements GephiGraph {
 	}
 
 	@Override
-	public void createGephiGraph(Map<Node, Set<Node>> graph) {
-		Set<Node> nodes = graph.keySet();
+	public void createGephiGraph(KnowledgeGraph knowledgeGraph) {
+		createGephiGraph(knowledgeGraph.getGraph());
+	}
+
+	@Override
+	public void createGephiGraph(Graph<Node, Link> graph) {
+		Set<Node> nodes = graph.vertexSet();
 		float positionOffset = (float) Math.sqrt(nodes.size());
-		for (Node node : nodes) {
+
+		Iterator<Node> iterator = new DepthFirstIterator<>(graph, nodes.iterator().next());
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
 			org.gephi.graph.api.Node gephiNode = createNode(node);
 			setPosition(gephiNode, positionOffset);
 			directedGraph.addNode(gephiNode);
+
+			Set<Link> outgoingEdges = graph.outgoingEdgesOf(node);
+			for (Link outgoingEdge : outgoingEdges) {
+				Edge edge = initEdge(node, outgoingEdge.getTarget());
+				if (edge != null) {
+					directedGraph.addEdge(edge);
+				}
+			}
 		}
-		createEdges(graph);
-		GraphSettings.getLayoutType().generateLayout(graphModel, graph.size());
+		GraphSettings.getLayoutType().generateLayout(graphModel, nodes.size());
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {
@@ -64,20 +88,6 @@ public class GephiGraphImpl implements GephiGraph {
 	private void setPosition(org.gephi.graph.api.Node gephiNode, float positionOffset) {
 		gephiNode.setX((float) Math.random() * 100f * positionOffset);
 		gephiNode.setY((float) Math.random() * 100f * positionOffset);
-	}
-
-	private void createEdges(Map<Node, Set<Node>> graph) {
-		for (Map.Entry<Node, Set<Node>> entry : graph.entrySet()) {
-			for (Node node : entry.getValue()) {
-				Edge edge = initEdge(entry.getKey(), node);
-				if (edge != null) {
-					directedGraph.addEdge(edge);
-				} else {
-					System.out.println(
-							"Failed to link \"" + entry.getKey().toString() + "\" with \"" + node.toString() + "\"");
-				}
-			}
-		}
 	}
 
 	private Edge initEdge(Node node1, Node node2) {
@@ -122,7 +132,7 @@ public class GephiGraphImpl implements GephiGraph {
 			gephiNode.setSize(0f);
 		}
 	}
-	
+
 	@Override
 	public void setSizeOfNode(org.gephi.graph.api.Node gephiNode, float size) {
 		if (gephiNode != null) {
