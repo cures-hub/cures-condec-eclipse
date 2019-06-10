@@ -14,9 +14,8 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	private RevCommit revCommit;
 	private List<String> jiraIssueKeys = new ArrayList<String>();
-	private List<CodeClass> changedClasses;
+	private List<CodeClass> changedFiles;
 	private List<DecisionKnowledgeElement> decisionKnowledgeElements;
-	
 
 	public GitCommitImpl(RevCommit revCommit, String projectKey) {
 		this.revCommit = revCommit;
@@ -28,7 +27,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 			knowledgeElement.addLinkedNode(this);
 		}
 		
-		this.changedClasses = new ArrayList<CodeClass>();
+		this.changedFiles = new ArrayList<CodeClass>();
 	}
 
 	public GitCommitImpl(RevCommit commit) {
@@ -41,14 +40,14 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	}
 
 	@Override
-	public List<CodeClass> getChangedClasses() {
-		return this.changedClasses;
+	public List<CodeClass> getChangedFiles() {
+		return this.changedFiles;
 	}
 
 	@Override
-	public void setChangedClasses(List<CodeClass> changedClasses) {
-		this.changedClasses = changedClasses;
-		for (Node node : this.changedClasses) {
+	public void setChangedFiles(List<CodeClass> changedFiles) {
+		this.changedFiles = changedFiles;
+		for (Node node : this.changedFiles) {
 			this.addLinkedNode(node);
 			node.addLinkedNode(this);
 		}

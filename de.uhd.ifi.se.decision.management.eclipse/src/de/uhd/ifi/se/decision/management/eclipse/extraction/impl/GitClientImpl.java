@@ -128,7 +128,7 @@ public class GitClientImpl implements GitClient {
 			Iterable<RevCommit> commits = this.git.log().call();
 			for (RevCommit revCommit : commits) {
 				GitCommit gitCommit = GitCommit.getOrCreate(revCommit, projectKey);
-				gitCommit.setChangedClasses(getDiffEntries(gitCommit));
+				gitCommit.setChangedFiles(getDiffEntries(gitCommit));
 				allCommits.add(gitCommit);
 			}
 		} catch (Exception e) {

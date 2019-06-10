@@ -61,7 +61,7 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 			parseResult = javaParser.parse(fileInputStream);
 			fileInputStream.close();
 		} catch (Exception e) {
-			System.err.println("Methods of class " + this.getClassName() + " could not be parsed. Message: " + e);
+			System.err.println("Methods of class " + this.getFileName() + " could not be parsed. Message: " + e);
 		}
 		return parseResult;
 	}
@@ -87,11 +87,11 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 
 	@Override
 	public String toString() {
-		return this.getClassName();
+		return this.getFileName();
 	}
 
 	@Override
-	public String getClassName() {
+	public String getFileName() {
 		return path.lastSegment();
 	}
 }

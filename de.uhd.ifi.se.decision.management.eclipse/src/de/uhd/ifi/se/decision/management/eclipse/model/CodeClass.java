@@ -12,10 +12,13 @@ import org.eclipse.jgit.diff.DiffEntry;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
 
+/**
+ * Interface for files as part of the knowledge graph.
+ */
 public interface CodeClass extends Node {
 
 	/**
-	 * Instances of CodeClass that are identified by the path to the class.
+	 * Instances of CodeClass that are identified by the path to the file.
 	 */
 	public Map<IPath, CodeClass> instances = new HashMap<IPath, CodeClass>();
 
@@ -35,16 +38,29 @@ public interface CodeClass extends Node {
 	}
 
 	public static Set<CodeClass> getInstances() {
-		Set<CodeClass> output = new HashSet<CodeClass>();
-		for (Map.Entry<IPath, CodeClass> entry : instances.entrySet()) {
-			output.add(entry.getValue());
-		}
-		return output;
+		return new HashSet<CodeClass>(instances.values());
 	}
 
+	/**
+	 * Returns the path of the file.
+	 * 
+	 * @see IPath
+	 * @return path of the file.
+	 */
 	IPath getPath();
 
-	String getClassName();
+	/**
+	 * Returns the last segment of the path of the file, which should be its name.
+	 * 
+	 * @return name of the file.
+	 */
+	String getFileName();
 
+	/**
+	 * Returns a list of methods if the file is a Java class.
+	 * 
+	 * @return list of methods. Returns an empty list if the file is not existing
+	 *         (anymore) or if it is not a Java class.
+	 */
 	List<CodeMethod> getCodeMethods();
 }

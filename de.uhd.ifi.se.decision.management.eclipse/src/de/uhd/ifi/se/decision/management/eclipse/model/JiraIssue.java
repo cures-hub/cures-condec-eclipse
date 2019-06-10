@@ -9,6 +9,9 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 
+/**
+ * Interface for JIRA issue as part of the knowledge graph.
+ */
 public interface JiraIssue extends Node {
 
 	/**
