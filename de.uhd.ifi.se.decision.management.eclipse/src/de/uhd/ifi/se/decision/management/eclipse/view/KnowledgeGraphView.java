@@ -1,32 +1,38 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import org.jgrapht.Graph;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.Link;
-import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
+/**
+ * Interface to create a view for the knowledge graph model class.
+ * 
+ * @see KnowledgeGraph
+ * @see GephiGraph
+ */
 public interface KnowledgeGraphView {
 
 	/**
-	 * Creates an overview of all knowledge documented for the project. The
-	 * knowledge covers decision knowledge, JIRA issues such as requirements, and
-	 * code (classes and methods).
+	 * Creates an overview of all knowledge in the knowledge graph. The knowledge
+	 * covers decision knowledge, JIRA issues such as requirements and work items,
+	 * commits, and files (e.g., classes and methods).
 	 * 
-	 * @param linker
+	 * @see KnowledgeGraph
+	 * @param knowledgeGraph
+	 *            graph of commits, changed files, decision knowledge, and JIRA
+	 *            issues such as requirements and work items.
 	 */
-	void createView(KnowledgeGraph linker);
+	void createView(KnowledgeGraph knowledgeGraph);
 
 	/**
-	 * Creates an overview of all knowledge accessible from a certain node within a
-	 * certain distance. The knowledge covers decision knowledge, JIRA issues such
-	 * as requirements, and code (classes and methods).
+	 * Creates an overview of the knowledge in the knowledge graph. The knowledge
+	 * covers decision knowledge, JIRA issues such as requirements and work items,
+	 * commits, and files (e.g., classes and methods).
 	 * 
-	 * @param linker
+	 * @see KnowledgeGraph
+	 * @param knowledgeGraph
+	 *            graph of commits, changed files, decision knowledge, and JIRA
+	 *            issues such as requirements and work items.
+	 * @param title
+	 *            frame title of the view.
 	 */
-	void createView(Node selectedNode, int distance, KnowledgeGraph linker);
-
-	void createView(Graph<Node, Link> graph, String frameTitle);
-
-	void createView(Graph<Node, Link> graph);
+	void createView(KnowledgeGraph knowledgeGraph, String title);
 }

@@ -15,14 +15,20 @@ import org.jgrapht.Graph;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.openide.util.Lookup;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 
-// @issue How can we use the filters that come with the gephi library instead of
-// building our own filters? Would using the gephi filters increase the
-// performance?
+/**
+ * Class to create a gephi graph from the knowledge graph. Used in the
+ * KnowledgeGraphView class.
+ * 
+ * @issue How can we use the filters that come with the gephi library instead of
+ *        building our own filters? Would using the gephi filters increase the
+ *        performance?
+ */
 public class GephiGraphImpl implements GephiGraph {
 
 	private GraphModel graphModel;
@@ -38,6 +44,11 @@ public class GephiGraphImpl implements GephiGraph {
 
 		GraphView graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
+	}
+
+	@Override
+	public void createGephiGraph(KnowledgeGraph knowledgeGraph) {
+		createGephiGraph(knowledgeGraph.getGraph());
 	}
 
 	@Override

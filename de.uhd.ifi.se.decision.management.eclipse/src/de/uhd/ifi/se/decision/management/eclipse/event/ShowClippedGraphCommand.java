@@ -8,8 +8,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
@@ -26,33 +24,31 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 		if (pathOfSelectedFile == null || !pathOfSelectedFile.toFile().exists()) {
 			return null;
 		}
-		JiraClient jiraClient = JiraClient.getOrCreate();
-		if (!jiraClient.isWorking()) {
-			System.err.println("The authentication with the JIRA server failed.");
+
+		Node startNode = getSelectedNode(pathOfSelectedFile);
+		if (startNode == null) {
+			createErrorDialog();
 			return null;
 		}
 
-		KnowledgeGraph linker = new KnowledgeGraphImpl(GitClient.getOrCreate(), jiraClient);
-		// Just to load all elements and look for the invoked .java file in the
-		// CodeClass-instances
-		linker.createGraph();
-		Node rootNode = null;
-		for (CodeClass cc : CodeClass.getInstances()) {
-			if (cc.getPath().equals(pathOfSelectedFile)) {
-				rootNode = cc;
-				break;
-			}
-		}
-		if (rootNode != null) {
-			KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
-			knowledgeGraphView.createView(rootNode, ConfigPersistenceManager.getLinkDistance(), linker);
-		} else {
-			JOptionPane optionPane = new JOptionPane("Could not find the selected file in the repository!",
-					JOptionPane.WARNING_MESSAGE);
-			JDialog dialog = optionPane.createDialog("Error!");
-			dialog.setAlwaysOnTop(true);
-			dialog.setVisible(true);
-		}
+		int distance = ConfigPersistenceManager.getLinkDistance();
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(startNode, distance);
+		KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
+		String title = "Knowledge Graph for \"" + startNode.toString() + "\" with Link Distance " + distance;
+		knowledgeGraphView.createView(knowledgeGraph, title);
+
 		return null;
+	}
+
+	private Node getSelectedNode(IPath pathOfSelectedFile) {
+		return CodeClass.getOrCreate(pathOfSelectedFile);
+	}
+
+	private void createErrorDialog() {
+		JOptionPane optionPane = new JOptionPane("Could not find the selected file in the repository!",
+				JOptionPane.WARNING_MESSAGE);
+		JDialog dialog = optionPane.createDialog("Error!");
+		dialog.setAlwaysOnTop(true);
+		dialog.setVisible(true);
 	}
 }

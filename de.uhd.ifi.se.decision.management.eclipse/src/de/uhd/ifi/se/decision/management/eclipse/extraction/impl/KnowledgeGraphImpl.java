@@ -1,14 +1,11 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -31,18 +28,33 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 public class KnowledgeGraphImpl implements KnowledgeGraph {
 	private GitClient gitClient;
 	private JiraClient jiraClient;
-	private List<Link> visitedLinks;
 	private Graph<Node, Link> graph;
 
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
-		this.visitedLinks = new ArrayList<Link>();
 		this.graph = createGraph();
 	}
 
-	@Override
-	public Graph<Node, Link> createGraph() {
+	public KnowledgeGraphImpl() {
+		this(GitClient.getOrCreate(), JiraClient.getOrCreate());
+	}
+
+	/**
+	 * Constructor for the KnowledgeGraph.
+	 * 
+	 * @param startNode
+	 *            the graph is built from this node.
+	 * @param distance
+	 *            from the start node that the knowledge graph is traversed.
+	 */
+	public KnowledgeGraphImpl(Node startNode, int distance) {
+		this.gitClient = GitClient.getOrCreate();
+		this.jiraClient = JiraClient.getOrCreate();
+		this.graph = createGraph(startNode, distance);
+	}
+
+	private Graph<Node, Link> createGraph() {
 		graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
 
 		addCommitsAndFiles();
@@ -53,15 +65,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		// All commits need to be loaded first
 		addMethods();
 
-		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
-			createGraph(jiraIssue, 1);
-
-			graph.addVertex(jiraIssue);
-			for (Node node : jiraIssue.getLinkedNodes()) {
-				graph.addVertex(node);
-				graph.addEdge(jiraIssue, node);
-			}
-		}
+		addJiraIssues();
 
 		return graph;
 	}
@@ -73,7 +77,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 			graph.addVertex(gitCommit);
 			for (Node node : gitCommit.getLinkedNodes()) {
 				graph.addVertex(node);
-				this.visitedLinks.add(graph.addEdge(gitCommit, node));
+				graph.addEdge(gitCommit, node);
 			}
 
 			for (DecisionKnowledgeElement element : gitCommit.getDecisionKnowledgeFromMessage()) {
@@ -103,12 +107,21 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		}
 	}
 
-	@Override
-	public Graph<Node, Link> createGraph(Node node, int maxDepth) {
-		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
+	private void addJiraIssues() {
+		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
+			createGraph(jiraIssue, 1);
 
-		Set<Node> visitedNodes = new HashSet<Node>();
-		visitedNodes = createLinks(node, 0, maxDepth, visitedNodes);
+			graph.addVertex(jiraIssue);
+			for (Node node : jiraIssue.getLinkedNodes()) {
+				graph.addVertex(node);
+				graph.addEdge(jiraIssue, node);
+			}
+		}
+	}
+
+	private Graph<Node, Link> createGraph(Node node, int distance) {
+		Graph<Node, Link> graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
+		createLinks(node, 0, distance);
 
 		graph.addVertex(node);
 		for (Node linkedNode : node.getLinkedNodes()) {
@@ -119,64 +132,68 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		return graph;
 	}
 
-	public Set<Node> createLinks(Node node, int maxDepth, Set<Node> visitedNodes) {
-		createLinks(node, 0, maxDepth, visitedNodes);
-		return visitedNodes;
-	}
+	private void createLinks(Node node, int currentDepth, int maxDepth) {
+		if (currentDepth >= maxDepth || graph.containsVertex(node)) {
+			return;
+		}
 
-	private Set<Node> createLinks(Node node, int currentDepth, int maxDepth, Set<Node> visitedNodes) {
-		// Create Links, if node wasn't visited yet
-		if (currentDepth < maxDepth && !visitedNodes.contains(node)) {
-			visitedNodes.add(node);
-			if (node instanceof GitCommitImpl) {
-				GitCommit gitCommit = (GitCommit) node;
-				List<String> keys = gitCommit.getJiraIssueKeys();
-				if (keys.size() > 0) {
-					JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.get(0), jiraClient);
-					if (jiraIssue != null) {
-						linkBidirectional(node, jiraIssue);
-						createLinks(jiraIssue, currentDepth + 1, maxDepth, visitedNodes);
-					}
-				}
-			}
-			if (node instanceof DecisionKnowledgeElementImpl) {
-				// Nothing more to do - Git-Decisions have no other links than to the
-				// corresponding commit.
-				System.err.println("DecisionKnowledgeElement as a Node");
-			}
-			if (node instanceof CodeClassImpl) {
-				for (Node n : node.getLinkedNodes()) {
-					createLinks(n, currentDepth + 1, maxDepth, visitedNodes);
-				}
-			}
-			if (node instanceof CodeMethodImpl) {
-				for (Node n : node.getLinkedNodes()) {
-					createLinks(n, currentDepth + 1, maxDepth, visitedNodes);
-				}
-			}
-			if (node instanceof JiraIssueImpl) {
-				JiraIssue ji = (JiraIssue) node;
-				Set<GitCommit> commits = gitClient.getCommitsForIssueKey(ji.getJiraIssueKey());
-				for (GitCommit commit : commits) {
-					linkBidirectional(node, commit);
-					createLinks(commit, currentDepth + 1, maxDepth, visitedNodes);
-				}
-				Issue issue = ji.getJiraIssue();
-				for (IssueLink il : issue.getIssueLinks()) {
-					JiraIssue ji2 = JiraIssue.getOrCreate(il.getTargetIssueKey(), jiraClient);
-					if (ji2 != null) {
-						linkBidirectional(node, ji2);
-						createLinks(ji2, currentDepth + 1, maxDepth, visitedNodes);
-					}
-				}
+		graph.addVertex(node);
+
+		if (node instanceof GitCommitImpl) {
+			addJiraIssuesForCommit((GitCommit) node, currentDepth, maxDepth);
+		}
+		if (node instanceof DecisionKnowledgeElementImpl) {
+			// Nothing more to do - Git-Decisions have no other links than to the
+			// corresponding commit.
+			System.out.println("DecisionKnowledgeElement as a Node");
+		}
+		if (node instanceof CodeClassImpl) {
+			for (Node n : node.getLinkedNodes()) {
+				createLinks(n, currentDepth + 1, maxDepth);
 			}
 		}
-		return visitedNodes;
+		if (node instanceof CodeMethodImpl) {
+			for (Node n : node.getLinkedNodes()) {
+				createLinks(n, currentDepth + 1, maxDepth);
+			}
+		}
+		if (node instanceof JiraIssueImpl) {
+			JiraIssue jiraIssue = (JiraIssue) node;
+			addCommitsForJiraIssue(jiraIssue, currentDepth, maxDepth);
+			addLinkedJiraIssuesForJiraIssue(jiraIssue, currentDepth, maxDepth);
+		}
 	}
 
-	private void linkBidirectional(Node node1, Node node2) {
-		node1.addLinkedNode(node2);
-		node2.addLinkedNode(node1);
+	private void addJiraIssuesForCommit(GitCommit gitCommit, int currentDepth, int maxDepth) {
+		List<String> keys = gitCommit.getJiraIssueKeys();
+		if (keys.size() > 0) {
+			JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.get(0), jiraClient);
+			if (jiraIssue != null) {
+				graph.addVertex(jiraIssue);
+				graph.addEdge(gitCommit, jiraIssue);
+				createLinks(jiraIssue, currentDepth + 1, maxDepth);
+			}
+		}
+	}
+
+	private void addCommitsForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
+		Set<GitCommit> commits = gitClient.getCommitsForIssueKey(jiraIssue.getJiraIssueKey());
+		for (GitCommit commit : commits) {
+			graph.addVertex(commit);
+			graph.addEdge(jiraIssue, commit);
+			createLinks(commit, currentDepth + 1, maxDepth);
+		}
+	}
+
+	private void addLinkedJiraIssuesForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
+		for (IssueLink jiraIssueLink : jiraIssue.getJiraIssue().getIssueLinks()) {
+			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(jiraIssueLink.getTargetIssueKey(), jiraClient);
+			if (linkedJiraIssue != null) {
+				graph.addVertex(linkedJiraIssue);
+				graph.addEdge(jiraIssue, linkedJiraIssue);
+				createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);
+			}
+		}
 	}
 
 	@Override
@@ -185,26 +202,12 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	@Override
-	public void setGitClient(GitClient gitClient) {
-		this.gitClient = gitClient;
-	}
-
-	@Override
 	public JiraClient getJiraClient() {
 		return jiraClient;
 	}
 
 	@Override
-	public void setJiraClient(JiraClient jiraClient) {
-		this.jiraClient = jiraClient;
-	}
-
 	public Graph<Node, Link> getGraph() {
 		return graph;
 	}
-
-	public void setGraph(Graph<Node, Link> graph) {
-		this.graph = graph;
-	}
-
 }

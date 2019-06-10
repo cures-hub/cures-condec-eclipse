@@ -22,13 +22,11 @@ import javax.swing.JTextField;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
-import org.jgrapht.Graph;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
@@ -39,6 +37,9 @@ import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
+/**
+ * Class to create a view for the knowledge graph model class.
+ */
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private String searchString;
 	private JTextField searchTextField;
@@ -85,27 +86,12 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	@Override
 	public void createView(KnowledgeGraph knowledgeGraph) {
-		Graph<Node, Link> graph = knowledgeGraph.createGraph();
-		String title = "Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"";
-		createView(graph, title);
+		createView(knowledgeGraph, "Knowledge Graph");
 	}
 
 	@Override
-	public void createView(Node selectedNode, int distance, KnowledgeGraph knowledgeGraph) {
-		Graph<Node, Link> graph = knowledgeGraph.createGraph(selectedNode, distance);
-		selectedNodeId = selectedNode.getId();
-		String title = "Knowledge Graph for \"" + selectedNode.toString() + "\" with Link Distance " + distance;
-		createView(graph, title);
-	}
-	
-	@Override
-	public void createView(Graph<Node, Link> graph) {
-		createView(graph, "Knowledge Graph");
-	}
-
-	@Override
-	public void createView(Graph<Node, Link> graph, String frameTitle) {
-		this.gephiGraph.createGephiGraph(graph);
+	public void createView(KnowledgeGraph knowledgeGraph, String frameTitle) {
+		this.gephiGraph.createGephiGraph(knowledgeGraph);
 		updateNodeSizes();
 		initJFrame(frameTitle);
 		refresh();

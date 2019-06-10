@@ -4,10 +4,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
@@ -18,15 +17,12 @@ public class ShowFullGraphCommand extends AbstractHandler {
 		if (!CommandHelper.isValidSelection(event)) {
 			return null;
 		}
-		JiraClient jiraClient = JiraClient.getOrCreate();
-		if (!jiraClient.isWorking()) {
-			System.err.println("The authentication with the JIRA server failed.");
-			return null;
-		}
-		GitClient gitClient = GitClient.getOrCreate();
-		KnowledgeGraph linker = new KnowledgeGraphImpl(gitClient, jiraClient);
+		
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl();
 		KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
-		knowledgeGraphView.createView(linker);
+		String title = "Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"";
+		knowledgeGraphView.createView(knowledgeGraph, title);
+		
 		return null;
 	}
 }
