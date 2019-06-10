@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,4 +45,6 @@ public interface CodeClass extends Node {
 	IPath getPath();
 
 	String getClassName();
+
+	List<CodeMethod> getCodeMethods();
 }

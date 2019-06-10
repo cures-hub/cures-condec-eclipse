@@ -32,42 +32,47 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 			return methodsInClass;
 		}
 
-		try {
-			FileInputStream fileInputStream = new FileInputStream(this.path.toString());
-			JavaParser javaParser = new JavaParser();
-			ParseResult<CompilationUnit> parseResult;
-			try {
-				parseResult = javaParser.parse(fileInputStream);
-			} finally {
-				fileInputStream.close();
-			}
-			CompilationUnit compilationUnit = parseResult.getResult().get();
-			MethodVisitor methodVistor = new MethodVisitor();
-			compilationUnit.accept(methodVistor, null);
-			for (MethodDeclaration methodDeclaration : methodVistor.getMethodDeclarations()) {
-				CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString());
-				codeMethod.setMethodStartInCodefile(methodDeclaration.getBegin().get().line);
-				codeMethod.setMethodStopInCodefile(methodDeclaration.getEnd().get().line);
-				methodsInClass.add(codeMethod);
-				this.addLinkedNode(codeMethod);
-				codeMethod.addLinkedNode(this);
-			}
-		} catch (Exception e) {
-			System.err.println("Methods of class " + this.getClassName() + " could not be parsed. Message: " + e);
+		MethodVisitor methodVistor = getMethodVisitor();
+		for (MethodDeclaration methodDeclaration : methodVistor.getMethodDeclarations()) {
+			CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString());
+			codeMethod.setMethodStartInCodefile(methodDeclaration.getBegin().get().line);
+			codeMethod.setMethodStopInCodefile(methodDeclaration.getEnd().get().line);
+			methodsInClass.add(codeMethod);
+			this.addLinkedNode(codeMethod);
+			codeMethod.addLinkedNode(this);
 		}
+
 		return methodsInClass;
 	}
 
+	private MethodVisitor getMethodVisitor() {
+		ParseResult<CompilationUnit> parseResult = getParseResult();
+		CompilationUnit compilationUnit = parseResult.getResult().get();
+		MethodVisitor methodVistor = new MethodVisitor();
+		compilationUnit.accept(methodVistor, null);
+		return methodVistor;
+	}
+
+	private ParseResult<CompilationUnit> getParseResult() {
+		ParseResult<CompilationUnit> parseResult = null;
+		try {
+			FileInputStream fileInputStream = new FileInputStream(this.path.toString());
+			JavaParser javaParser = new JavaParser();
+			parseResult = javaParser.parse(fileInputStream);
+			fileInputStream.close();
+		} catch (Exception e) {
+			System.err.println("Methods of class " + this.getClassName() + " could not be parsed. Message: " + e);
+		}
+		return parseResult;
+	}
+
 	private boolean isExistingJavaClass() {
-		// Is Java file?
-		if (!this.path.getFileExtension().equalsIgnoreCase("java")) {
-			return false;
-		}
-		// Is existing in currently checked out version?
-		if (!this.path.toFile().exists()) {
-			return false;
-		}
-		return true;
+		// Is Java file and existing in currently checked out version?
+		return isJavaClass() && this.path.toFile().exists();
+	}
+
+	private boolean isJavaClass() {
+		return this.path.getFileExtension().equalsIgnoreCase("java");
 	}
 
 	@Override
@@ -75,18 +80,18 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 		return this.path;
 	}
 
+	@Override
 	public List<CodeMethod> getCodeMethods() {
 		return this.methodsInClass;
 	}
 
 	@Override
 	public String toString() {
-		return this.path.toString();
+		return this.getClassName();
 	}
 
 	@Override
 	public String getClassName() {
 		return path.lastSegment();
 	}
-
 }
