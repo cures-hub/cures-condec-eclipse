@@ -12,7 +12,7 @@ public interface Node {
 	/**
 	 * Instances of Node class that are identified by their unique id.
 	 */
-	static Map<Long, Node> instances = new HashMap<Long, Node>();
+	static Map<Long, Node> nodes = new HashMap<Long, Node>();
 	
 	/**
 	 * Get a node object by its id.
@@ -25,7 +25,7 @@ public interface Node {
 		if (id < 0) {
 			return null;
 		}
-		return instances.get(id);
+		return nodes.get(id);
 	}
 
 	/**

@@ -6,16 +6,16 @@ import java.util.Set;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public abstract class NodeImpl implements Node {
-	private static long nextId;
-
-	private long id = 0;
-	private boolean isVisible = true;
-	private Set<Node> linkedNodes = new HashSet<Node>();
+	private long id;
+	private boolean isVisible;
+	private Set<Node> linkedNodes;
 
 	public NodeImpl() {
-		this.id = nextId;
-		nextId++;
-		instances.put(this.id, this);
+		this.id = nodes.size();
+		nodes.put(this.id, this);
+
+		this.isVisible = true;
+		this.linkedNodes = new HashSet<Node>();
 	}
 
 	@Override
@@ -42,10 +42,9 @@ public abstract class NodeImpl implements Node {
 	public boolean addLinkedNode(Node node) {
 		if (this.linkedNodes.contains(node) || this.equals(node)) {
 			return false;
-		} else {
-			this.linkedNodes.add(node);
-			return true;
 		}
+		this.linkedNodes.add(node);
+		return true;
 	}
 
 	@Override
