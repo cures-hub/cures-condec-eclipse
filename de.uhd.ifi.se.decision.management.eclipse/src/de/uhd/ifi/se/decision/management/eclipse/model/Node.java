@@ -1,13 +1,32 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.NodeImpl;
 
 /**
  * Interface for nodes of the knowledge graph.
  */
 public interface Node {
+
+	/**
+	 * Instances of Node class that are identified by their unique id.
+	 */
+	static Map<Long, Node> instances = new HashMap<Long, Node>();
+	
+	/**
+	 * Get a node object by its id.
+	 * 
+	 * @param id
+	 *            that is looked for.
+	 * @return node-object or null, if the object was not found.
+	 */
+	public static Node getNodeById(long id) {
+		if (id < 0) {
+			return null;
+		}
+		return instances.get(id);
+	}
 
 	/**
 	 * Get the id of the node.
@@ -78,18 +97,4 @@ public interface Node {
 	 * @return The ArrayList is never null. It contains all linked nodes.
 	 */
 	Set<Node> getLinkedNodes();
-
-	/**
-	 * Get a node object by its id.
-	 * 
-	 * @param id
-	 *            that is looked for.
-	 * @return node-object or null, if the object was not found.
-	 */
-	public static Node getNodeById(long id) {
-		if (id < 0) {
-			return null;
-		}
-		return NodeImpl.nodes.get(id);
-	}
 }

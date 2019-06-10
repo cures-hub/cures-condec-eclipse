@@ -1,16 +1,12 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public abstract class NodeImpl implements Node {
-	public static long nextId;
-	public static Map<Long, Node> nodes = new HashMap<Long, Node>();
-	private static Set<Node> allNodes = new HashSet<Node>();
+	private static long nextId;
 
 	private long id = 0;
 	private boolean isVisible = true;
@@ -19,12 +15,7 @@ public abstract class NodeImpl implements Node {
 	public NodeImpl() {
 		this.id = nextId;
 		nextId++;
-		nodes.put(this.id, this);
-		allNodes.add(this);
-	}
-
-	public static Set<Node> getAllNodes() {
-		return allNodes;
+		instances.put(this.id, this);
 	}
 
 	@Override
