@@ -94,8 +94,6 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 
 		// All commits need to be loaded first
 		addFiles();
-
-		// All commits need to be loaded first
 		addMethods();
 
 		addJiraIssues();
