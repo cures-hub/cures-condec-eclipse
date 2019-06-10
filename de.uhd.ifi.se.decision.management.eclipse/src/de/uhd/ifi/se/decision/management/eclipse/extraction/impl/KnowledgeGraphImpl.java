@@ -18,31 +18,64 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
+/**
+ * Class to create a knowledge graph for the entire project or a sub-graph from
+ * a given start node with a certain distance (set in the constructor). The
+ * knowledge covers decision knowledge, JIRA issues such as requirements and
+ * work items, commits, files (e.g., Java classes), and methods.
+ */
 public class KnowledgeGraphImpl implements KnowledgeGraph {
 	private GitClient gitClient;
 	private JiraClient jiraClient;
 	private Graph<Node, Link> graph;
 
+	/**
+	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
+	 * The knowledge covers decision knowledge, JIRA issues such as requirements and
+	 * work items, commits, files (e.g., Java classes), and methods.
+	 * 
+	 * @see GitClient
+	 * @see JiraClient
+	 * @see Graph
+	 * @param gitClient
+	 *            to connect to a git repository associated with this Eclipse
+	 *            project. Retrieves commits and code changes (diffs) in git.
+	 * @param jiraClient
+	 *            to connect to a JIRA project associated with this Eclipse project.
+	 *            Retrieves JIRA issues.
+	 */
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		this.graph = createGraph();
 	}
 
+	/**
+	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
+	 * The knowledge covers decision knowledge, JIRA issues such as requirements and
+	 * work items, commits, files (e.g., Java classes), and methods.
+	 * 
+	 * @see GitClient
+	 * @see JiraClient
+	 * @see Graph
+	 */
 	public KnowledgeGraphImpl() {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate());
 	}
 
 	/**
-	 * Constructor for the KnowledgeGraph.
+	 * Constructor for the KnowledgeGraph. Creates a sub-graph from the given start
+	 * node with a certain distance. The knowledge covers decision knowledge, JIRA
+	 * issues such as requirements and work items, commits, files (e.g., Java
+	 * classes), and methods.
 	 * 
+	 * @see GitClient
+	 * @see JiraClient
+	 * @see Graph
 	 * @param startNode
 	 *            the graph is built from this node.
 	 * @param distance
@@ -142,21 +175,6 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		if (node instanceof GitCommitImpl) {
 			addJiraIssuesForCommit((GitCommit) node, currentDepth, maxDepth);
 		}
-		if (node instanceof DecisionKnowledgeElementImpl) {
-			// Nothing more to do - Git-Decisions have no other links than to the
-			// corresponding commit.
-			System.out.println("DecisionKnowledgeElement as a Node");
-		}
-		if (node instanceof CodeClassImpl) {
-			for (Node n : node.getLinkedNodes()) {
-				createLinks(n, currentDepth + 1, maxDepth);
-			}
-		}
-		if (node instanceof CodeMethodImpl) {
-			for (Node n : node.getLinkedNodes()) {
-				createLinks(n, currentDepth + 1, maxDepth);
-			}
-		}
 		if (node instanceof JiraIssueImpl) {
 			JiraIssue jiraIssue = (JiraIssue) node;
 			addCommitsForJiraIssue(jiraIssue, currentDepth, maxDepth);
@@ -166,14 +184,16 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 
 	private void addJiraIssuesForCommit(GitCommit gitCommit, int currentDepth, int maxDepth) {
 		List<String> keys = gitCommit.getJiraIssueKeys();
-		if (keys.size() > 0) {
-			JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.get(0), jiraClient);
-			if (jiraIssue != null) {
-				graph.addVertex(jiraIssue);
-				graph.addEdge(gitCommit, jiraIssue);
-				createLinks(jiraIssue, currentDepth + 1, maxDepth);
-			}
+		if (keys.size() <= 0) {
+			return;
 		}
+		JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.get(0), jiraClient);
+		if (jiraIssue == null) {
+			return;
+		}
+		graph.addVertex(jiraIssue);
+		graph.addEdge(gitCommit, jiraIssue);
+		createLinks(jiraIssue, currentDepth + 1, maxDepth);
 	}
 
 	private void addCommitsForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
@@ -188,12 +208,18 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	private void addLinkedJiraIssuesForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
 		for (IssueLink jiraIssueLink : jiraIssue.getJiraIssue().getIssueLinks()) {
 			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(jiraIssueLink.getTargetIssueKey(), jiraClient);
-			if (linkedJiraIssue != null) {
-				graph.addVertex(linkedJiraIssue);
-				graph.addEdge(jiraIssue, linkedJiraIssue);
-				createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);
+			if (linkedJiraIssue == null) {
+				return;
 			}
+			graph.addVertex(linkedJiraIssue);
+			graph.addEdge(jiraIssue, linkedJiraIssue);
+			createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);
 		}
+	}
+
+	@Override
+	public Graph<Node, Link> getGraph() {
+		return graph;
 	}
 
 	@Override
@@ -204,10 +230,5 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	@Override
 	public JiraClient getJiraClient() {
 		return jiraClient;
-	}
-
-	@Override
-	public Graph<Node, Link> getGraph() {
-		return graph;
 	}
 }
