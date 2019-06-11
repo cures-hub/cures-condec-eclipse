@@ -82,8 +82,31 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	 *            from the start node that the knowledge graph is traversed.
 	 */
 	public KnowledgeGraphImpl(Node startNode, int distance) {
-		this.gitClient = GitClient.getOrCreate();
-		this.jiraClient = JiraClient.getOrCreate();
+		this(GitClient.getOrCreate(), JiraClient.getOrCreate(), startNode, distance);
+	}
+
+	/**
+	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
+	 * The knowledge covers decision knowledge, JIRA issues such as requirements and
+	 * work items, commits, files (e.g., Java classes), and methods.
+	 * 
+	 * @see GitClient
+	 * @see JiraClient
+	 * @see Graph
+	 * @param gitClient
+	 *            to connect to a git repository associated with this Eclipse
+	 *            project. Retrieves commits and code changes (diffs) in git.
+	 * @param jiraClient
+	 *            to connect to a JIRA project associated with this Eclipse project.
+	 *            Retrieves JIRA issues.
+	 * @param startNode
+	 *            the graph is built from this node.
+	 * @param distance
+	 *            from the start node that the knowledge graph is traversed.
+	 */
+	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient, Node startNode, int distance) {
+		this.gitClient = gitClient;
+		this.jiraClient = jiraClient;
 		this.graph = createGraph(startNode, distance);
 	}
 

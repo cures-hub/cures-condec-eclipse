@@ -57,6 +57,7 @@ public class GitClientImpl implements GitClient {
 	private Repository repository;
 	private Git git;
 	private DiffFormatter diffFormatter;
+	private String projectKey;
 
 	/**
 	 * Constructor for GitClient class
@@ -91,6 +92,11 @@ public class GitClientImpl implements GitClient {
 		}
 	}
 
+	public GitClientImpl(String repositoryPath, String reference, String projectKey) {
+		this(repositoryPath, reference);
+		this.projectKey = projectKey;
+	}
+
 	public GitClientImpl() {
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
@@ -118,12 +124,12 @@ public class GitClientImpl implements GitClient {
 		this.diffFormatter.setRepository(this.repository);
 		this.diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
 		this.diffFormatter.setDetectRenames(true);
+		this.projectKey = ConfigPersistenceManager.getProjectKey();
 	}
 
 	@Override
 	public Set<GitCommit> getCommits() {
 		Set<GitCommit> allCommits = new HashSet<GitCommit>();
-		String projectKey = ConfigPersistenceManager.getProjectKey();
 		try {
 			Iterable<RevCommit> commits = this.git.log().call();
 			for (RevCommit revCommit : commits) {
@@ -153,7 +159,7 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public GitCommit getCommitForLine(IPath filePath, int line) {
 		BlameResult blameResult = getGitBlameForFile(filePath);
-		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), ConfigPersistenceManager.getProjectKey());
+		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), projectKey);
 	}
 
 	@Override
@@ -170,7 +176,7 @@ public class GitClientImpl implements GitClient {
 			while (iterator.hasNext()) {
 				RevCommit revCommit = iterator.next();
 				if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
-					GitCommit commit = GitCommit.getOrCreate(iterator.next(), ConfigPersistenceManager.getProjectKey());
+					GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
 					commitsForIssueKey.add(commit);
 				}
 			}

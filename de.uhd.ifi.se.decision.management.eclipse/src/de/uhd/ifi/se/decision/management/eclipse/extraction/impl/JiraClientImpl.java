@@ -29,10 +29,19 @@ public class JiraClientImpl implements JiraClient {
 
 	private JiraRestClient jiraRestClient;
 	private boolean isWorking;
+	private String projectKey;
 
 	public JiraClientImpl() {
 		boolean isValidUser = this.authenticate();
-		boolean isValidProject = isValidProject();
+		this.projectKey = ConfigPersistenceManager.getProjectKey();
+		boolean isValidProject = isValidProject(projectKey);
+		this.isWorking = isValidUser && isValidProject;
+	}
+
+	public JiraClientImpl(URI jiraURI, String username, String password, String projectKey) {
+		boolean isValidUser = this.authenticate(jiraURI, username, password);
+		this.projectKey = projectKey;
+		boolean isValidProject = isValidProject(projectKey);
 		this.isWorking = isValidUser && isValidProject;
 	}
 
@@ -67,10 +76,6 @@ public class JiraClientImpl implements JiraClient {
 		return isValidUser;
 	}
 
-	private boolean isValidProject() {
-		return isValidProject(ConfigPersistenceManager.getProjectKey());
-	}
-
 	private boolean isValidProject(String projectKey) {
 		boolean isValidProject = true;
 		try {
@@ -85,9 +90,12 @@ public class JiraClientImpl implements JiraClient {
 	@Override
 	public Set<JiraIssue> getAllJiraIssues() {
 		Set<JiraIssue> jiraIssues = new HashSet<JiraIssue>();
+		if (!isWorking) {
+			System.err.println("The JIRA client cannot retrieve JIRA issues.");
+			return jiraIssues;
+		}
 		for (BasicIssue jiraIssue : this.getJiraRestClient().getSearchClient()
-				.searchJql("project=\"" + ConfigPersistenceManager.getProjectKey() + "\"", -1, 0, null).claim()
-				.getIssues()) {
+				.searchJql("project=\"" + projectKey + "\"", -1, 0, null).claim().getIssues()) {
 			jiraIssues.add(JiraIssue.getOrCreate(jiraIssue.getKey(), this));
 		}
 		return jiraIssues;
