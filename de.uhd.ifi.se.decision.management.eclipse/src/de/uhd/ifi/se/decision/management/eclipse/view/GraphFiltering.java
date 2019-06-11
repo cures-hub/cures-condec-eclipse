@@ -49,7 +49,7 @@ public class GraphFiltering {
 						return false;
 					}
 					DecisionKnowledgeElement dke = (DecisionKnowledgeElement) node;
-					switch (dke.getKnowledgeType()) {
+					switch (dke.getType()) {
 					case ALTERNATIVE:
 						if (!filters.get("alternative").isActivated())
 							return false;

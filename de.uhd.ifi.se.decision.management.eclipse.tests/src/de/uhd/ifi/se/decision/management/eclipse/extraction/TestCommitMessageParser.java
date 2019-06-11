@@ -22,7 +22,7 @@ public class TestCommitMessageParser {
 		String message = "[decision] This is a decision! [/decision]";
 		List<DecisionKnowledgeElement> elements = CommitMessageParser.extractDecisionKnowledge(message);
 		assertEquals(1, elements.size());
-		assertEquals("This is a decision!", elements.get(0).getDescription());
+		assertEquals("This is a decision!", elements.get(0).getSummary());
 	}
 	
 	@Test
