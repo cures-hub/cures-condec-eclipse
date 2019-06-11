@@ -19,8 +19,8 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 
 public class TestKnowledgeGraph {
 	
-	GitClient gitClient;
-	JiraClient jiraClient;
+	private GitClient gitClient;
+	private JiraClient jiraClient;
 	
 	@Before
 	public void setUp() {

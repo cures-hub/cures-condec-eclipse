@@ -47,6 +47,19 @@ public interface JiraIssue extends Node {
 		}
 		return null;
 	}
+	
+	/**
+	 * Retrieves an existing JiraIssue instance or creates a new instance if there
+	 * is no instance for the given key.
+	 * 
+	 * @param key
+	 *            JIRA issue key.
+	 * @return instance of JiraIssue or null, if the given key could not be resolved
+	 *         to a JIRA issue instance.
+	 */
+	static JiraIssue getOrCreate(String key) {
+		return getOrCreate(key, JiraClient.getOrCreate());
+	}
 
 	Issue getJiraIssue();
 
