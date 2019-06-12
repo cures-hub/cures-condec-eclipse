@@ -63,4 +63,31 @@ public interface ChangedFile extends Node {
 	 *         (anymore) or if it is not a Java class.
 	 */
 	List<CodeMethod> getCodeMethods();
+
+	/**
+	 * Returns true if the file exists in currently checked out version of the git
+	 * repository. False means that the file could have been deleted or that its
+	 * name has been changed.
+	 * 
+	 * @return true if the file exists in currently checked out version of the git
+	 *         repository.
+	 */
+	boolean exists();
+
+	/**
+	 * Returns true if the file is a Java class.
+	 * 
+	 * @return true if the file is a Java class.
+	 */
+	boolean isJavaClass();
+
+	/**
+	 * Returns true if the file is a Java class and exists in currently checked out version of the git
+	 * repository. False means that the file could have been deleted or that its
+	 * name has been changed.
+	 * 
+	 * @return true if the file is a Java class and exists in currently checked out version of the git
+	 *         repository.
+	 */
+	boolean isExistingJavaClass();
 }

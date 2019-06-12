@@ -25,6 +25,21 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		this.methodsInClass = parseMethods();
 	}
 
+	@Override
+	public boolean isExistingJavaClass() {
+		return isJavaClass() && exists();
+	}
+	
+	@Override
+	public boolean exists() {
+		return this.path.toFile().exists();
+	}
+
+	@Override
+	public boolean isJavaClass() {
+		return this.path.getFileExtension().equalsIgnoreCase("java");
+	}
+
 	private List<CodeMethod> parseMethods() {
 		List<CodeMethod> methodsInClass = new ArrayList<CodeMethod>();
 
@@ -62,15 +77,6 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 			System.err.println("Methods of class " + this.getFileName() + " could not be parsed. Message: " + e);
 		}
 		return parseResult;
-	}
-
-	private boolean isExistingJavaClass() {
-		// Is Java file and existing in currently checked out version?
-		return isJavaClass() && this.path.toFile().exists();
-	}
-
-	private boolean isJavaClass() {
-		return this.path.getFileExtension().equalsIgnoreCase("java");
 	}
 
 	@Override
