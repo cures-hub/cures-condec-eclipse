@@ -1,7 +1,9 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -18,6 +20,15 @@ public class TestNode {
 	public void testGetNodeById() {
 		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
-		assertEquals(element.toString(), Node.getNodeById(0).toString());
+		assertEquals(element, Node.getNodeById(element.getId()));
+	}
+
+	@Test
+	public void testAddLinkedNode() {
+		DecisionKnowledgeElement decision = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
+				"This is a decision!");
+		DecisionKnowledgeElement issue = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE, "How should we...?");
+		assertFalse(decision.addLinkedNode(decision));
+		assertTrue(decision.addLinkedNode(issue));
 	}
 }

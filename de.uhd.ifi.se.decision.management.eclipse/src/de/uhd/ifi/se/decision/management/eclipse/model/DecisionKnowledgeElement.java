@@ -16,17 +16,6 @@ public interface DecisionKnowledgeElement extends Node {
 	long getId();
 
 	/**
-	 * Set the id of the decision knowledge element. This id is the internal
-	 * database id. When using JIRA issues to persist decision knowledge, this id is
-	 * different to the project internal id that is part of the key.
-	 *
-	 * @param id
-	 *            of the decision knowledge element.
-	 */
-	@Override
-	void setId(long id);
-
-	/**
 	 * Get the summary of the decision knowledge element. The summary is a short
 	 * description of the element.
 	 *
