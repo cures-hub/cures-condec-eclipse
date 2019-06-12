@@ -18,7 +18,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	}
 
 	@Override
-	public Issue getJiraIssue() {
+	public Issue getIssue() {
 		return this.issue;
 	}
 

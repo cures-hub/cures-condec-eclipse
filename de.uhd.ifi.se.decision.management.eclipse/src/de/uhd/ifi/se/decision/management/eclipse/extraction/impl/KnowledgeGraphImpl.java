@@ -227,7 +227,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	private void addLinkedJiraIssuesForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
-		for (IssueLink jiraIssueLink : jiraIssue.getJiraIssue().getIssueLinks()) {
+		for (IssueLink jiraIssueLink : jiraIssue.getIssue().getIssueLinks()) {
 			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(jiraIssueLink.getTargetIssueKey(), jiraClient);
 			if (linkedJiraIssue == null) {
 				return;

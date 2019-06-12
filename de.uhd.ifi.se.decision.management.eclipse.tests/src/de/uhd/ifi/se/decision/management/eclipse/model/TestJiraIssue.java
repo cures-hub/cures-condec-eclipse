@@ -14,7 +14,11 @@ public class TestJiraIssue {
 	@Test
 	public void testNonWorkingJiraClient() {
 		JiraClient jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
-		JiraIssue jiraIssue = JiraIssue.getOrCreate("", jiraClient);
+		
+		JiraIssue jiraIssue = JiraIssue.getOrCreate(null, jiraClient);
+		assertNull(jiraIssue);
+		
+		jiraIssue = JiraIssue.getOrCreate("", jiraClient);
 		assertNull(jiraIssue);
 	}
 

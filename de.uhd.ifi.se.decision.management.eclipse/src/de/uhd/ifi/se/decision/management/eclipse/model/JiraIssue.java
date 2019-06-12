@@ -47,7 +47,7 @@ public interface JiraIssue extends Node {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Retrieves an existing JiraIssue instance or creates a new instance if there
 	 * is no instance for the given key.
@@ -61,9 +61,26 @@ public interface JiraIssue extends Node {
 		return getOrCreate(key, JiraClient.getOrCreate());
 	}
 
-	Issue getJiraIssue();
+	/**
+	 * Returns the associated Issue object provided by the Java REST JIRA client.
+	 * 
+	 * @see Issue
+	 * @return associated Issue object provided by the Java REST JIRA client.
+	 */
+	Issue getIssue();
 
+	/**
+	 * Returns the JIRA issue key as a String. Note that the key is different to the
+	 * id of a JIRA issue.
+	 * 
+	 * @return JIRA issue key as a String.
+	 */
 	String getJiraIssueKey();
 
+	/**
+	 * Returns the URL to the JIRA issue on the JIRA server as a URI object.
+	 * 
+	 * @return URL to the JIRA issue on the JIRA server as a URI object.
+	 */
 	URI getUri();
 }
