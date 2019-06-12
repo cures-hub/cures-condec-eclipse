@@ -3,6 +3,9 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 
+/**
+ * Class for decision knowledge elements as part of the knowledge graph.
+ */
 public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKnowledgeElement {
 	private String summary;
 	private KnowledgeType type;

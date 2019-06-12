@@ -35,8 +35,6 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 		MethodVisitor methodVistor = getMethodVisitor();
 		for (MethodDeclaration methodDeclaration : methodVistor.getMethodDeclarations()) {
 			CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString());
-			codeMethod.setMethodStartInCodefile(methodDeclaration.getBegin().get().line);
-			codeMethod.setMethodStopInCodefile(methodDeclaration.getEnd().get().line);
 			methodsInClass.add(codeMethod);
 			this.addLinkedNode(codeMethod);
 			codeMethod.addLinkedNode(this);

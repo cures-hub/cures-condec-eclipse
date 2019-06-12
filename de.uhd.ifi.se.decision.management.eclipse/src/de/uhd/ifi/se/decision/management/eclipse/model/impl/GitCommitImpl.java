@@ -11,6 +11,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
+/**
+ * Class for git commits as part of the knowledge graph.
+ */
 public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	private RevCommit revCommit;
 	private List<String> jiraIssueKeys = new ArrayList<String>();

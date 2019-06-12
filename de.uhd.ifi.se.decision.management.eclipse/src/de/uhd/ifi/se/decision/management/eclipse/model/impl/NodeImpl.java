@@ -3,8 +3,17 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
+/**
+ * Class for nodes of the knowledge graph. This class is abstract and cannot be
+ * instantiated.
+ * 
+ * @see KnowledgeGraph
+ * @see Link
+ */
 public abstract class NodeImpl implements Node {
 	private long id;
 	private boolean isVisible;

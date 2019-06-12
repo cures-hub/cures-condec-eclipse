@@ -1,7 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 /**
- * Interface for decision knowledge elements.
+ * Interface for decision knowledge elements as part of the knowledge graph.
  */
 public interface DecisionKnowledgeElement extends Node {
 

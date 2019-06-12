@@ -26,6 +26,7 @@ public class TestKnowledgeGraph {
 	public void setUp() {
 		gitClient = new GitClientImpl("", "HEAD", "");
 		jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
+		Node.nodes.clear();
 	}
 
 	@Test
