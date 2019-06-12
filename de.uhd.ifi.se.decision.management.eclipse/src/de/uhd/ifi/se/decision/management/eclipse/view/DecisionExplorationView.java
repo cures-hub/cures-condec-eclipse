@@ -1,8 +1,6 @@
 
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import javax.annotation.PostConstruct;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -17,7 +15,6 @@ public class DecisionExplorationView extends ViewPart {
 	private ScrolledComposite scrolledComposite;
 
 	@Override
-	@PostConstruct
 	public void createPartControl(Composite parent) {
 		scrolledComposite = initScrolledComposite(parent);
 		Composite composite = new Composite(scrolledComposite, SWT.NONE);
