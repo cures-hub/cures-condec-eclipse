@@ -7,6 +7,9 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
+/**
+ * Class for JIRA issue as part of the knowledge graph.
+ */
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	private Issue issue;
 
@@ -15,7 +18,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	}
 
 	@Override
-	public Issue getJiraIssue() {
+	public Issue getIssue() {
 		return this.issue;
 	}
 

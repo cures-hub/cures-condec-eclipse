@@ -31,6 +31,9 @@ public interface GitCommit extends Node {
 	 * @return either a new or already existing GitCommit instance.
 	 */
 	public static GitCommit getOrCreate(RevCommit commit, String projectKey) {
+		if (commit == null) {
+			return null;
+		}
 		if (instances.containsKey(commit.getName())) {
 			return instances.get(commit.getName());
 		}
@@ -51,10 +54,10 @@ public interface GitCommit extends Node {
 	/**
 	 * Returns the files changed by the commit (both java and other files).
 	 * 
-	 * @see CodeClass
+	 * @see ChangedFile
 	 * @return list of changed files.
 	 */
-	List<CodeClass> getChangedFiles();
+	List<ChangedFile> getChangedFiles();
 
 	/**
 	 * Sets the files changed by the commit (both java and other files). This method
@@ -62,10 +65,10 @@ public interface GitCommit extends Node {
 	 * 
 	 * @param changedFiles
 	 *            list of changed files.
-	 * @see CodeClass
+	 * @see ChangedFile
 	 * @see GitClient
 	 */
-	void setChangedFiles(List<CodeClass> changedFiles);
+	void setChangedFiles(List<ChangedFile> changedFiles);
 
 	/**
 	 * Returns the JIRA issue keys mentioned in the commit message.

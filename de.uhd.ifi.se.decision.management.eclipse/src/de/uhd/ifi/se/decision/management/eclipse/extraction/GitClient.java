@@ -14,7 +14,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -94,7 +94,7 @@ public interface GitClient {
 	 *            commit as a RevCommit object
 	 * @return list of diff entries
 	 */
-	List<CodeClass> getDiffEntries(GitCommit commit);
+	List<ChangedFile> getDiffEntries(GitCommit commit);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.

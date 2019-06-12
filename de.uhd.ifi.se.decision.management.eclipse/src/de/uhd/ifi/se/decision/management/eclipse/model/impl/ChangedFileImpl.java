@@ -12,17 +12,32 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 
-public class CodeClassImpl extends NodeImpl implements CodeClass {
+public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	private IPath path;
 	private List<CodeMethod> methodsInClass;
 
-	public CodeClassImpl(IPath path) {
+	public ChangedFileImpl(IPath path) {
 		this.path = path;
 		this.methodsInClass = parseMethods();
+	}
+
+	@Override
+	public boolean isExistingJavaClass() {
+		return isJavaClass() && exists();
+	}
+	
+	@Override
+	public boolean exists() {
+		return this.path.toFile().exists();
+	}
+
+	@Override
+	public boolean isJavaClass() {
+		return this.path.getFileExtension().equalsIgnoreCase("java");
 	}
 
 	private List<CodeMethod> parseMethods() {
@@ -35,8 +50,6 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 		MethodVisitor methodVistor = getMethodVisitor();
 		for (MethodDeclaration methodDeclaration : methodVistor.getMethodDeclarations()) {
 			CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString());
-			codeMethod.setMethodStartInCodefile(methodDeclaration.getBegin().get().line);
-			codeMethod.setMethodStopInCodefile(methodDeclaration.getEnd().get().line);
 			methodsInClass.add(codeMethod);
 			this.addLinkedNode(codeMethod);
 			codeMethod.addLinkedNode(this);
@@ -64,15 +77,6 @@ public class CodeClassImpl extends NodeImpl implements CodeClass {
 			System.err.println("Methods of class " + this.getFileName() + " could not be parsed. Message: " + e);
 		}
 		return parseResult;
-	}
-
-	private boolean isExistingJavaClass() {
-		// Is Java file and existing in currently checked out version?
-		return isJavaClass() && this.path.toFile().exists();
-	}
-
-	private boolean isJavaClass() {
-		return this.path.getFileExtension().equalsIgnoreCase("java");
 	}
 
 	@Override

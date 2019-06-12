@@ -11,7 +11,7 @@ import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
@@ -82,8 +82,31 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	 *            from the start node that the knowledge graph is traversed.
 	 */
 	public KnowledgeGraphImpl(Node startNode, int distance) {
-		this.gitClient = GitClient.getOrCreate();
-		this.jiraClient = JiraClient.getOrCreate();
+		this(GitClient.getOrCreate(), JiraClient.getOrCreate(), startNode, distance);
+	}
+
+	/**
+	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
+	 * The knowledge covers decision knowledge, JIRA issues such as requirements and
+	 * work items, commits, files (e.g., Java classes), and methods.
+	 * 
+	 * @see GitClient
+	 * @see JiraClient
+	 * @see Graph
+	 * @param gitClient
+	 *            to connect to a git repository associated with this Eclipse
+	 *            project. Retrieves commits and code changes (diffs) in git.
+	 * @param jiraClient
+	 *            to connect to a JIRA project associated with this Eclipse project.
+	 *            Retrieves JIRA issues.
+	 * @param startNode
+	 *            the graph is built from this node.
+	 * @param distance
+	 *            from the start node that the knowledge graph is traversed.
+	 */
+	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient, Node startNode, int distance) {
+		this.gitClient = gitClient;
+		this.jiraClient = jiraClient;
 		this.graph = createGraph(startNode, distance);
 	}
 
@@ -129,7 +152,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	private void addFiles() {
-		for (CodeClass codeClass : CodeClass.getInstances()) {
+		for (ChangedFile codeClass : ChangedFile.getInstances()) {
 			graph.addVertex(codeClass);
 			for (Node node : codeClass.getLinkedNodes()) {
 				graph.addVertex(node);
@@ -204,7 +227,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	private void addLinkedJiraIssuesForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
-		for (IssueLink jiraIssueLink : jiraIssue.getJiraIssue().getIssueLinks()) {
+		for (IssueLink jiraIssueLink : jiraIssue.getIssue().getIssueLinks()) {
 			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(jiraIssueLink.getTargetIssueKey(), jiraClient);
 			if (linkedJiraIssue == null) {
 				return;

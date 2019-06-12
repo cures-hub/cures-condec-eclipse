@@ -8,6 +8,7 @@ Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  de.uhd.ifi.se.decision.management.eclipse
 Bundle-Vendor: Software Engineering Research Group, Heidelberg University
-Export-Package: de.uhd.ifi.se.decision.management.eclipse.extraction,
- de.uhd.ifi.se.decision.management.eclipse.persistence
 Automatic-Module-Name: de.uhd.ifi.se.decision.management.eclipse.tests
+Export-Package: de.uhd.ifi.se.decision.management.eclipse.extraction,
+ de.uhd.ifi.se.decision.management.eclipse.model,
+ de.uhd.ifi.se.decision.management.eclipse.persistence

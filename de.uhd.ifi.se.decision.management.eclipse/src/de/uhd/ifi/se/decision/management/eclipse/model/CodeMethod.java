@@ -3,22 +3,29 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Interface for methods as part of the knowledge graph.
+ */
 public interface CodeMethod extends Node {
-	
+
+	/**
+	 * Instances of CodeMethod.
+	 */
 	public Set<CodeMethod> instances = new HashSet<CodeMethod>();
 
-	public static Set<CodeMethod> getInstances(){
+	/**
+	 * Returns all available instances of CodeMethod.
+	 * 
+	 * @return instances of CodeMethod.
+	 */
+	public static Set<CodeMethod> getInstances() {
 		return instances;
 	}
 
+	/**
+	 * Returns the method name.
+	 * 
+	 * @return method name.
+	 */
 	String getMethodName();
-
-	int getMethodStartInCodefile();
-
-	int getMethodStopInCodefile();
-
-	void setMethodStartInCodefile(int start);
-
-	void setMethodStopInCodefile(int stop);
-
 }

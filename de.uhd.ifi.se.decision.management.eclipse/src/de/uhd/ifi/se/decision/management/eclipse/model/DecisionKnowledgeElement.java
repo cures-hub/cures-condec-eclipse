@@ -1,10 +1,10 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 /**
- * Interface for decision knowledge elements.
+ * Interface for decision knowledge elements as part of the knowledge graph.
  */
 public interface DecisionKnowledgeElement extends Node {
-	
+
 	/**
 	 * Get the id of the decision knowledge element. This id is the internal
 	 * database id. When using JIRA issues to persist decision knowledge, this id is
@@ -14,17 +14,6 @@ public interface DecisionKnowledgeElement extends Node {
 	 */
 	@Override
 	long getId();
-
-	/**
-	 * Set the id of the decision knowledge element. This id is the internal
-	 * database id. When using JIRA issues to persist decision knowledge, this id is
-	 * different to the project internal id that is part of the key.
-	 *
-	 * @param id
-	 *            of the decision knowledge element.
-	 */
-	@Override
-	void setId(long id);
 
 	/**
 	 * Get the summary of the decision knowledge element. The summary is a short
@@ -44,23 +33,21 @@ public interface DecisionKnowledgeElement extends Node {
 	void setSummary(String summary);
 
 	/**
-	 * Get the description of the decision knowledge element. The description
-	 * provides details about the element. When using JIRA issues to persist
-	 * decision knowledge, it can include images and other fancy stuff.
+	 * Get the type of the decision knowledge element. For example, prominent types
+	 * are decision, alternative, issue, and argument.
 	 *
-	 * @return description of the decision knowledge element.
+	 * @see KnowledgeType
+	 * @return type of the decision knowledge element.
 	 */
-	String getDescription();
+	KnowledgeType getType();
 
 	/**
-	 * Set the description of the decision knowledge element. The description
-	 * provides details about the element. When using JIRA issues to persist
-	 * decision knowledge, it can include images and other fancy stuff.
+	 * Set the type of the decision knowledge element. For example, prominent types
+	 * are decision, alternative, issue, and argument.
 	 *
-	 * @param description
+	 * @see KnowledgeType
+	 * @param type
 	 *            of the decision knowledge element.
 	 */
-	void setDescription(String description);
-
-	KnowledgeType getKnowledgeType();
+	void setType(KnowledgeType type);
 }

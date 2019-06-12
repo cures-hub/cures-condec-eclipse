@@ -3,56 +3,40 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 
+/**
+ * Class for decision knowledge elements as part of the knowledge graph.
+ */
 public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKnowledgeElement {
-	private KnowledgeType knowledgeType;
-	private String knowledgeMessage;
+	private String summary;
+	private KnowledgeType type;
 
-	public DecisionKnowledgeElementImpl() {
-		/* Default constructor */ }
-
-	public DecisionKnowledgeElementImpl(KnowledgeType knowledgeType, String knowledgeMessage) {
-		this.knowledgeType = knowledgeType;
-		this.knowledgeMessage = knowledgeMessage;
+	public DecisionKnowledgeElementImpl(KnowledgeType knowledgeType, String summary) {
+		this.type = knowledgeType;
+		this.summary = summary;
 	}
 
-	public KnowledgeType getKnowledgeType() {
-		return knowledgeType;
+	@Override
+	public KnowledgeType getType() {
+		return type;
 	}
 
-	public void setKnowledgeType(KnowledgeType knowledgeType) {
-		this.knowledgeType = knowledgeType;
-	}
-
-	public String getKnowledgeMessage() {
-		return knowledgeMessage.replace("\r\n", " ").replace("\n", " ");
-	}
-
-	public void setKnowledgeMessage(String knowledgeMessage) {
-		this.knowledgeMessage = knowledgeMessage;
+	@Override
+	public void setType(KnowledgeType type) {
+		this.type = type;
 	}
 
 	@Override
 	public String getSummary() {
-		return this.knowledgeType.name();
+		return this.summary;
 	}
 
 	@Override
 	public void setSummary(String summary) {
-		// Not intended to be used so far
-	}
-
-	@Override
-	public String getDescription() {
-		return this.knowledgeMessage;
-	}
-
-	@Override
-	public void setDescription(String description) {
-		// Not intended to be used so far
+		this.summary = summary;
 	}
 
 	@Override
 	public String toString() {
-		return this.knowledgeType.name() + ": " + this.knowledgeMessage;
+		return this.type.name() + ": " + this.summary;
 	}
 }

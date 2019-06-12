@@ -41,30 +41,6 @@ public interface Node {
 	long getId();
 
 	/**
-	 * Set the id of the node. This function should only be used when creating a new
-	 * Node-instance.
-	 *
-	 * @param id
-	 *            of the node.
-	 */
-	void setId(long id);
-
-	/**
-	 * Get the visibility of the current node.
-	 * 
-	 * @return true if node is visible, otherwise false.
-	 */
-	boolean getVisibility();
-
-	/**
-	 * Set the node to visible or invisible.
-	 * 
-	 * @param visible
-	 *            true if node is visible and false if node is invisible.
-	 */
-	void setVisibility(boolean isVisible);
-
-	/**
 	 * Add a reference to another node to create a link/an edge.
 	 * 
 	 * @param node
@@ -74,32 +50,8 @@ public interface Node {
 	boolean addLinkedNode(Node node);
 
 	/**
-	 * Remove a reference to another node which is linked.
-	 * 
-	 * @param node
-	 *            node that is removed from the linked list.
-	 */
-	boolean removeLinkedNode(Node node);
-
-	/**
-	 * Removes all outgoing links from a node. Other nodes might still point at this
-	 * node.
-	 */
-	void removeLinkedNodes();
-
-	/**
-	 * Checks if the current node has a link to a given node.
-	 * 
-	 * @param node
-	 *            node that might be linked.
-	 * @return true if there is a link to the node, otherwise false.
-	 */
-	boolean isLinkedToNode(Node node);
-
-	/**
 	 * Get a set of all linked nodes.
 	 * 
-	 * @see Node
 	 * @return set of all linked nodes. The set is never null.
 	 */
 	Set<Node> getLinkedNodes();

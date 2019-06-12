@@ -106,5 +106,43 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+    allPopups="false"
+    locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
+ <menu
+       icon="icons/pluginIcon.png"
+       label="ConDec">
+    <visibleWhen>
+       <with
+             variable="activeMenuSelection">
+          <iterate
+                ifEmpty="false">
+             <adapt
+                   type="org.eclipse.core.resources.IResource">
+                <test
+                      property="org.eclipse.core.resources.name"
+                      value="*.java">
+                </test>
+             </adapt>
+          </iterate>
+       </with>
+    </visibleWhen>
+    <command
+          commandId="de.uhd.ifi.se.decision.management.eclipse.command1"
+          label="Show Full Graph"
+          style="push">
+    </command>
+    <command
+          commandId="de.uhd.ifi.se.decision.management.eclipse.command2"
+          label="Show Clipped Graph"
+          style="push">
+    </command>
+    <command
+          commandId="de.uhd.ifi.se.decision.management.eclipse.command3"
+          label="Extract Knowledge"
+          style="push">
+    </command>
+ </menu>
+</menuContribution>
       </extension>
 </plugin>
