@@ -10,35 +10,35 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jgit.diff.DiffEntry;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 
 /**
  * Interface for files as part of the knowledge graph.
  */
-public interface CodeClass extends Node {
+public interface ChangedFile extends Node {
 
 	/**
-	 * Instances of CodeClass that are identified by the path to the file.
+	 * Instances of ChangedFile that are identified by the path to the file.
 	 */
-	public Map<IPath, CodeClass> instances = new HashMap<IPath, CodeClass>();
+	public Map<IPath, ChangedFile> instances = new HashMap<IPath, ChangedFile>();
 
-	public static CodeClass getOrCreate(DiffEntry diffEntry, IPath pathToGit) {
+	public static ChangedFile getOrCreate(DiffEntry diffEntry, IPath pathToGit) {
 		IPath newPath = new Path(diffEntry.getNewPath());
 		IPath path = pathToGit.removeLastSegments(1).append(newPath);
 		return getOrCreate(path);
 	}
 
-	public static CodeClass getOrCreate(IPath path) {
+	public static ChangedFile getOrCreate(IPath path) {
 		if (instances.containsKey(path)) {
 			return instances.get(path);
 		}
-		CodeClass codeClass = new CodeClassImpl(path);
-		instances.put(path, codeClass);
-		return codeClass;
+		ChangedFile codeFile = new ChangedFileImpl(path);
+		instances.put(path, codeFile);
+		return codeFile;
 	}
 
-	public static Set<CodeClass> getInstances() {
-		return new HashSet<CodeClass>(instances.values());
+	public static Set<ChangedFile> getInstances() {
+		return new HashSet<ChangedFile>(instances.values());
 	}
 
 	/**

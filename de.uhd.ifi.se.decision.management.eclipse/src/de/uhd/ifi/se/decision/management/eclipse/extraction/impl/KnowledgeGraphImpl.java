@@ -11,7 +11,7 @@ import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
@@ -152,7 +152,7 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	}
 
 	private void addFiles() {
-		for (CodeClass codeClass : CodeClass.getInstances()) {
+		for (ChangedFile codeClass : ChangedFile.getInstances()) {
 			graph.addVertex(codeClass);
 			for (Node node : codeClass.getLinkedNodes()) {
 				graph.addVertex(node);

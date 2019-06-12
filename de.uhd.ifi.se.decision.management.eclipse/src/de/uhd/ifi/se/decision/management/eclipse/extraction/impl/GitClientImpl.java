@@ -39,7 +39,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -204,15 +204,15 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public List<CodeClass> getDiffEntries(GitCommit commit) {
+	public List<ChangedFile> getDiffEntries(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
-		List<CodeClass> changedClasses = new ArrayList<CodeClass>();
+		List<ChangedFile> changedClasses = new ArrayList<ChangedFile>();
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
 		try {
 			RevCommit parentCommit = this.getParent(revCommit);
 			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
 			for (DiffEntry entry : entries) {
-				changedClasses.add(CodeClass.getOrCreate(entry, pathToGit));
+				changedClasses.add(ChangedFile.getOrCreate(entry, pathToGit));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

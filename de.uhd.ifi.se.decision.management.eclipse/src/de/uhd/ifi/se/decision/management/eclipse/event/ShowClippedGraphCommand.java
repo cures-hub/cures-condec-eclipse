@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.IPath;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
@@ -41,7 +41,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 	}
 
 	private Node getSelectedNode(IPath pathOfSelectedFile) {
-		return CodeClass.getOrCreate(pathOfSelectedFile);
+		return ChangedFile.getOrCreate(pathOfSelectedFile);
 	}
 
 	private void createErrorDialog() {

@@ -7,7 +7,7 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.types.DependantOriginalColor;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
@@ -47,7 +47,7 @@ public class GraphSettings {
 			return GraphSettings.getDecisionKnowledgeElementColor();
 		} else if (node instanceof JiraIssue) {
 			return GraphSettings.getJiraIssueColor();
-		} else if (node instanceof CodeClass) {
+		} else if (node instanceof ChangedFile) {
 			return GraphSettings.getChangedFilesColor();
 		} else if (node instanceof CodeMethod) {
 			return GraphSettings.getCodeMethodColor();

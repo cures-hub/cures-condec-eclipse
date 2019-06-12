@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
@@ -17,7 +17,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	private RevCommit revCommit;
 	private List<String> jiraIssueKeys = new ArrayList<String>();
-	private List<CodeClass> changedFiles;
+	private List<ChangedFile> changedFiles;
 	private List<DecisionKnowledgeElement> decisionKnowledgeElements;
 
 	public GitCommitImpl(RevCommit revCommit, String projectKey) {
@@ -30,7 +30,7 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 			knowledgeElement.addLinkedNode(this);
 		}
 		
-		this.changedFiles = new ArrayList<CodeClass>();
+		this.changedFiles = new ArrayList<ChangedFile>();
 	}
 
 	public GitCommitImpl(RevCommit commit) {
@@ -43,12 +43,12 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	}
 
 	@Override
-	public List<CodeClass> getChangedFiles() {
+	public List<ChangedFile> getChangedFiles() {
 		return this.changedFiles;
 	}
 
 	@Override
-	public void setChangedFiles(List<CodeClass> changedFiles) {
+	public void setChangedFiles(List<ChangedFile> changedFiles) {
 		this.changedFiles = changedFiles;
 		for (Node node : this.changedFiles) {
 			this.addLinkedNode(node);

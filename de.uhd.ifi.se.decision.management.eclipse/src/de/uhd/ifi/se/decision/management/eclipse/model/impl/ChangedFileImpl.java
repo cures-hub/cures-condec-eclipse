@@ -12,15 +12,15 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 
-public class CodeClassImpl extends NodeImpl implements CodeClass {
+public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	private IPath path;
 	private List<CodeMethod> methodsInClass;
 
-	public CodeClassImpl(IPath path) {
+	public ChangedFileImpl(IPath path) {
 		this.path = path;
 		this.methodsInClass = parseMethods();
 	}

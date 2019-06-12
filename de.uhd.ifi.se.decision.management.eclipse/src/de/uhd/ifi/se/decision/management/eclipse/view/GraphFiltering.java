@@ -3,10 +3,10 @@ package de.uhd.ifi.se.decision.management.eclipse.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeClass;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeClassImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
@@ -32,9 +32,9 @@ public class GraphFiltering {
 		filters.put("pro", new Filter("Pros", DecisionKnowledgeElementImpl.class));
 		filters.put("con", new Filter("Cons", DecisionKnowledgeElementImpl.class));
 
-		filters.put("file", new Filter("Files", CodeClassImpl.class));
-		filters.put("nonJava", new Filter("No Java-Files", CodeClassImpl.class));
-		filters.put("class", new Filter("Classes", CodeClassImpl.class));
+		filters.put("file", new Filter("Files", ChangedFileImpl.class));
+		filters.put("nonJava", new Filter("No Java-Files", ChangedFileImpl.class));
+		filters.put("class", new Filter("Classes", ChangedFileImpl.class));
 		filters.put("method", new Filter("Methods", CodeMethodImpl.class));
 		return filters;
 	}
@@ -73,11 +73,11 @@ public class GraphFiltering {
 					default:
 						return true;
 					}
-				} else if (filter.getNodeClass().equals(CodeClassImpl.class)) {
+				} else if (filter.getNodeClass().equals(ChangedFileImpl.class)) {
 					if (!filters.get("file").isActivated()) {
 						return false;
 					}
-					CodeClass cc = (CodeClass) node;
+					ChangedFile cc = (ChangedFile) node;
 					if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
 						return filters.get("class").isActivated();
 					} else {
