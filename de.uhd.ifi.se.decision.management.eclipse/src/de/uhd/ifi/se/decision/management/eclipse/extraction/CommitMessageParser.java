@@ -91,4 +91,20 @@ public class CommitMessageParser {
 		}
 		return keys;
 	}
+	
+	/**
+	 * Retrieves the issue key from a commit message
+	 * 
+	 * @param commitMessage
+	 *            a commit message that should contain an issue key
+	 * @return extracted issue key
+	 */
+	public static String getIssueKey(String commitMessage) {
+		if (commitMessage.contains(" ")) {
+			String[] split = commitMessage.split("[\\s,:]+");
+			return split[0];
+		} else {
+			return "";
+		}
+	}
 }

@@ -85,7 +85,7 @@ public interface GitClient {
 	 *            issue key for which commits are searched
 	 * @return commits with the issue key in their commit message
 	 */
-	Set<GitCommit> getCommitsForIssueKey(String issueKey);
+	Set<GitCommit> getCommitsForJiraIssueKey(String issueKey);
 
 	/**
 	 * Get a list of diff entries for a commit.

@@ -168,14 +168,14 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getCommitsForIssueKey(String issueKey) {
+	public Set<GitCommit> getCommitsForJiraIssueKey(String issueKey) {
 		Set<GitCommit> commitsForIssueKey = new LinkedHashSet<GitCommit>();
 		try {
 			Iterable<RevCommit> iterable = git.log().call();
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
 				RevCommit revCommit = iterator.next();
-				if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
+				if (CommitMessageParser.getIssueKey(revCommit.getFullMessage()).equalsIgnoreCase(issueKey)) {
 					GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
 					commitsForIssueKey.add(commit);
 				}
@@ -341,22 +341,6 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public void setGit(Git git) {
 		this.git = git;
-	}
-
-	/**
-	 * Retrieves the issue key from a commit message
-	 * 
-	 * @param commitMessage
-	 *            a commit message that should contain an issue key
-	 * @return extracted issue key
-	 */
-	public static String getIssueKey(String commitMessage) {
-		if (commitMessage.contains(" ")) {
-			String[] split = commitMessage.split("[:+ ]");
-			return split[0];
-		} else {
-			return "";
-		}
 	}
 
 	@Override

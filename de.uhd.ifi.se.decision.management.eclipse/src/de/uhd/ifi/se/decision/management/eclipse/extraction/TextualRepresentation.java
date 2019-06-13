@@ -12,7 +12,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -53,7 +52,7 @@ public class TextualRepresentation {
 					+ gitClient.whichMethodsChanged(entry.getKey(), entry.getValue()) + "\n";
 		}
 
-		String issueKey = GitClientImpl.getIssueKey(commitForLine.getFullMessage());
+		String issueKey = CommitMessageParser.getIssueKey(commitForLine.getFullMessage());
 		JiraClient jiraClient = JiraClient.getOrCreate();
 
 		jiraClient.authenticate();
@@ -67,7 +66,7 @@ public class TextualRepresentation {
 		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
 
 			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssueKey(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
@@ -130,11 +129,11 @@ public class TextualRepresentation {
 	 */
 	public static String produceDecisionExploration(IPath pathOfFile, int line) {
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClient.getOrCreate(); 
+		GitClient gitClient = GitClient.getOrCreate();
 
 		String commitForLine = gitClient
 				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
-		String issueKey = GitClientImpl.getIssueKey(commitForLine);
+		String issueKey = CommitMessageParser.getIssueKey(commitForLine);
 
 		JiraClient jiraClient = JiraClient.getOrCreate();
 
@@ -145,7 +144,7 @@ public class TextualRepresentation {
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
 
-		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForIssueKey(issueKey);
+		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssueKey(issueKey);
 
 		String otherCommitsForIssue = "";
 		if (!otherCommitForIssue.isEmpty()) {
@@ -168,7 +167,7 @@ public class TextualRepresentation {
 			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
 					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
 
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssueKey(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
