@@ -18,10 +18,10 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphI
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
 public class TestKnowledgeGraph {
-	
+
 	private GitClient gitClient;
 	private JiraClient jiraClient;
-	
+
 	@Before
 	public void setUp() {
 		gitClient = new GitClientImpl("", "HEAD", "");
@@ -33,17 +33,17 @@ public class TestKnowledgeGraph {
 	public void testKnowledgeGraphForEntireProject() {
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
 		assertNotNull(knowledgeGraph);
-		assertTrue(knowledgeGraph.getGraph().vertexSet().size() == 0);
-		
+		assertTrue(knowledgeGraph.vertexSet().size() == 0);
+
 		assertEquals(gitClient, knowledgeGraph.getGitClient());
 		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
 	}
-	
+
 	@Test
 	public void testKnowledgeGraphForSubGraph() {
 		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, element, 0);
-		assertTrue(knowledgeGraph.getGraph().vertexSet().size() == 1);
+		assertTrue(knowledgeGraph.vertexSet().size() == 1);
 	}
 }

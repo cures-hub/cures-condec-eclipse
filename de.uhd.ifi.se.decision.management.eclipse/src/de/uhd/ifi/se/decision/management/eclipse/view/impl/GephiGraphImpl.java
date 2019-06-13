@@ -11,7 +11,6 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.jgrapht.Graph;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.openide.util.Lookup;
 
@@ -47,12 +46,7 @@ public class GephiGraphImpl implements GephiGraph {
 	}
 
 	@Override
-	public void createGephiGraph(KnowledgeGraph knowledgeGraph) {
-		createGephiGraph(knowledgeGraph.getGraph());
-	}
-
-	@Override
-	public void createGephiGraph(Graph<Node, Link> graph) {
+	public void createGephiGraph(KnowledgeGraph graph) {
 		Set<Node> nodes = graph.vertexSet();
 		float positionOffset = (float) Math.sqrt(nodes.size());
 

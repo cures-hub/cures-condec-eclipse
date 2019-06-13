@@ -4,7 +4,6 @@ import org.gephi.graph.api.NodeIterable;
 import org.jgrapht.Graph;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
@@ -17,23 +16,16 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public interface GephiGraph {
 
 	/**
-	 * Creates a gephi graph from a JGraphT graph.
-	 * 
-	 * @see Graph
-	 * @param graph
-	 *            JGraphT graph.
-	 */
-	void createGephiGraph(Graph<Node, Link> graph);
-
-	/**
 	 * Creates a gephi graph from a knowledge graph. The knowledge covers decision
 	 * knowledge, JIRA issues such as requirements and work items, commits, and
 	 * files (e.g., classes and methods).
 	 * 
+	 * @see Graph
 	 * @see KnowledgeGraph
 	 * @param knowledgeGraph
 	 *            graph of decision knowledge, JIRA issues such as requirements and
-	 *            work items, commits, and files (e.g., classes and methods).
+	 *            work items, commits, and files (e.g., classes and methods). The
+	 *            knowledge graph is a JGraphT graph.
 	 */
 	void createGephiGraph(KnowledgeGraph knowledgeGraph);
 
