@@ -102,6 +102,12 @@ public class TestGitClient {
 		assertEquals(commits.get(4), parentCommit);
 	}
 
+	@Test
+	public void testGitClientCreationWithSettings() {
+		assertNotNull(new GitClientImpl());
+		assertEquals(GitClient.getOrCreate(), GitClient.getOrCreate());
+	}
+
 	@AfterClass
 	public static void tearDown() {
 		GitClient.instances.clear();
