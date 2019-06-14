@@ -8,7 +8,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.EditList;
-import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
@@ -33,17 +32,17 @@ public class TextualRepresentation {
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
 		GitClient gitClient = GitClient.getOrCreate();
 
-		RevCommit commitForLine = gitClient
-				.getRevCommitForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
+		GitCommit commitForLine = gitClient.getCommitForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)),
+				line);
 
 		String projectKey = ConfigPersistenceManager.getProjectKey();
 		numberOfAnalysedCommitMessages += 1;
-		if (WrongLinkDetector.tanglednessToString(commitForLine, projectKey).equals("untangled")) {
+		if (WrongLinkDetector.tanglednessToString(commitForLine.getRevCommit(), projectKey).equals("untangled")) {
 			numberOfCommitsFoundUntangled += 1;
 		}
 
 		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = gitClient
-				.getDiffEntriesMappedToEditLists(commitForLine);
+				.getDiff(commitForLine);
 
 		String changedMethodsInDiff = "";
 
@@ -52,7 +51,7 @@ public class TextualRepresentation {
 					+ gitClient.whichMethodsChanged(entry.getKey(), entry.getValue()) + "\n";
 		}
 
-		String issueKey = CommitMessageParser.getIssueKey(commitForLine.getFullMessage());
+		String issueKey = CommitMessageParser.getJiraIssueKey(commitForLine.getRevCommit().getFullMessage());
 		JiraClient jiraClient = JiraClient.getOrCreate();
 
 		jiraClient.authenticate();
@@ -78,8 +77,7 @@ public class TextualRepresentation {
 							.equals("untangled")) {
 						numberOfCommitsFoundUntangled += 1;
 					}
-					Map<DiffEntry, EditList> diffEntriesMappedToEditListsBroad = gitClient
-							.getDiffEntriesMappedToEditLists(commit);
+					Map<DiffEntry, EditList> diffEntriesMappedToEditListsBroad = gitClient.getDiff(commit);
 
 					for (Map.Entry<DiffEntry, EditList> entry : diffEntriesMappedToEditListsBroad.entrySet()) {
 
@@ -133,7 +131,7 @@ public class TextualRepresentation {
 
 		String commitForLine = gitClient
 				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
-		String issueKey = CommitMessageParser.getIssueKey(commitForLine);
+		String issueKey = CommitMessageParser.getJiraIssueKey(commitForLine);
 
 		JiraClient jiraClient = JiraClient.getOrCreate();
 

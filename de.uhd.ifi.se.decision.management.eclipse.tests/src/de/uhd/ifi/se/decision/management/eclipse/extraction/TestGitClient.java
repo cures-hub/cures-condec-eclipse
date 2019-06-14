@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
@@ -45,12 +46,26 @@ public class TestGitClient {
 	}
 
 	@Test
+	public void testGetGit() {
+		assertNotNull(gitClient.getGit());
+	}
+
+	@Test
+	public void testGetRepository() {
+		assertNotNull(gitClient.getRepository());
+	}
+
+	@Test
 	public void testSetReferenceNullOrEmpty() {
 		GitClient gitClient = new GitClientImpl(path, null, "");
 		assertNotNull(gitClient.getReference());
 
 		gitClient = new GitClientImpl(path, "", "");
 		assertNotNull(gitClient.getReference());
+		gitClient.setReference("Evidently, this is not a valid git tag.");
+		
+		gitClient = new GitClientImpl(new Path(""), "", "");
+		assertEquals("HEAD", gitClient.getReference());
 	}
 
 	@Test
@@ -64,20 +79,20 @@ public class TestGitClient {
 		Set<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertTrue(commits.size() == 5);
 	}
-	
+
 	@Test
 	public void testGetCommitForLine() {
 		GitCommit commit = gitClient.getCommitForLine(null, 1);
 		assertNull(commit);
-		
+
 		commit = gitClient.getCommitForLine(new Path("pom.xml"), 1);
 		assertNotNull(commit);
 	}
-	
+
 	@Test
 	public void testGetCommitMessageForLine() {
 		String commitMessage = gitClient.getCommitMessageForLine(new Path("pom.xml"), 1);
-		assertTrue(commitMessage.startsWith("EConDec"));
+		assertTrue(commitMessage.toUpperCase(Locale.ENGLISH).startsWith("ECONDEC"));
 	}
 
 	@AfterClass

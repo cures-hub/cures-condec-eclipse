@@ -135,9 +135,12 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public BlameResult getGitBlameForFile(IPath filePath) {
 		BlameResult blameResult = null;
+		if (filePath == null) {
+			return blameResult;
+		}
 		try {
 			blameResult = git.blame().setFilePath(filePath.toString()).call();
-		} catch (GitAPIException | NullPointerException e) {
+		} catch (GitAPIException e) {
 			System.err.println("File could not be found.");
 			e.printStackTrace();
 		}
@@ -162,7 +165,7 @@ public class GitClientImpl implements GitClient {
 	public Set<GitCommit> getCommitsForJiraIssue(String issueKey) {
 		Set<GitCommit> commitsForJiraIssue = new HashSet<GitCommit>();
 		for (GitCommit commit : getCommits()) {
-			if (CommitMessageParser.getIssueKey(commit).equalsIgnoreCase(issueKey)) {
+			if (CommitMessageParser.getJiraIssueKey(commit).equalsIgnoreCase(issueKey)) {
 				commitsForJiraIssue.add(commit);
 			}
 		}
@@ -190,7 +193,7 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(GitCommit commit) {
+	public Map<DiffEntry, EditList> getDiff(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
 		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
 		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
@@ -283,7 +286,7 @@ public class GitClientImpl implements GitClient {
 	public String getReference() {
 		try {
 			return this.repository.getFullBranch();
-		} catch (IOException e) {
+		} catch (IOException | NullPointerException e) {
 			System.err.println("Branch name could not be retrieved. Message: " + e);
 		}
 		return "HEAD";
@@ -297,45 +300,6 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public Git getGit() {
 		return this.git;
-	}
-
-	@Override
-	public RevCommit getRevCommitForLine(IPath filePath, int line) {
-		BlameResult blameResult = getGitBlameForFile(filePath);
-		return blameResult.getSourceCommit(line);
-	}
-
-	@Override
-	public Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit) {
-		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
-		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
-
-		DiffFormatter diffFormatter = getDiffFormater();
-		try {
-			RevCommit parentCommit = this.getParent(revCommit);
-			diffEntries = diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		for (DiffEntry diffEntry : diffEntries) {
-			try {
-				EditList editList = diffFormatter.toFileHeader(diffEntry).toEditList();
-				diffEntriesMappedToEditLists.put(diffEntry, editList);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		diffFormatter.close();
-		return diffEntriesMappedToEditLists;
-	}
-
-	private DiffFormatter getDiffFormater() {
-		DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
-		diffFormatter.setRepository(this.repository);
-		diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
-		diffFormatter.setDetectRenames(true);
-		return diffFormatter;
 	}
 
 	@Override

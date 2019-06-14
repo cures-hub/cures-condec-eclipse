@@ -74,7 +74,7 @@ public interface GitClient {
 	 *            path to the file to be blamed.
 	 * @param line
 	 *            the line that is to be analyzed.
-	 * @return GitCommit.
+	 * @return {@link GitCommit} object.
 	 */
 	GitCommit getCommitForLine(IPath filePath, int line);
 
@@ -118,19 +118,10 @@ public interface GitClient {
 	 * Get a map of diff entries and the respective edit lists for a commit.
 	 * 
 	 * @param revCommit
-	 *            commit as a RevCommit object
-	 * @return map of diff entries and respective edit lists
+	 *            commit as a RevCommit object.
+	 * @return map of diff entries and respective edit lists.
 	 */
-	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(GitCommit commit);
-
-	/**
-	 * Get a map of diff entries and the respective edit lists for a commit.
-	 * 
-	 * @param revCommit
-	 *            commit as a RevCommit object
-	 * @return map of diff entries and respective edit lists
-	 */
-	Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit);
+	Map<DiffEntry, EditList> getDiff(GitCommit commit);
 
 	/**
 	 * Get the jgit git object.
@@ -158,9 +149,9 @@ public interface GitClient {
 	RevCommit getParent(RevCommit revCommit);
 
 	/**
-	 * Get the git object identifier, e.g., HEAD, refs/heads/master or commit id
+	 * Gets the git object identifier, e.g., HEAD, refs/heads/master or commit id.
 	 * 
-	 * @return git object identifier
+	 * @return git object identifier.
 	 */
 	String getReference();
 
@@ -172,22 +163,10 @@ public interface GitClient {
 	Repository getRepository();
 
 	/**
-	 * Retrieve the commit message for a given line from a blamed file as a
-	 * RevCommit.
-	 * 
-	 * @param filePath
-	 *            path to the file to be blamed
-	 * @param line
-	 *            the line that is to be analyzed
-	 * @return RevCommit returns all information about the commit as RevCommit
-	 */
-	RevCommit getRevCommitForLine(IPath filePath, int line);
-
-	/**
-	 * Set the git object identifier, e.g., HEAD, refs/heads/master or commit id
+	 * Sets the git object identifier, e.g., HEAD, refs/heads/master or commit id.
 	 * 
 	 * @param reference
-	 *            git object identifier
+	 *            git object identifier.
 	 */
 	void setReference(String reference);
 
