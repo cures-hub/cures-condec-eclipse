@@ -66,7 +66,7 @@ public class TextualRepresentation {
 		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
 
 			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssueKey(linkedIssueKey);
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
@@ -144,7 +144,7 @@ public class TextualRepresentation {
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
 
-		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssueKey(issueKey);
+		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssue(issueKey);
 
 		String otherCommitsForIssue = "";
 		if (!otherCommitForIssue.isEmpty()) {
@@ -167,7 +167,7 @@ public class TextualRepresentation {
 			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
 					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
 
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssueKey(linkedIssueKey);
+			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";

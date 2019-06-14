@@ -47,8 +47,12 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * Class to connect to a git repository associated with this Eclipse project.
  * Retrieves commits and code changes (diffs) in git.
  * 
+ * @issue How to access the git repository?
+ * @decision Write a new GitClient constructor!
+ * @alternative Extend the RepositoryProvider class of EGit!
+ * 
  * @issue How to access commits related to a JIRA issue?
- * @decision The jgit library is used to access git repositories! *
+ * @decision The jgit library is used to access git repositories!
  * @pro The jGit library is open source and no third party JIRA plug-in needs to
  *      be installed.
  */
@@ -60,48 +64,28 @@ public class GitClientImpl implements GitClient {
 	private String projectKey;
 
 	/**
-	 * Constructor for GitClient class
-	 * 
-	 * @decision Write a new GitClient constructor
-	 * @alternative Extend the RepositoryProvider class of EGit
-	 * 
-	 * @param repositoryPath
-	 *            (required) path to .git folder
-	 * @param reference
-	 *            (optional) git object identifier, e.g., HEAD, refs/heads/master or
-	 *            commit id
+	 * Constructor for GitClient class. Uses the settings stored in the
+	 * ConfigPersistenceManager to set the path, reference, and JIRA project key.
 	 */
-	public GitClientImpl(String repositoryPath, String reference) {
-		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-		repositoryBuilder.setMustExist(true);
-		repositoryBuilder.setGitDir(new File(repositoryPath));
-		try {
-			this.repository = repositoryBuilder.build();
-			this.repository.resolve(reference);
-			this.git = new Git(this.repository);
-			StoredConfig config = this.repository.getConfig();
-			// @issue The internal representation of a file might add system dependent new
-			// line statements, for example CR LF in Windows. How to deal with new lines?
-			// @decision Disable system dependent new line statements!
-			config.setEnum(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_AUTOCRLF,
-					AutoCRLF.TRUE);
-			config.save();
-		} catch (IOException e) {
-			System.err.println("Repository could not be found.");
-			e.printStackTrace();
-		}
-	}
-
-	public GitClientImpl(String repositoryPath, String reference, String projectKey) {
-		this(repositoryPath, reference);
-		this.projectKey = projectKey;
-	}
-
 	public GitClientImpl() {
+		this(ConfigPersistenceManager.getPathToGit(), ConfigPersistenceManager.getBranch(),
+				ConfigPersistenceManager.getProjectKey());
+	}
+
+	/**
+	 * Constructor for GitClient class.
+	 * 
+	 * @param path
+	 *            to .git folder.
+	 * @param reference
+	 *            git object identifier, e.g., HEAD, refs/heads/master or commit id.
+	 * @param projectKey
+	 *            of the associated JIRA project.
+	 */
+	public GitClientImpl(IPath path, String reference, String projectKey) {
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
-		repositoryBuilder.setGitDir(ConfigPersistenceManager.getPathToGit().toFile());
-		String reference = ConfigPersistenceManager.getBranch();
+		repositoryBuilder.setGitDir(path.toFile());
 		if (reference == null || reference.isEmpty()) {
 			reference = "HEAD";
 		}
@@ -110,21 +94,28 @@ public class GitClientImpl implements GitClient {
 			this.repository.resolve(reference);
 			this.git = new Git(this.repository);
 			StoredConfig config = this.repository.getConfig();
-			// @decision Disable system dependent new line statements
 			// @issue The internal representation of a file might add system dependent new
-			// line statements, for example CR LF in Windows
+			// line statements, for example CR LF in Windows. How to deal with different
+			// line endings?
+			// @decision Disable system dependent new line statements!
 			config.setEnum(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_AUTOCRLF,
 					AutoCRLF.TRUE);
 			config.save();
 		} catch (IOException e) {
 			System.err.println("Repository could not be found.");
-			e.printStackTrace();
 		}
-		this.diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
-		this.diffFormatter.setRepository(this.repository);
-		this.diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
-		this.diffFormatter.setDetectRenames(true);
-		this.projectKey = ConfigPersistenceManager.getProjectKey();
+		this.diffFormatter = initDiffFormatter(repository);
+		this.projectKey = projectKey;
+	}
+
+	private DiffFormatter initDiffFormatter(Repository repository) {
+		DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
+		if (repository != null) {
+			diffFormatter.setRepository(repository);
+			diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+			diffFormatter.setDetectRenames(true);
+		}
+		return diffFormatter;
 	}
 
 	@Override
@@ -168,7 +159,7 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getCommitsForJiraIssueKey(String issueKey) {
+	public Set<GitCommit> getCommitsForJiraIssue(String issueKey) {
 		Set<GitCommit> commitsForIssueKey = new LinkedHashSet<GitCommit>();
 		try {
 			Iterable<RevCommit> iterable = git.log().call();

@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 public class TestGitClient {
 
 	private GitClient gitClient;
+	private IPath path;
 
 	@Before
 	public void setUp() {
@@ -28,16 +30,21 @@ public class TestGitClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		IPath path = new Path(canonicalPath);
+		path = new Path(canonicalPath);
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
 
-		gitClient = new GitClientImpl(path.toString(), "HEAD");
+		gitClient = new GitClientImpl(path, "HEAD", "");
+	}
+	
+	@Test
+	public void testGetOrCreate() {
+		assertEquals(gitClient, GitClient.getOrCreate(path, "HEAD", ""));
 	}
 
 	@Test
-	public void testGetCommitsForJiraIssueKey() {
-		Set<GitCommit> commitSet = gitClient.getCommitsForJiraIssueKey("ECONDEC-1");
+	public void testGetCommitsForJiraIssue() {
+		Set<GitCommit> commitSet = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertTrue(commitSet.size() == 3);
 	}
 

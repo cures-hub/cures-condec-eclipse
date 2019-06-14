@@ -40,10 +40,28 @@ public interface GitClient {
 	 */
 	public static GitClient getOrCreate() {
 		IPath path = ConfigPersistenceManager.getPathToGit();
+		String reference = ConfigPersistenceManager.getBranch();
+		String projectKey = ConfigPersistenceManager.getProjectKey();
+		return getOrCreate(path, reference, projectKey);
+	}
+
+	/**
+	 * Retrieves an existing GitClient instance or creates a new instance if there
+	 * is no instance for the given path yet.
+	 * 
+	 * @param path
+	 *            to the .git folder.
+	 * @param reference
+	 *            git object identifier, e.g., HEAD, refs/heads/master or commit id.
+	 * @param projectKey
+	 *            of the associated JIRA project.
+	 * @return GitClient instance.
+	 */
+	public static GitClient getOrCreate(IPath path, String reference, String projectKey) {
 		if (instances.containsKey(path)) {
 			return instances.get(path);
 		}
-		GitClient gitClient = new GitClientImpl();
+		GitClient gitClient = new GitClientImpl(path, reference, projectKey);
 		instances.put(path, gitClient);
 		return gitClient;
 	}
@@ -85,7 +103,7 @@ public interface GitClient {
 	 *            issue key for which commits are searched
 	 * @return commits with the issue key in their commit message
 	 */
-	Set<GitCommit> getCommitsForJiraIssueKey(String issueKey);
+	Set<GitCommit> getCommitsForJiraIssue(String issueKey);
 
 	/**
 	 * Get a list of diff entries for a commit.

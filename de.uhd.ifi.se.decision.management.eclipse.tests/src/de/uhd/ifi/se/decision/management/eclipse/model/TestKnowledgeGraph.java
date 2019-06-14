@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.Path;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class TestKnowledgeGraph {
 
 	@Before
 	public void setUp() {
-		gitClient = new GitClientImpl("", "HEAD", "");
+		gitClient = new GitClientImpl(new Path(""), "HEAD", "");
 		jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
 		Node.nodes.clear();
 	}
