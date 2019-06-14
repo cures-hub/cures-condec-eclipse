@@ -306,12 +306,12 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public String getReference() {
-		return ConfigPersistenceManager.getBranch();
-	}
-
-	@Override
-	public void setReference(String reference) {
-		// TODO
+		try {
+			return this.repository.getFullBranch();
+		} catch (IOException e) {
+			System.err.println("Branch name could not be retrieved. Message: " + e);
+		}
+		return "HEAD";
 	}
 
 	@Override

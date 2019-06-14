@@ -192,14 +192,6 @@ public interface GitClient {
 	void setGit(Git git);
 
 	/**
-	 * Set the git object identifier, e.g., HEAD, refs/heads/master or commit id
-	 * 
-	 * @param reference
-	 *            git object identifier
-	 */
-	void setReference(String reference);
-
-	/**
 	 * Set the jgit repository object.
 	 * 
 	 * @param repository

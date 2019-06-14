@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -34,12 +35,21 @@ public class TestGitClient {
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
 
-		gitClient = new GitClientImpl(path, "HEAD", "");
+		gitClient = GitClient.getOrCreate(path, "HEAD", "");
 	}
 	
 	@Test
 	public void testGetOrCreate() {
 		assertEquals(gitClient, GitClient.getOrCreate(path, "HEAD", ""));
+	}
+	
+	@Test
+	public void testConstructorReferenceNullOrEmpty() {
+		GitClient gitClient = new GitClientImpl(path, null, "");
+		assertNotNull(gitClient.getReference());
+		
+		gitClient = new GitClientImpl(path, "", "");
+		assertNotNull(gitClient.getReference());
 	}
 
 	@Test
