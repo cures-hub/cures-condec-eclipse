@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -62,6 +63,21 @@ public class TestGitClient {
 	public void testGetCommitsForJiraIssue() {
 		Set<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertTrue(commits.size() == 5);
+	}
+	
+	@Test
+	public void testGetCommitForLine() {
+		GitCommit commit = gitClient.getCommitForLine(null, 1);
+		assertNull(commit);
+		
+		commit = gitClient.getCommitForLine(new Path("pom.xml"), 1);
+		assertNotNull(commit);
+	}
+	
+	@Test
+	public void testGetCommitMessageForLine() {
+		String commitMessage = gitClient.getCommitMessageForLine(new Path("pom.xml"), 1);
+		assertTrue(commitMessage.startsWith("EConDec"));
 	}
 
 	@AfterClass

@@ -134,20 +134,22 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public BlameResult getGitBlameForFile(IPath filePath) {
-		BlameResult blameResult;
+		BlameResult blameResult = null;
 		try {
 			blameResult = git.blame().setFilePath(filePath.toString()).call();
-			return blameResult;
 		} catch (GitAPIException | NullPointerException e) {
 			System.err.println("File could not be found.");
 			e.printStackTrace();
 		}
-		return null;
+		return blameResult;
 	}
 
 	@Override
 	public GitCommit getCommitForLine(IPath filePath, int line) {
 		BlameResult blameResult = getGitBlameForFile(filePath);
+		if (blameResult == null) {
+			return null;
+		}
 		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), projectKey);
 	}
 
@@ -158,37 +160,13 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public Set<GitCommit> getCommitsForJiraIssue(String issueKey) {
-		Set<GitCommit> commitsForIssueKey = new LinkedHashSet<GitCommit>();
-		try {
-			Iterable<RevCommit> iterable = git.log().call();
-			Iterator<RevCommit> iterator = iterable.iterator();
-			while (iterator.hasNext()) {
-				RevCommit revCommit = iterator.next();
-				if (CommitMessageParser.getIssueKey(revCommit.getFullMessage()).equalsIgnoreCase(issueKey)) {
-					GitCommit commit = GitCommit.getOrCreate(revCommit, projectKey);
-					commitsForIssueKey.add(commit);
-				}
+		Set<GitCommit> commitsForJiraIssue = new HashSet<GitCommit>();
+		for (GitCommit commit : getCommits()) {
+			if (CommitMessageParser.getIssueKey(commit).equalsIgnoreCase(issueKey)) {
+				commitsForJiraIssue.add(commit);
 			}
-		} catch (GitAPIException | NullPointerException e) {
-			System.err.println("Could not retrieve commits for the issue key " + issueKey + ". Message: " + e);
 		}
-		return commitsForIssueKey;
-	}
-
-	/**
-	 * Retrieves the issue key from a commit message
-	 * 
-	 * @param commitMessage
-	 *            a commit message that should contain an issue key
-	 * @return extracted issue key
-	 */
-	public static String getFirstJiraIssueKey(String commitMessage, String issueKeyBase) {
-		List<String> keys = CommitMessageParser.getJiraIssueKeys(commitMessage, issueKeyBase);
-		if (keys.size() > 0) {
-			return keys.get(0);
-		} else {
-			return null;
-		}
+		return commitsForJiraIssue;
 	}
 
 	@Override

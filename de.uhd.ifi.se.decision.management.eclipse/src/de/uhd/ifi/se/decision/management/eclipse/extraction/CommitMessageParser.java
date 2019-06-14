@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
@@ -91,7 +92,7 @@ public class CommitMessageParser {
 		}
 		return keys;
 	}
-	
+
 	/**
 	 * Retrieves the issue key from a commit message
 	 * 
@@ -100,11 +101,11 @@ public class CommitMessageParser {
 	 * @return extracted issue key
 	 */
 	public static String getIssueKey(String commitMessage) {
-		if (commitMessage.contains(" ")) {
-			String[] split = commitMessage.split("[\\s,:]+");
-			return split[0];
-		} else {
-			return "";
-		}
+		String[] split = commitMessage.split("[\\s,:]+");
+		return split[0];
+	}
+
+	public static String getIssueKey(GitCommit commit) {
+		return getIssueKey(commit.getRevCommit().getFullMessage());
 	}
 }
