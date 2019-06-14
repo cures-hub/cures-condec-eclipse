@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -63,20 +63,20 @@ public class TestGitClient {
 		gitClient = new GitClientImpl(path, "", "");
 		assertNotNull(gitClient.getReference());
 		gitClient.setReference("Evidently, this is not a valid git tag.");
-		
+
 		gitClient = new GitClientImpl(new Path(""), "", "");
 		assertEquals("HEAD", gitClient.getReference());
 	}
 
 	@Test
 	public void testGetCommits() {
-		Set<GitCommit> commits = gitClient.getCommits();
+		List<GitCommit> commits = gitClient.getCommits();
 		assertTrue(commits.size() > 0);
 	}
 
 	@Test
 	public void testGetCommitsForJiraIssue() {
-		Set<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertTrue(commits.size() == 5);
 	}
 
@@ -93,6 +93,13 @@ public class TestGitClient {
 	public void testGetCommitMessageForLine() {
 		String commitMessage = gitClient.getCommitMessageForLine(new Path("pom.xml"), 1);
 		assertTrue(commitMessage.toUpperCase(Locale.ENGLISH).startsWith("ECONDEC"));
+	}
+
+	@Test
+	public void testGetParentCommit() {
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		GitCommit parentCommit = gitClient.getParent(commits.get(3));
+		assertEquals(commits.get(4), parentCommit);
 	}
 
 	@AfterClass

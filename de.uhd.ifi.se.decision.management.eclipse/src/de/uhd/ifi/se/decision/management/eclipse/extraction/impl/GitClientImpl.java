@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,7 +39,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
-import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -117,8 +115,8 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getCommits() {
-		Set<GitCommit> commits = new HashSet<GitCommit>();
+	public List<GitCommit> getCommits() {
+		List<GitCommit> commits = new ArrayList<GitCommit>();
 		try {
 			Iterable<RevCommit> iterable = git.log().call();
 			Iterator<RevCommit> iterator = iterable.iterator();
@@ -162,8 +160,8 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getCommitsForJiraIssue(String issueKey) {
-		Set<GitCommit> commitsForJiraIssue = new HashSet<GitCommit>();
+	public List<GitCommit> getCommitsForJiraIssue(String issueKey) {
+		List<GitCommit> commitsForJiraIssue = new ArrayList<GitCommit>();
 		for (GitCommit commit : getCommits()) {
 			if (CommitMessageParser.getJiraIssueKey(commit).equalsIgnoreCase(issueKey)) {
 				commitsForJiraIssue.add(commit);
@@ -173,33 +171,13 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public List<ChangedFile> getDiffEntries(GitCommit commit) {
-		RevCommit revCommit = commit.getRevCommit();
-		List<ChangedFile> changedClasses = new ArrayList<ChangedFile>();
-		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		try {
-			RevCommit parentCommit = this.getParent(revCommit);
-			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
-			for (DiffEntry entry : entries) {
-				changedClasses.add(ChangedFile.getOrCreate(entry, pathToGit));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception ex) {
-
-		}
-		// this.diffFormatter.close();
-		return changedClasses;
-	}
-
-	@Override
 	public Map<DiffEntry, EditList> getDiff(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
 		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
 		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
 		try {
-			RevCommit parentCommit = this.getParent(revCommit);
-			diffEntries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
+			GitCommit parentCommit = this.getParent(commit);
+			diffEntries = this.diffFormatter.scan(parentCommit.getRevCommit().getTree(), revCommit.getTree());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -212,28 +190,26 @@ public class GitClientImpl implements GitClient {
 				e.printStackTrace();
 			}
 		}
-		// this.diffFormatter.close();
 		return diffEntriesMappedToEditLists;
 	}
 
 	@Override
-	public RevCommit getParent(RevCommit revCommit) {
-		RevCommit parentCommit;
+	public GitCommit getParent(GitCommit commit) {
+		GitCommit parentCommit = null;
 		try {
 			RevWalk revWalk = new RevWalk(repository);
-			parentCommit = revWalk.parseCommit(revCommit.getParent(0).getId());
+			RevCommit revCommit = revWalk.parseCommit(commit.getRevCommit().getParent(0).getId());
+			parentCommit = GitCommit.getOrCreate(revCommit, projectKey);
 			revWalk.close();
 		} catch (IOException e) {
-			System.err.println("Could not get the parent commit for " + revCommit);
+			System.err.println("Could not get the parent commit for " + commit);
 			e.printStackTrace();
-			return null;
 		}
 		return parentCommit;
 	}
 
 	@Override
 	public String whichMethodsChanged(DiffEntry diffEntry, EditList editList) {
-
 		if (diffEntry == null) {
 			return "Diff entry is missing.\n";
 		}

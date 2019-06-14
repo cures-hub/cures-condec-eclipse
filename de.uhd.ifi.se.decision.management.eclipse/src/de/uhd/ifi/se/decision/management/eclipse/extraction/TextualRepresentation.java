@@ -2,8 +2,8 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -41,8 +41,7 @@ public class TextualRepresentation {
 			numberOfCommitsFoundUntangled += 1;
 		}
 
-		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = gitClient
-				.getDiff(commitForLine);
+		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = gitClient.getDiff(commitForLine);
 
 		String changedMethodsInDiff = "";
 
@@ -65,7 +64,7 @@ public class TextualRepresentation {
 		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
 
 			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
+			List<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
@@ -142,7 +141,7 @@ public class TextualRepresentation {
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
 
-		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssue(issueKey);
+		List<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssue(issueKey);
 
 		String otherCommitsForIssue = "";
 		if (!otherCommitForIssue.isEmpty()) {
@@ -165,7 +164,7 @@ public class TextualRepresentation {
 			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
 					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
 
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
+			List<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";

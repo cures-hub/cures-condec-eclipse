@@ -3,7 +3,6 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.api.Git;
@@ -11,10 +10,8 @@ import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -94,7 +91,7 @@ public interface GitClient {
 	 * 
 	 * @return set of all commits on the current branch.
 	 */
-	Set<GitCommit> getCommits();
+	List<GitCommit> getCommits();
 
 	/**
 	 * Retrieve the commits with the issue key in their commit message.
@@ -103,16 +100,7 @@ public interface GitClient {
 	 *            issue key for which commits are searched
 	 * @return commits with the issue key in their commit message
 	 */
-	Set<GitCommit> getCommitsForJiraIssue(String issueKey);
-
-	/**
-	 * Get a list of diff entries for a commit.
-	 * 
-	 * @param revCommit
-	 *            commit as a RevCommit object
-	 * @return list of diff entries
-	 */
-	List<ChangedFile> getDiffEntries(GitCommit commit);
+	List<GitCommit> getCommitsForJiraIssue(String issueKey);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.
@@ -142,11 +130,11 @@ public interface GitClient {
 	/**
 	 * Get the parent commit for a given commit.
 	 * 
-	 * @param revCommit
-	 *            commit as a RevCommit object
-	 * @return parent commit as a RevCommit object
+	 * @param commit
+	 *            commit as a {@link GitCommit} object.
+	 * @return parent commit as a {@link GitCommit} object.
 	 */
-	RevCommit getParent(RevCommit revCommit);
+	GitCommit getParent(GitCommit commit);
 
 	/**
 	 * Gets the git object identifier, e.g., HEAD, refs/heads/master or commit id.
