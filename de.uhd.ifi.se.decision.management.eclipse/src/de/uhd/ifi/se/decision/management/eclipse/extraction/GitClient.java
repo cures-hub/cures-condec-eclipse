@@ -184,20 +184,12 @@ public interface GitClient {
 	RevCommit getRevCommitForLine(IPath filePath, int line);
 
 	/**
-	 * Set the jgit git object.
+	 * Set the git object identifier, e.g., HEAD, refs/heads/master or commit id
 	 * 
-	 * @param git
-	 *            jgit git object
+	 * @param reference
+	 *            git object identifier
 	 */
-	void setGit(Git git);
-
-	/**
-	 * Set the jgit repository object.
-	 * 
-	 * @param repository
-	 *            jgit repository object
-	 */
-	void setRepository(Repository repository);
+	void setReference(String reference);
 
 	/**
 	 * Gets the changed methods in a diff entry

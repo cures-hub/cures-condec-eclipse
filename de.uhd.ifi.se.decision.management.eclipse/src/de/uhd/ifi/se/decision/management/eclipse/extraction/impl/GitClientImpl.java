@@ -22,6 +22,7 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.CoreConfig.AutoCRLF;
 import org.eclipse.jgit.lib.Repository;
@@ -86,12 +87,9 @@ public class GitClientImpl implements GitClient {
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
 		repositoryBuilder.setGitDir(path.toFile());
-		if (reference == null || reference.isEmpty()) {
-			reference = "HEAD";
-		}
 		try {
 			this.repository = repositoryBuilder.build();
-			this.repository.resolve(reference);
+			this.setReference(reference);
 			this.git = new Git(this.repository);
 			StoredConfig config = this.repository.getConfig();
 			// @issue The internal representation of a file might add system dependent new
@@ -120,18 +118,18 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public Set<GitCommit> getCommits() {
-		Set<GitCommit> allCommits = new HashSet<GitCommit>();
+		Set<GitCommit> commits = new HashSet<GitCommit>();
 		try {
-			Iterable<RevCommit> commits = this.git.log().call();
-			for (RevCommit revCommit : commits) {
-				GitCommit gitCommit = GitCommit.getOrCreate(revCommit, projectKey);
-				gitCommit.setChangedFiles(getDiffEntries(gitCommit));
-				allCommits.add(gitCommit);
+			Iterable<RevCommit> iterable = git.log().call();
+			Iterator<RevCommit> iterator = iterable.iterator();
+			while (iterator.hasNext()) {
+				GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
+				commits.add(commit);
 			}
-		} catch (Exception e) {
-			System.err.println("Failed to load all commits of the current branch.");
+		} catch (GitAPIException | NullPointerException e) {
+			System.err.println("Could not retrieve the commits of the repository. Message: " + e);
 		}
-		return allCommits;
+		return commits;
 	}
 
 	@Override
@@ -167,13 +165,12 @@ public class GitClientImpl implements GitClient {
 			while (iterator.hasNext()) {
 				RevCommit revCommit = iterator.next();
 				if (CommitMessageParser.getIssueKey(revCommit.getFullMessage()).equalsIgnoreCase(issueKey)) {
-					GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
+					GitCommit commit = GitCommit.getOrCreate(revCommit, projectKey);
 					commitsForIssueKey.add(commit);
 				}
 			}
 		} catch (GitAPIException | NullPointerException e) {
-			System.err.println("Could not retrieve commits for the issue key " + issueKey);
-			e.printStackTrace();
+			System.err.println("Could not retrieve commits for the issue key " + issueKey + ". Message: " + e);
 		}
 		return commitsForIssueKey;
 	}
@@ -320,18 +317,8 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public void setRepository(Repository repository) {
-		this.repository = repository;
-	}
-
-	@Override
 	public Git getGit() {
 		return this.git;
-	}
-
-	@Override
-	public void setGit(Git git) {
-		this.git = git;
 	}
 
 	@Override
@@ -373,4 +360,16 @@ public class GitClientImpl implements GitClient {
 		return diffFormatter;
 	}
 
+	@Override
+	public void setReference(String reference) {
+		try {
+			if (reference == null || reference.isEmpty()) {
+				this.repository.resolve("HEAD");
+			} else {
+				this.repository.resolve(reference);
+			}
+		} catch (RevisionSyntaxException | IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

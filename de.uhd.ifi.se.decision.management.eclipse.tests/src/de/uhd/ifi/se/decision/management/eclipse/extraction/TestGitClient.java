@@ -35,27 +35,33 @@ public class TestGitClient {
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
 
-		gitClient = GitClient.getOrCreate(path, "HEAD", "");
+		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
 	}
-	
+
 	@Test
 	public void testGetOrCreate() {
-		assertEquals(gitClient, GitClient.getOrCreate(path, "HEAD", ""));
+		assertEquals(gitClient, GitClient.getOrCreate(path, "HEAD", "ECONDEC"));
 	}
-	
+
 	@Test
-	public void testConstructorReferenceNullOrEmpty() {
+	public void testSetReferenceNullOrEmpty() {
 		GitClient gitClient = new GitClientImpl(path, null, "");
 		assertNotNull(gitClient.getReference());
-		
+
 		gitClient = new GitClientImpl(path, "", "");
 		assertNotNull(gitClient.getReference());
 	}
 
 	@Test
+	public void testGetCommits() {
+		Set<GitCommit> commits = gitClient.getCommits();
+		assertTrue(commits.size() > 0);
+	}
+
+	@Test
 	public void testGetCommitsForJiraIssue() {
-		Set<GitCommit> commitSet = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		assertTrue(commitSet.size() == 3);
+		Set<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		assertTrue(commits.size() == 5);
 	}
 
 	@AfterClass
