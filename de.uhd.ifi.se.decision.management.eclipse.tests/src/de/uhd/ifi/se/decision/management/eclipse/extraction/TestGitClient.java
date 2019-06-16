@@ -108,6 +108,12 @@ public class TestGitClient {
 		assertEquals(GitClient.getOrCreate(), GitClient.getOrCreate());
 	}
 
+	@Test
+	public void testGetDiff() {
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		assertNotNull(gitClient.getDiff(commits.get(0)));
+	}
+
 	@AfterClass
 	public static void tearDown() {
 		GitClient.instances.clear();
