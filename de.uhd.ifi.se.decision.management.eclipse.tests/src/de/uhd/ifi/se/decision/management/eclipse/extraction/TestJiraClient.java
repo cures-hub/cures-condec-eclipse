@@ -14,7 +14,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 
 public class TestJiraClient {
 	
-	JiraClient jiraClient;
+	private JiraClient jiraClient;
 	
 	@Before
 	public void setUp() {

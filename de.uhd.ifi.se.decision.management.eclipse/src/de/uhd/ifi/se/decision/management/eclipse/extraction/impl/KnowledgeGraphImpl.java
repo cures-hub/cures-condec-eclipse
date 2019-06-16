@@ -128,7 +128,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	private void addCommitsAndFiles() {
 		for (GitCommit gitCommit : gitClient.getCommits()) {
 			createLinks(gitCommit, 0, 1);
-
+			
 			this.addVertex(gitCommit);
 			for (Node node : gitCommit.getLinkedNodes()) {
 				this.addVertex(node);

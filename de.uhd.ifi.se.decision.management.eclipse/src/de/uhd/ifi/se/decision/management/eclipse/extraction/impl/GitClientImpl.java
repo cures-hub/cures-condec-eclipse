@@ -123,8 +123,8 @@ public class GitClientImpl implements GitClient {
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
 				GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
-//				List<ChangedFile> changedFiles = getChangedFiles(commit);
-//				commit.setChangedFiles(changedFiles);
+				List<ChangedFile> changedFiles = getChangedFiles(commit);
+				commit.setChangedFiles(changedFiles);
 				commits.add(commit);
 			}
 		} catch (GitAPIException | NullPointerException e) {
@@ -176,8 +176,13 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public List<ChangedFile> getChangedFiles(GitCommit commit) {
 		Map<DiffEntry, EditList> diff = getDiff(commit);
-        IPath pathToGit = new Path(this.repository.getDirectory().getAbsolutePath());
-        
+		IPath pathToGit = null;
+		try {
+			pathToGit = new Path(this.repository.getDirectory().getCanonicalPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
 		for (DiffEntry entry : diff.keySet()) {
 			changedFiles.add(ChangedFile.getOrCreate(entry, pathToGit));
@@ -192,7 +197,9 @@ public class GitClientImpl implements GitClient {
 		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
 		try {
 			GitCommit parentCommit = this.getParent(commit);
-			diffEntries = this.diffFormatter.scan(parentCommit.getRevCommit().getTree(), revCommit.getTree());
+			if (parentCommit != null) {
+				diffEntries = diffFormatter.scan(parentCommit.getRevCommit().getTree(), revCommit.getTree());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -216,9 +223,8 @@ public class GitClientImpl implements GitClient {
 			RevCommit revCommit = revWalk.parseCommit(commit.getRevCommit().getParent(0).getId());
 			parentCommit = GitCommit.getOrCreate(revCommit, projectKey);
 			revWalk.close();
-		} catch (IOException e) {
-			System.err.println("Could not get the parent commit for " + commit);
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("Could not get the parent commit for " + commit + " Message: " + e.getMessage());
 		}
 		return parentCommit;
 	}

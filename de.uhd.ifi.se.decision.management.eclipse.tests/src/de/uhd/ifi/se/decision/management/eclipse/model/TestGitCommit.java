@@ -53,9 +53,6 @@ public class TestGitCommit {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		GitCommit commit = commits.get(0);
 
-		List<ChangedFile> changedFiles = gitClient.getChangedFiles(commit);
-		commit.setChangedFiles(changedFiles);
-
 		assertEquals(5, commit.getChangedFiles().size());
 	}
 

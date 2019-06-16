@@ -78,7 +78,7 @@ public class GraphFiltering {
 						return false;
 					}
 					ChangedFile cc = (ChangedFile) node;
-					if (cc.getPath().getFileExtension().equalsIgnoreCase("java")) {
+					if (cc.isJavaClass()) {
 						return filters.get("class").isActivated();
 					} else {
 						return filters.get("nonJava").isActivated();
