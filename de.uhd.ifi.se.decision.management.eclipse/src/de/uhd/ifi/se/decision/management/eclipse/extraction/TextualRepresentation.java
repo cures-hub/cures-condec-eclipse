@@ -57,7 +57,7 @@ public class TextualRepresentation {
 		Issue issue = jiraClient.getJiraIssue(issueKey);
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssues(issue, distance);
 
 		String outputCia2 = "";
 
@@ -153,7 +153,7 @@ public class TextualRepresentation {
 		}
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssues(issue, distance);
 
 		String linkedIssues = "Link distance " + distance + " was chosen. Linked issues are:\n";
 

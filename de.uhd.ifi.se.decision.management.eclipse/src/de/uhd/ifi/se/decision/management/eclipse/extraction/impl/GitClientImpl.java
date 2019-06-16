@@ -123,6 +123,8 @@ public class GitClientImpl implements GitClient {
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
 				GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
+//				List<ChangedFile> changedFiles = getChangedFiles(commit);
+//				commit.setChangedFiles(changedFiles);
 				commits.add(commit);
 			}
 		} catch (GitAPIException | NullPointerException e) {

@@ -73,8 +73,9 @@ public interface JiraClient {
 	 * Closes the JIRA REST client.
 	 * 
 	 * @see JiraRestClient
+	 * @return true of JiraClient was closed.
 	 */
-	public void close();
+	public boolean close();
 
 	/**
 	 * Retrieves all JIRA issues of the project given in the settings.
@@ -117,16 +118,7 @@ public interface JiraClient {
 	 *            JIRA issue
 	 * @return Linked issues mapped to link distance
 	 */
-	public Map<Issue, Integer> getLinkedIssues(Issue issue, int distance);
-
-	/**
-	 * Sets the JiraRestClient instance.
-	 * 
-	 * @see JiraRestClient
-	 * @param JiraRestClient
-	 *            instance.
-	 */
-	public void setJiraRestClient(JiraRestClient jiraRestClient);
+	public Map<Issue, Integer> getLinkedJiraIssues(Issue issue, int distance);
 
 	/**
 	 * Determines whether the JIRA REST client is authenticated and the project is

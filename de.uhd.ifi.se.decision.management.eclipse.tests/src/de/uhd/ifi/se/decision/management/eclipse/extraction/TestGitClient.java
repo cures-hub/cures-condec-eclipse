@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 
 public class TestGitClient {
@@ -117,10 +118,18 @@ public class TestGitClient {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertNotNull(gitClient.getDiff(commits.get(0)));
 	}
+	
+	@Test
+	public void testGetChangedFiles() {
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		List<ChangedFile> changedFiles = gitClient.getChangedFiles(commits.get(0));
+		assertEquals(5, changedFiles.size());
+	}
 
 	@AfterClass
 	public static void tearDown() {
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
+		ChangedFile.instances.clear();
 	}
 }
