@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
@@ -16,17 +15,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
  * @see JiraClient
  * @see Graph
  */
-public interface KnowledgeGraph {
-
-	/**
-	 * Returns the knowledge graph as a JGraphT DirectedWeightedMultigraph object.
-	 * 
-	 * @see Graph
-	 * @see DirectedWeightedMultigraph
-	 * 
-	 * @return knowledge graph as a JGraphT DirectedWeightedMultigraph object.
-	 */
-	Graph<Node, Link> getGraph();
+public interface KnowledgeGraph extends Graph<Node, Link> {
 
 	/**
 	 * Returns the git client to connect to a git repository associated with this

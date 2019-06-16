@@ -6,44 +6,55 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.IPath;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
 public class TestKnowledgeGraph {
-	
+
 	private GitClient gitClient;
 	private JiraClient jiraClient;
-	
+
 	@Before
 	public void setUp() {
-		gitClient = new GitClientImpl("", "HEAD", "");
+		IPath path = TestGitClient.initPathToGitRepo();
+		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+
 		jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
-		Node.nodes.clear();
 	}
 
 	@Test
 	public void testKnowledgeGraphForEntireProject() {
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
 		assertNotNull(knowledgeGraph);
-		assertTrue(knowledgeGraph.getGraph().vertexSet().size() == 0);
-		
+		assertTrue(knowledgeGraph.vertexSet().size() > 0);
+
 		assertEquals(gitClient, knowledgeGraph.getGitClient());
 		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
 	}
-	
+
 	@Test
 	public void testKnowledgeGraphForSubGraph() {
 		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, element, 0);
-		assertTrue(knowledgeGraph.getGraph().vertexSet().size() == 1);
+		assertTrue(knowledgeGraph.vertexSet().size() == 1);
+	}
+	
+	@AfterClass
+	public static void tearDown() {
+		Node.nodes.clear();
+		GitClient.instances.clear();
+		GitCommit.instances.clear();
+		ChangedFile.instances.clear();
 	}
 }

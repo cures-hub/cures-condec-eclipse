@@ -154,7 +154,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 			if (property != null) {
 				return property;
 			}
-			return ConfigPersistenceManager.getPreference(key);
+			return ConfigPersistenceManager.getPreference(key, "");
 		} catch (CoreException e) {
 			System.err.println(e);
 		}

@@ -22,14 +22,18 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	public GitCommitImpl(RevCommit revCommit, String projectKey) {
 		this.revCommit = revCommit;
+		if (revCommit == null) {
+			return;
+		}
+
 		this.jiraIssueKeys = CommitMessageParser.getJiraIssueKeys(revCommit, projectKey);
-		
+
 		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(revCommit);
 		for (DecisionKnowledgeElement knowledgeElement : decisionKnowledgeElements) {
 			this.addLinkedNode(knowledgeElement);
 			knowledgeElement.addLinkedNode(this);
 		}
-		
+
 		this.changedFiles = new ArrayList<ChangedFile>();
 	}
 
@@ -39,12 +43,12 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	@Override
 	public List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage() {
-		return this.decisionKnowledgeElements;
+		return decisionKnowledgeElements;
 	}
 
 	@Override
 	public List<ChangedFile> getChangedFiles() {
-		return this.changedFiles;
+		return changedFiles;
 	}
 
 	@Override
@@ -58,16 +62,19 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 
 	@Override
 	public List<String> getJiraIssueKeys() {
-		return this.jiraIssueKeys;
+		return jiraIssueKeys;
 	}
 
 	@Override
 	public RevCommit getRevCommit() {
-		return this.revCommit;
+		return revCommit;
 	}
 
 	@Override
 	public String toString() {
-		return this.revCommit.getShortMessage();
+		if (revCommit == null) {
+			return "";
+		}
+		return revCommit.getShortMessage();
 	}
 }

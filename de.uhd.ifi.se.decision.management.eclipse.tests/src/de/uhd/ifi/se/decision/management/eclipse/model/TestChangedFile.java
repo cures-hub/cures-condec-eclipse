@@ -16,10 +16,11 @@ public class TestChangedFile {
 	@Test
 	public void testExistingNonJavaFile() {
 		IPath path = new Path("pom.xml");
-		ChangedFile file = new ChangedFileImpl(path);
+		ChangedFile file = ChangedFile.getOrCreate(path);
 		assertTrue(file.exists());
 		assertFalse(file.isExistingJavaClass());
 
+		assertEquals(file, ChangedFile.getOrCreate(path));
 		assertEquals("pom.xml", file.toString());
 		assertEquals(path, file.getPath());
 		assertTrue(file.getCodeMethods().size() == 0);

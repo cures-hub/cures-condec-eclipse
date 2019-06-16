@@ -113,11 +113,11 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public Map<Issue, Integer> getLinkedIssues(Issue jiraIssue, int distance) {
-		Map<Issue, Integer> linkedIssuesAtDistance = new HashMap<Issue, Integer>();
+	public Map<Issue, Integer> getLinkedJiraIssues(Issue jiraIssue, int distance) {
+		Map<Issue, Integer> linkedJiraIssuesAtDistance = new HashMap<Issue, Integer>();
 
 		if (jiraIssue == null || distance == 0) {
-			return linkedIssuesAtDistance;
+			return linkedJiraIssuesAtDistance;
 		}
 
 		List<String> analyzedIssueKeys = new ArrayList<String>();
@@ -128,11 +128,11 @@ public class JiraClientImpl implements JiraClient {
 				if (!analyzedIssueKeys.contains(issueKey)) {
 					analyzedIssueKeys.add(issueKey);
 					Issue linkedJiraIssue = this.getJiraIssue(issueKey);
-					linkedIssuesAtDistance.put(linkedJiraIssue, i);
+					linkedJiraIssuesAtDistance.put(linkedJiraIssue, i);
 				}
 			}
 		}
-		return linkedIssuesAtDistance;
+		return linkedJiraIssuesAtDistance;
 	}
 
 	@Override
@@ -157,17 +157,15 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
+		boolean isClosed = false;
 		try {
 			this.jiraRestClient.close();
+			isClosed = true;
 		} catch (IOException e) {
 			System.err.println("JIRA REST client could not be closed. Message: " + e.getMessage());
 		}
-	}
-
-	@Override
-	public void setJiraRestClient(JiraRestClient jiraRestClient) {
-		this.jiraRestClient = jiraRestClient;
+		return isClosed;
 	}
 
 	@Override

@@ -2,17 +2,15 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.EditList;
-import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -34,17 +32,16 @@ public class TextualRepresentation {
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
 		GitClient gitClient = GitClient.getOrCreate();
 
-		RevCommit commitForLine = gitClient
-				.getRevCommitForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
+		GitCommit commitForLine = gitClient.getCommitForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)),
+				line);
 
 		String projectKey = ConfigPersistenceManager.getProjectKey();
 		numberOfAnalysedCommitMessages += 1;
-		if (WrongLinkDetector.tanglednessToString(commitForLine, projectKey).equals("untangled")) {
+		if (WrongLinkDetector.tanglednessToString(commitForLine.getRevCommit(), projectKey).equals("untangled")) {
 			numberOfCommitsFoundUntangled += 1;
 		}
 
-		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = gitClient
-				.getDiffEntriesMappedToEditLists(commitForLine);
+		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = gitClient.getDiff(commitForLine);
 
 		String changedMethodsInDiff = "";
 
@@ -53,21 +50,21 @@ public class TextualRepresentation {
 					+ gitClient.whichMethodsChanged(entry.getKey(), entry.getValue()) + "\n";
 		}
 
-		String issueKey = GitClientImpl.getIssueKey(commitForLine.getFullMessage());
+		String issueKey = CommitMessageParser.getJiraIssueKey(commitForLine.getRevCommit().getFullMessage());
 		JiraClient jiraClient = JiraClient.getOrCreate();
 
 		jiraClient.authenticate();
 		Issue issue = jiraClient.getJiraIssue(issueKey);
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssues(issue, distance);
 
 		String outputCia2 = "";
 
 		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
 
 			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			List<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
@@ -79,8 +76,7 @@ public class TextualRepresentation {
 							.equals("untangled")) {
 						numberOfCommitsFoundUntangled += 1;
 					}
-					Map<DiffEntry, EditList> diffEntriesMappedToEditListsBroad = gitClient
-							.getDiffEntriesMappedToEditLists(commit);
+					Map<DiffEntry, EditList> diffEntriesMappedToEditListsBroad = gitClient.getDiff(commit);
 
 					for (Map.Entry<DiffEntry, EditList> entry : diffEntriesMappedToEditListsBroad.entrySet()) {
 
@@ -130,11 +126,11 @@ public class TextualRepresentation {
 	 */
 	public static String produceDecisionExploration(IPath pathOfFile, int line) {
 		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClient.getOrCreate(); 
+		GitClient gitClient = GitClient.getOrCreate();
 
 		String commitForLine = gitClient
 				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
-		String issueKey = GitClientImpl.getIssueKey(commitForLine);
+		String issueKey = CommitMessageParser.getJiraIssueKey(commitForLine);
 
 		JiraClient jiraClient = JiraClient.getOrCreate();
 
@@ -145,7 +141,7 @@ public class TextualRepresentation {
 				+ "\n";
 		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
 
-		Set<GitCommit> otherCommitForIssue = gitClient.getCommitsForIssueKey(issueKey);
+		List<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssue(issueKey);
 
 		String otherCommitsForIssue = "";
 		if (!otherCommitForIssue.isEmpty()) {
@@ -157,7 +153,7 @@ public class TextualRepresentation {
 		}
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedIssues(issue, distance);
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssues(issue, distance);
 
 		String linkedIssues = "Link distance " + distance + " was chosen. Linked issues are:\n";
 
@@ -168,7 +164,7 @@ public class TextualRepresentation {
 			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
 					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
 
-			Set<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForIssueKey(linkedIssueKey);
+			List<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
 			String commitForLinkedIssueString = "";
 			if (!commitsForLinkedIssue.isEmpty()) {
 				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";

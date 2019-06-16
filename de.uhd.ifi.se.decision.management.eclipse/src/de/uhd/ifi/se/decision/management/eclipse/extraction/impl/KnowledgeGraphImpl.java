@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
 import java.util.List;
-import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
@@ -18,20 +17,22 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
 /**
  * Class to create a knowledge graph for the entire project or a sub-graph from
  * a given start node with a certain distance (set in the constructor). The
  * knowledge covers decision knowledge, JIRA issues such as requirements and
- * work items, commits, files (e.g., Java classes), and methods.
+ * work items, commits, files (e.g., Java classes), and methods. Extends the
+ * JGraphT DirectedWeightedMultigraph.
+ * 
+ * @see DirectedWeightedMultigraph
  */
-public class KnowledgeGraphImpl implements KnowledgeGraph {
+public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> implements KnowledgeGraph {
+
+	private static final long serialVersionUID = 1L;
 	private GitClient gitClient;
 	private JiraClient jiraClient;
-	private Graph<Node, Link> graph;
 
 	/**
 	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
@@ -49,9 +50,10 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	 *            Retrieves JIRA issues.
 	 */
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
+		super(LinkImpl.class);
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
-		this.graph = createGraph();
+		createGraph();
 	}
 
 	/**
@@ -105,14 +107,13 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 	 *            from the start node that the knowledge graph is traversed.
 	 */
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient, Node startNode, int distance) {
+		super(LinkImpl.class);
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
-		this.graph = createGraph(startNode, distance);
+		createGraph(startNode, distance);
 	}
 
-	private Graph<Node, Link> createGraph() {
-		graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
-
+	private void createGraph() {
 		addCommitsAndFiles();
 
 		// All commits need to be loaded first
@@ -120,83 +121,76 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		addMethods();
 
 		addJiraIssues();
-
-		return graph;
 	}
 
 	private void addCommitsAndFiles() {
 		for (GitCommit gitCommit : gitClient.getCommits()) {
+			this.addVertex(gitCommit);
 			createLinks(gitCommit, 0, 1);
 
-			graph.addVertex(gitCommit);
 			for (Node node : gitCommit.getLinkedNodes()) {
-				graph.addVertex(node);
-				graph.addEdge(gitCommit, node);
+				this.addVertex(node);
+				this.addEdge(gitCommit, node);
 			}
 
 			for (DecisionKnowledgeElement element : gitCommit.getDecisionKnowledgeFromMessage()) {
-				graph.addVertex(element);
-				graph.addEdge(element, gitCommit);
+				this.addVertex(element);
+				this.addEdge(element, gitCommit);
 			}
 		}
 	}
 
 	private void addMethods() {
 		for (CodeMethod codeMethod : CodeMethod.getInstances()) {
-			graph.addVertex(codeMethod);
+			this.addVertex(codeMethod);
 			for (Node node : codeMethod.getLinkedNodes()) {
-				graph.addVertex(node);
-				graph.addEdge(codeMethod, node);
+				this.addVertex(node);
+				this.addEdge(codeMethod, node);
 			}
 		}
 	}
 
 	private void addFiles() {
 		for (ChangedFile codeClass : ChangedFile.getInstances()) {
-			graph.addVertex(codeClass);
+			this.addVertex(codeClass);
 			for (Node node : codeClass.getLinkedNodes()) {
-				graph.addVertex(node);
-				graph.addEdge(codeClass, node);
+				this.addVertex(node);
+				this.addEdge(codeClass, node);
 			}
 		}
 	}
 
 	private void addJiraIssues() {
 		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
+			this.addVertex(jiraIssue);
 			createLinks(jiraIssue, 0, 1);
 
-			graph.addVertex(jiraIssue);
 			for (Node node : jiraIssue.getLinkedNodes()) {
-				graph.addVertex(node);
-				graph.addEdge(jiraIssue, node);
+				this.addVertex(node);
+				this.addEdge(jiraIssue, node);
 			}
 		}
 	}
 
-	private Graph<Node, Link> createGraph(Node node, int distance) {
-		graph = new DirectedWeightedMultigraph<Node, Link>(LinkImpl.class);
+	private void createGraph(Node node, int distance) {
+		this.addVertex(node);
 		createLinks(node, 0, distance);
 
-		graph.addVertex(node);
 		for (Node linkedNode : node.getLinkedNodes()) {
-			graph.addVertex(linkedNode);
-			graph.addEdge(node, linkedNode);
+			this.addVertex(linkedNode);
+			this.addEdge(node, linkedNode);
 		}
-
-		return graph;
 	}
 
 	private void createLinks(Node node, int currentDepth, int maxDepth) {
-		if (currentDepth >= maxDepth || graph.containsVertex(node)) {
+		if (currentDepth >= maxDepth) {
 			return;
 		}
 
-		graph.addVertex(node);
-
-		if (node instanceof GitCommitImpl) {
+		if (node instanceof GitCommit) {
 			addJiraIssuesForCommit((GitCommit) node, currentDepth, maxDepth);
 		}
-		if (node instanceof JiraIssueImpl) {
+		if (node instanceof JiraIssue) {
 			JiraIssue jiraIssue = (JiraIssue) node;
 			addCommitsForJiraIssue(jiraIssue, currentDepth, maxDepth);
 			addLinkedJiraIssuesForJiraIssue(jiraIssue, currentDepth, maxDepth);
@@ -212,16 +206,16 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 		if (jiraIssue == null) {
 			return;
 		}
-		graph.addVertex(jiraIssue);
-		graph.addEdge(gitCommit, jiraIssue);
+		this.addVertex(jiraIssue);
+		this.addEdge(gitCommit, jiraIssue);
 		createLinks(jiraIssue, currentDepth + 1, maxDepth);
 	}
 
 	private void addCommitsForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
-		Set<GitCommit> commits = gitClient.getCommitsForIssueKey(jiraIssue.getJiraIssueKey());
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue(jiraIssue.getJiraIssueKey());
 		for (GitCommit commit : commits) {
-			graph.addVertex(commit);
-			graph.addEdge(jiraIssue, commit);
+			this.addVertex(commit);
+			this.addEdge(jiraIssue, commit);
 			createLinks(commit, currentDepth + 1, maxDepth);
 		}
 	}
@@ -232,15 +226,10 @@ public class KnowledgeGraphImpl implements KnowledgeGraph {
 			if (linkedJiraIssue == null) {
 				return;
 			}
-			graph.addVertex(linkedJiraIssue);
-			graph.addEdge(jiraIssue, linkedJiraIssue);
+			this.addVertex(linkedJiraIssue);
+			this.addEdge(jiraIssue, linkedJiraIssue);
 			createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);
 		}
-	}
-
-	@Override
-	public Graph<Node, Link> getGraph() {
-		return graph;
 	}
 
 	@Override

@@ -40,27 +40,27 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static IPath getPathToGit() {
-		return new Path(getPreference(PATH_TO_GIT));
+		return new Path(getPreference(PATH_TO_GIT, "\\.git"));
 	}
 
 	public static String getBranch() {
-		return getPreference(BRANCH);
+		return getPreference(BRANCH, "HEAD");
 	}
 
 	public static URI getJiraURI() {
-		return URI.create(getPreference(JIRA_URL));
+		return URI.create(getPreference(JIRA_URL, ""));
 	}
 
 	public static String getJiraUser() {
-		return getPreference(JIRA_USER);
+		return getPreference(JIRA_USER, "");
 	}
 
 	public static String getJiraPassword() {
-		return getPreference(JIRA_PASSWORD);
+		return getPreference(JIRA_PASSWORD, "");
 	}
 
 	public static String getProjectKey() {
-		return getPreference(JIRA_PROJECT_KEY);
+		return getPreference(JIRA_PROJECT_KEY, "");
 	}
 
 	public static int getLinkDistance() {
@@ -68,10 +68,16 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static float getDecreaseFactor() {
-		return Float.parseFloat(getPreference(DECREASE_FACTOR));
+		return Float.parseFloat(getPreference(DECREASE_FACTOR, "1.1"));
 	}
 
-	public static String getPreference(QualifiedName key) {
-		return Activator.getDefault().getPreferenceStore().getString(key.getQualifier());
+	public static String getPreference(QualifiedName key, String defaultValue) {
+		String preference = defaultValue;
+		try {
+			preference = Activator.getDefault().getPreferenceStore().getString(key.getQualifier());
+		} catch (NullPointerException e) {
+			System.err.print(e);
+		}
+		return preference;
 	}
 }

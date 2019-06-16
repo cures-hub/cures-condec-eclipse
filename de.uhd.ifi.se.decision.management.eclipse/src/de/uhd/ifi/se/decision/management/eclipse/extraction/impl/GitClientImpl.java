@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.CoreConfig.AutoCRLF;
 import org.eclipse.jgit.lib.Repository;
@@ -47,8 +47,12 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * Class to connect to a git repository associated with this Eclipse project.
  * Retrieves commits and code changes (diffs) in git.
  * 
+ * @issue How to access the git repository?
+ * @decision Write a new GitClient constructor!
+ * @alternative Extend the RepositoryProvider class of EGit!
+ * 
  * @issue How to access commits related to a JIRA issue?
- * @decision The jgit library is used to access git repositories! *
+ * @decision The jgit library is used to access git repositories!
  * @pro The jGit library is open source and no third party JIRA plug-in needs to
  *      be installed.
  */
@@ -60,105 +64,96 @@ public class GitClientImpl implements GitClient {
 	private String projectKey;
 
 	/**
-	 * Constructor for GitClient class
-	 * 
-	 * @decision Write a new GitClient constructor
-	 * @alternative Extend the RepositoryProvider class of EGit
-	 * 
-	 * @param repositoryPath
-	 *            (required) path to .git folder
-	 * @param reference
-	 *            (optional) git object identifier, e.g., HEAD, refs/heads/master or
-	 *            commit id
+	 * Constructor for GitClient class. Uses the settings stored in the
+	 * ConfigPersistenceManager to set the path, reference, and JIRA project key.
 	 */
-	public GitClientImpl(String repositoryPath, String reference) {
+	public GitClientImpl() {
+		this(ConfigPersistenceManager.getPathToGit(), ConfigPersistenceManager.getBranch(),
+				ConfigPersistenceManager.getProjectKey());
+	}
+
+	/**
+	 * Constructor for GitClient class.
+	 * 
+	 * @param path
+	 *            to .git folder.
+	 * @param reference
+	 *            git object identifier, e.g., HEAD, refs/heads/master or commit id.
+	 * @param projectKey
+	 *            of the associated JIRA project.
+	 */
+	public GitClientImpl(IPath path, String reference, String projectKey) {
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
-		repositoryBuilder.setGitDir(new File(repositoryPath));
+		repositoryBuilder.setGitDir(path.toFile());
 		try {
 			this.repository = repositoryBuilder.build();
-			this.repository.resolve(reference);
+			this.setReference(reference);
 			this.git = new Git(this.repository);
 			StoredConfig config = this.repository.getConfig();
 			// @issue The internal representation of a file might add system dependent new
-			// line statements, for example CR LF in Windows. How to deal with new lines?
+			// line statements, for example CR LF in Windows. How to deal with different
+			// line endings?
 			// @decision Disable system dependent new line statements!
 			config.setEnum(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_AUTOCRLF,
 					AutoCRLF.TRUE);
 			config.save();
 		} catch (IOException e) {
 			System.err.println("Repository could not be found.");
-			e.printStackTrace();
 		}
-	}
-
-	public GitClientImpl(String repositoryPath, String reference, String projectKey) {
-		this(repositoryPath, reference);
+		this.diffFormatter = initDiffFormatter(repository);
 		this.projectKey = projectKey;
 	}
 
-	public GitClientImpl() {
-		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-		repositoryBuilder.setMustExist(true);
-		repositoryBuilder.setGitDir(ConfigPersistenceManager.getPathToGit().toFile());
-		String reference = ConfigPersistenceManager.getBranch();
-		if (reference == null || reference.isEmpty()) {
-			reference = "HEAD";
+	private DiffFormatter initDiffFormatter(Repository repository) {
+		DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
+		if (repository != null) {
+			diffFormatter.setRepository(repository);
+			diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+			diffFormatter.setDetectRenames(true);
 		}
-		try {
-			this.repository = repositoryBuilder.build();
-			this.repository.resolve(reference);
-			this.git = new Git(this.repository);
-			StoredConfig config = this.repository.getConfig();
-			// @decision Disable system dependent new line statements
-			// @issue The internal representation of a file might add system dependent new
-			// line statements, for example CR LF in Windows
-			config.setEnum(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_AUTOCRLF,
-					AutoCRLF.TRUE);
-			config.save();
-		} catch (IOException e) {
-			System.err.println("Repository could not be found.");
-			e.printStackTrace();
-		}
-		this.diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
-		this.diffFormatter.setRepository(this.repository);
-		this.diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
-		this.diffFormatter.setDetectRenames(true);
-		this.projectKey = ConfigPersistenceManager.getProjectKey();
+		return diffFormatter;
 	}
 
 	@Override
-	public Set<GitCommit> getCommits() {
-		Set<GitCommit> allCommits = new HashSet<GitCommit>();
+	public List<GitCommit> getCommits() {
+		List<GitCommit> commits = new ArrayList<GitCommit>();
 		try {
-			Iterable<RevCommit> commits = this.git.log().call();
-			for (RevCommit revCommit : commits) {
-				GitCommit gitCommit = GitCommit.getOrCreate(revCommit, projectKey);
-				gitCommit.setChangedFiles(getDiffEntries(gitCommit));
-				allCommits.add(gitCommit);
+			Iterable<RevCommit> iterable = git.log().call();
+			Iterator<RevCommit> iterator = iterable.iterator();
+			while (iterator.hasNext()) {
+				GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
+				List<ChangedFile> changedFiles = getChangedFiles(commit);
+				commit.setChangedFiles(changedFiles);
+				commits.add(commit);
 			}
-		} catch (Exception e) {
-			System.err.println("Failed to load all commits of the current branch.");
+		} catch (GitAPIException | NullPointerException e) {
+			System.err.println("Could not retrieve the commits of the repository. Message: " + e);
 		}
-		return allCommits;
+		return commits;
 	}
 
 	@Override
 	public BlameResult getGitBlameForFile(IPath filePath) {
-		BlameResult blameResult;
+		BlameResult blameResult = null;
+		if (filePath == null) {
+			return blameResult;
+		}
 		try {
 			blameResult = git.blame().setFilePath(filePath.toString()).call();
-			return blameResult;
-		} catch (GitAPIException | NullPointerException e) {
+		} catch (GitAPIException e) {
 			System.err.println("File could not be found.");
 			e.printStackTrace();
 		}
-		return null;
+		return blameResult;
 	}
 
 	@Override
 	public GitCommit getCommitForLine(IPath filePath, int line) {
 		BlameResult blameResult = getGitBlameForFile(filePath);
+		if (blameResult == null) {
+			return null;
+		}
 		return GitCommit.getOrCreate(blameResult.getSourceCommit(line), projectKey);
 	}
 
@@ -168,69 +163,43 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public Set<GitCommit> getCommitsForIssueKey(String issueKey) {
-		Set<GitCommit> commitsForIssueKey = new LinkedHashSet<GitCommit>();
-		try {
-			Iterable<RevCommit> iterable = git.log().call();
-			Iterator<RevCommit> iterator = iterable.iterator();
-			while (iterator.hasNext()) {
-				RevCommit revCommit = iterator.next();
-				if (getIssueKey(revCommit.getFullMessage()).equals(issueKey)) {
-					GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
-					commitsForIssueKey.add(commit);
-				}
+	public List<GitCommit> getCommitsForJiraIssue(String issueKey) {
+		List<GitCommit> commitsForJiraIssue = new ArrayList<GitCommit>();
+		for (GitCommit commit : getCommits()) {
+			if (CommitMessageParser.getJiraIssueKey(commit).equalsIgnoreCase(issueKey)) {
+				commitsForJiraIssue.add(commit);
 			}
-		} catch (GitAPIException | NullPointerException e) {
-			System.err.println("Could not retrieve commits for the issue key " + issueKey);
-			e.printStackTrace();
 		}
-		return commitsForIssueKey;
-	}
-
-	/**
-	 * Retrieves the issue key from a commit message
-	 * 
-	 * @param commitMessage
-	 *            a commit message that should contain an issue key
-	 * @return extracted issue key
-	 */
-	public static String getFirstJiraIssueKey(String commitMessage, String issueKeyBase) {
-		List<String> keys = CommitMessageParser.getJiraIssueKeys(commitMessage, issueKeyBase);
-		if (keys.size() > 0) {
-			return keys.get(0);
-		} else {
-			return null;
-		}
+		return commitsForJiraIssue;
 	}
 
 	@Override
-	public List<ChangedFile> getDiffEntries(GitCommit commit) {
-		RevCommit revCommit = commit.getRevCommit();
-		List<ChangedFile> changedClasses = new ArrayList<ChangedFile>();
-		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
+	public List<ChangedFile> getChangedFiles(GitCommit commit) {
+		Map<DiffEntry, EditList> diff = getDiff(commit);
+		IPath pathToGit = null;
 		try {
-			RevCommit parentCommit = this.getParent(revCommit);
-			List<DiffEntry> entries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
-			for (DiffEntry entry : entries) {
-				changedClasses.add(ChangedFile.getOrCreate(entry, pathToGit));
-			}
+			pathToGit = new Path(this.repository.getDirectory().getCanonicalPath());
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (Exception ex) {
-
 		}
-		// this.diffFormatter.close();
-		return changedClasses;
+
+		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
+		for (DiffEntry entry : diff.keySet()) {
+			changedFiles.add(ChangedFile.getOrCreate(entry, pathToGit));
+		}
+		return changedFiles;
 	}
 
 	@Override
-	public Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(GitCommit commit) {
+	public Map<DiffEntry, EditList> getDiff(GitCommit commit) {
 		RevCommit revCommit = commit.getRevCommit();
 		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
 		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
 		try {
-			RevCommit parentCommit = this.getParent(revCommit);
-			diffEntries = this.diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
+			GitCommit parentCommit = this.getParent(commit);
+			if (parentCommit != null) {
+				diffEntries = diffFormatter.scan(parentCommit.getRevCommit().getTree(), revCommit.getTree());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -243,28 +212,25 @@ public class GitClientImpl implements GitClient {
 				e.printStackTrace();
 			}
 		}
-		// this.diffFormatter.close();
 		return diffEntriesMappedToEditLists;
 	}
 
 	@Override
-	public RevCommit getParent(RevCommit revCommit) {
-		RevCommit parentCommit;
+	public GitCommit getParent(GitCommit commit) {
+		GitCommit parentCommit = null;
 		try {
 			RevWalk revWalk = new RevWalk(repository);
-			parentCommit = revWalk.parseCommit(revCommit.getParent(0).getId());
+			RevCommit revCommit = revWalk.parseCommit(commit.getRevCommit().getParent(0).getId());
+			parentCommit = GitCommit.getOrCreate(revCommit, projectKey);
 			revWalk.close();
-		} catch (IOException e) {
-			System.err.println("Could not get the parent commit for " + revCommit);
-			e.printStackTrace();
-			return null;
+		} catch (Exception e) {
+			System.err.println("Could not get the parent commit for " + commit + " Message: " + e.getMessage());
 		}
 		return parentCommit;
 	}
 
 	@Override
 	public String whichMethodsChanged(DiffEntry diffEntry, EditList editList) {
-
 		if (diffEntry == null) {
 			return "Diff entry is missing.\n";
 		}
@@ -315,12 +281,12 @@ public class GitClientImpl implements GitClient {
 
 	@Override
 	public String getReference() {
-		return ConfigPersistenceManager.getBranch();
-	}
-
-	@Override
-	public void setReference(String reference) {
-		// TODO
+		try {
+			return this.repository.getFullBranch();
+		} catch (IOException | NullPointerException e) {
+			System.err.println("Branch name could not be retrieved. Message: " + e);
+		}
+		return "HEAD";
 	}
 
 	@Override
@@ -329,73 +295,20 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public void setRepository(Repository repository) {
-		this.repository = repository;
-	}
-
-	@Override
 	public Git getGit() {
 		return this.git;
 	}
 
 	@Override
-	public void setGit(Git git) {
-		this.git = git;
-	}
-
-	/**
-	 * Retrieves the issue key from a commit message
-	 * 
-	 * @param commitMessage
-	 *            a commit message that should contain an issue key
-	 * @return extracted issue key
-	 */
-	public static String getIssueKey(String commitMessage) {
-		if (commitMessage.contains(" ")) {
-			String[] split = commitMessage.split("[:+ ]");
-			return split[0];
-		} else {
-			return "";
-		}
-	}
-
-	@Override
-	public RevCommit getRevCommitForLine(IPath filePath, int line) {
-		BlameResult blameResult = getGitBlameForFile(filePath);
-		return blameResult.getSourceCommit(line);
-	}
-
-	@Override
-	public Map<DiffEntry, EditList> getDiffEntriesMappedToEditLists(RevCommit revCommit) {
-		Map<DiffEntry, EditList> diffEntriesMappedToEditLists = new HashMap<DiffEntry, EditList>();
-		List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
-
-		DiffFormatter diffFormatter = getDiffFormater();
+	public void setReference(String reference) {
 		try {
-			RevCommit parentCommit = this.getParent(revCommit);
-			diffEntries = diffFormatter.scan(parentCommit.getTree(), revCommit.getTree());
-		} catch (IOException e) {
+			if (reference == null || reference.isEmpty()) {
+				this.repository.resolve("HEAD");
+			} else {
+				this.repository.resolve(reference);
+			}
+		} catch (RevisionSyntaxException | IOException e) {
 			e.printStackTrace();
 		}
-
-		for (DiffEntry diffEntry : diffEntries) {
-			try {
-				EditList editList = diffFormatter.toFileHeader(diffEntry).toEditList();
-				diffEntriesMappedToEditLists.put(diffEntry, editList);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		diffFormatter.close();
-		return diffEntriesMappedToEditLists;
 	}
-
-	private DiffFormatter getDiffFormater() {
-		DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
-		diffFormatter.setRepository(this.repository);
-		diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
-		diffFormatter.setDetectRenames(true);
-		return diffFormatter;
-	}
-
 }

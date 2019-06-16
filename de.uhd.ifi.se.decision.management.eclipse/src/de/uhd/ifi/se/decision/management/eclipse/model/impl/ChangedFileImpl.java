@@ -27,9 +27,9 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	@Override
 	public boolean isExistingJavaClass() {
-		return isJavaClass() && exists();
+		return exists() && isJavaClass();
 	}
-	
+
 	@Override
 	public boolean exists() {
 		return this.path.toFile().exists();
@@ -37,7 +37,8 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	@Override
 	public boolean isJavaClass() {
-		return this.path.getFileExtension().equalsIgnoreCase("java");
+		String fileExtension = this.path.getFileExtension();
+		return fileExtension != null && fileExtension.equalsIgnoreCase("java");
 	}
 
 	private List<CodeMethod> parseMethods() {
