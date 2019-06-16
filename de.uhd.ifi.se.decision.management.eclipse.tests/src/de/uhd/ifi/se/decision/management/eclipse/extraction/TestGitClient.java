@@ -26,6 +26,11 @@ public class TestGitClient {
 
 	@Before
 	public void setUp() {
+		path = initPathToGitRepo();
+		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+	}
+	
+	public static IPath initPathToGitRepo() {
 		File file = new File(".");
 		String canonicalPath = "";
 		try {
@@ -33,11 +38,10 @@ public class TestGitClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		path = new Path(canonicalPath);
+		IPath path = new Path(canonicalPath);
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
-
-		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		return path;
 	}
 
 	@Test

@@ -12,6 +12,7 @@ import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Repository;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -76,45 +77,56 @@ public interface GitClient {
 	GitCommit getCommitForLine(IPath filePath, int line);
 
 	/**
-	 * Retrieve the commit message for a given line from a blamed file
+	 * Retrieve the commit message for a given line from a blamed file.
 	 * 
 	 * @param filePath
-	 *            path to the file to be blamed
+	 *            path to the file to be blamed.
 	 * @param line
-	 *            the line that is to be analyzed
-	 * @return commit message
+	 *            the line that is to be analyzed.
+	 * @return commit message.
 	 */
 	String getCommitMessageForLine(IPath filePath, int line);
 
 	/**
 	 * Retrieves all commits on the current branch.
 	 * 
-	 * @return set of all commits on the current branch.
+	 * @return set of all commits on the current branch as a list of
+	 *         {@link GitCommit} objects.
 	 */
 	List<GitCommit> getCommits();
 
 	/**
-	 * Retrieve the commits with the issue key in their commit message.
+	 * Retrieve the commits with the JIRA issue key in their commit message.
 	 * 
-	 * @param issueKey
-	 *            issue key for which commits are searched
-	 * @return commits with the issue key in their commit message
+	 * @param jiraIssueKey
+	 *            key for which commits are searched.
+	 * @return commits with the JIRA issue key in their commit message as a list of
+	 *         {@link GitCommit} objects.
 	 */
-	List<GitCommit> getCommitsForJiraIssue(String issueKey);
+	List<GitCommit> getCommitsForJiraIssue(String jiraIssueKey);
 
 	/**
 	 * Get a map of diff entries and the respective edit lists for a commit.
 	 * 
-	 * @param revCommit
-	 *            commit as a RevCommit object.
+	 * @param commit
+	 *            as a {@link GitCommit} object.
 	 * @return map of diff entries and respective edit lists.
 	 */
 	Map<DiffEntry, EditList> getDiff(GitCommit commit);
 
 	/**
+	 * Get a list of changed files for a commit.
+	 * 
+	 * @param commit
+	 *            as a {@link GitCommit} object
+	 * @return list of {@link ChangedFile} objects.
+	 */
+	List<ChangedFile> getChangedFiles(GitCommit commit);
+
+	/**
 	 * Get the jgit git object.
 	 * 
-	 * @return jgit git object
+	 * @return jgit git object.
 	 */
 	Git getGit();
 

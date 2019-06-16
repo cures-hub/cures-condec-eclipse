@@ -39,6 +39,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
@@ -168,6 +169,18 @@ public class GitClientImpl implements GitClient {
 			}
 		}
 		return commitsForJiraIssue;
+	}
+
+	@Override
+	public List<ChangedFile> getChangedFiles(GitCommit commit) {
+		Map<DiffEntry, EditList> diff = getDiff(commit);
+        IPath pathToGit = new Path(this.repository.getDirectory().getAbsolutePath());
+        
+		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
+		for (DiffEntry entry : diff.keySet()) {
+			changedFiles.add(ChangedFile.getOrCreate(entry, pathToGit));
+		}
+		return changedFiles;
 	}
 
 	@Override
