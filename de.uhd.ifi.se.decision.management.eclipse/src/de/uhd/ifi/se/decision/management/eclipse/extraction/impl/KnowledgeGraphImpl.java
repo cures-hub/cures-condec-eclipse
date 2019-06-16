@@ -17,8 +17,6 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
 /**
@@ -127,9 +125,9 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 
 	private void addCommitsAndFiles() {
 		for (GitCommit gitCommit : gitClient.getCommits()) {
-			createLinks(gitCommit, 0, 1);
-			
 			this.addVertex(gitCommit);
+			createLinks(gitCommit, 0, 1);
+
 			for (Node node : gitCommit.getLinkedNodes()) {
 				this.addVertex(node);
 				this.addEdge(gitCommit, node);
@@ -164,9 +162,9 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 
 	private void addJiraIssues() {
 		for (JiraIssue jiraIssue : jiraClient.getAllJiraIssues()) {
+			this.addVertex(jiraIssue);
 			createLinks(jiraIssue, 0, 1);
 
-			this.addVertex(jiraIssue);
 			for (Node node : jiraIssue.getLinkedNodes()) {
 				this.addVertex(node);
 				this.addEdge(jiraIssue, node);
@@ -175,9 +173,9 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void createGraph(Node node, int distance) {
+		this.addVertex(node);
 		createLinks(node, 0, distance);
 
-		this.addVertex(node);
 		for (Node linkedNode : node.getLinkedNodes()) {
 			this.addVertex(linkedNode);
 			this.addEdge(node, linkedNode);
@@ -185,16 +183,14 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void createLinks(Node node, int currentDepth, int maxDepth) {
-		if (currentDepth >= maxDepth || this.containsVertex(node)) {
+		if (currentDepth >= maxDepth) {
 			return;
 		}
 
-		this.addVertex(node);
-
-		if (node instanceof GitCommitImpl) {
+		if (node instanceof GitCommit) {
 			addJiraIssuesForCommit((GitCommit) node, currentDepth, maxDepth);
 		}
-		if (node instanceof JiraIssueImpl) {
+		if (node instanceof JiraIssue) {
 			JiraIssue jiraIssue = (JiraIssue) node;
 			addCommitsForJiraIssue(jiraIssue, currentDepth, maxDepth);
 			addLinkedJiraIssuesForJiraIssue(jiraIssue, currentDepth, maxDepth);

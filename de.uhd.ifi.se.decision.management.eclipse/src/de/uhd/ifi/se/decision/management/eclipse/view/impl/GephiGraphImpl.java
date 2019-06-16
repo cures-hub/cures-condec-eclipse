@@ -64,6 +64,14 @@ public class GephiGraphImpl implements GephiGraph {
 					directedGraph.addEdge(edge);
 				}
 			}
+			
+			Set<Link> ingoingEdges = graph.incomingEdgesOf(node);
+			for (Link ingoingEdge : ingoingEdges) {
+				Edge edge = initEdge(ingoingEdge.getSource(), node);
+				if (edge != null) {
+					directedGraph.addEdge(edge);
+				}
+			}
 		}
 		GraphSettings.getLayoutType().generateLayout(graphModel, nodes.size());
 	}
