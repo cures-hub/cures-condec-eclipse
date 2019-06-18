@@ -15,6 +15,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class TestJiraIssue {
 
@@ -23,7 +24,8 @@ public class TestJiraIssue {
 	@Before
 	public void setUp() {
 		jiraClient = new MockJiraClient();
-		JiraClient.instances.put(URI.create(""), jiraClient);
+		JiraClient.instances.clear();
+		JiraClient.instances.put(ConfigPersistenceManager.getJiraURI(), jiraClient);
 	}
 
 	@Test
