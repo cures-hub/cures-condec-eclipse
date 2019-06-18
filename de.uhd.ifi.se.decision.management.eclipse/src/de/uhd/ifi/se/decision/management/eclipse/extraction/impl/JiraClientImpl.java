@@ -102,14 +102,14 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public Issue getJiraIssue(String jiraIssueKey) {
+	public JiraIssue getJiraIssue(String jiraIssueKey) {
 		Issue jiraIssue = null;
 		try {
 			jiraIssue = this.getJiraRestClient().getIssueClient().getIssue(jiraIssueKey).get();
 		} catch (InterruptedException | ExecutionException e) {
 			System.err.println(jiraIssueKey + ": " + e.getMessage());
 		}
-		return jiraIssue;
+		return JiraIssue.getOrCreate(jiraIssue);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class JiraClientImpl implements JiraClient {
 			for (String issueKey : neighborIssueKeys) {
 				if (!analyzedIssueKeys.contains(issueKey)) {
 					analyzedIssueKeys.add(issueKey);
-					Issue linkedJiraIssue = this.getJiraIssue(issueKey);
+					Issue linkedJiraIssue = this.getJiraIssue(issueKey).getIssue();
 					linkedJiraIssuesAtDistance.put(linkedJiraIssue, i);
 				}
 			}

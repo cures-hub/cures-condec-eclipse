@@ -32,20 +32,30 @@ public interface JiraIssue extends Node {
 	 *         to a JIRA issue instance.
 	 */
 	static JiraIssue getOrCreate(String key, JiraClient jiraClient) {
-		if (key == null) {
+		if (key == null || key.isEmpty()) {
 			return null;
 		}
+
+		JiraIssue jiraIssue = jiraClient.getJiraIssue(key);
+		if (jiraIssue != null) {
+			instances.put(key, jiraIssue);
+		}
+		return jiraIssue;
+	}
+
+	static JiraIssue getOrCreate(Issue issue) {
+		if (issue == null) {
+			return null;
+		}
+
+		String key = issue.getKey();
 		if (instances.containsKey(key)) {
 			return instances.get(key);
 		}
 
-		Issue issue = jiraClient.getJiraIssue(key);
-		if (issue != null) {
-			JiraIssue jiraIssue = new JiraIssueImpl(issue);
-			instances.put(issue.getKey(), jiraIssue);
-			return jiraIssue;
-		}
-		return null;
+		JiraIssue jiraIssue = new JiraIssueImpl(issue);
+		instances.put(issue.getKey(), jiraIssue);
+		return jiraIssue;
 	}
 
 	/**

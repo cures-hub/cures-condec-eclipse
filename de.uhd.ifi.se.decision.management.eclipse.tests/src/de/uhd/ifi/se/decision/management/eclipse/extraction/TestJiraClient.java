@@ -7,10 +7,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
+
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 
 public class TestJiraClient {
 	
@@ -46,5 +49,10 @@ public class TestJiraClient {
 	public void testIsWorking() {
 		assertFalse(jiraClient.isWorking());
 	}
-
+	
+	@AfterClass
+	public static void tearDown() {
+		JiraIssue.instances.clear();
+		JiraClient.instances.clear();
+	}
 }

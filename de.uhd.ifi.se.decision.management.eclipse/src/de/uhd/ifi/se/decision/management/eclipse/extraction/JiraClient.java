@@ -92,7 +92,7 @@ public interface JiraClient {
 	 *            JIRA issue key as a String.
 	 * @return JIRA issue for the given key.
 	 */
-	public Issue getJiraIssue(String jiraIssueKey);
+	public JiraIssue getJiraIssue(String jiraIssueKey);
 
 	/**
 	 * Returns the JiraRestClient instance.

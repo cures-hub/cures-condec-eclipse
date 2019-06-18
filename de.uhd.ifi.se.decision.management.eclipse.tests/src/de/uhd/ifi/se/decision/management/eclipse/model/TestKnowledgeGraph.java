@@ -49,12 +49,14 @@ public class TestKnowledgeGraph {
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, element, 0);
 		assertTrue(knowledgeGraph.vertexSet().size() == 1);
 	}
-	
+
 	@AfterClass
 	public static void tearDown() {
 		Node.nodes.clear();
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
 		ChangedFile.instances.clear();
+		JiraIssue.instances.clear();
+		JiraClient.instances.clear();
 	}
 }
