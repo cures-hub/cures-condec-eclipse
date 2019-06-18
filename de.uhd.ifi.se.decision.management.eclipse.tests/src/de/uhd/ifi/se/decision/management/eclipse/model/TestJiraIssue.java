@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.net.URI;
@@ -17,7 +18,7 @@ import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraIssue;
 
 public class TestJiraIssue {
 
-	JiraClient jiraClient;
+	private JiraClient jiraClient;
 
 	@Before
 	public void setUp() {
@@ -47,7 +48,7 @@ public class TestJiraIssue {
 	@Test
 	public void testGetOrCreateIssue() {
 		Issue newIssue = MockJiraIssue.createIssue("WI: Add preference/settings page for Eclipse plugin", "ECONDEC-2");
-		JiraIssue.getOrCreate(newIssue);
+		assertNotNull(JiraIssue.getOrCreate(newIssue));
 	}
 
 	@Test
