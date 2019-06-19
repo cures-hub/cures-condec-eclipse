@@ -14,15 +14,18 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 
 public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	private IPath path;
 	private List<CodeMethod> methodsInClass;
+	private List<GitCommit> commits;
 
 	public ChangedFileImpl(IPath path) {
 		this.path = path;
 		this.methodsInClass = parseMethods();
+		this.commits = new ArrayList<GitCommit>();
 	}
 
 	@Override
@@ -98,5 +101,15 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 	@Override
 	public String getFileName() {
 		return path.lastSegment();
+	}
+
+	@Override
+	public List<GitCommit> getCommits() {
+		return commits;
+	}
+
+	@Override
+	public void addCommit(GitCommit gitCommit) {
+		this.commits.add(gitCommit);		
 	}
 }

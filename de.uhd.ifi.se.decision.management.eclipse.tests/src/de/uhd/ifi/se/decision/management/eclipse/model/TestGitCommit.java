@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -52,8 +53,10 @@ public class TestGitCommit {
 	public void testGetChangedFiles() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		GitCommit commit = commits.get(0);
-
 		assertEquals(5, commit.getChangedFiles().size());
+		
+		ChangedFile changedFile = commit.getChangedFiles().get(0);
+		assertTrue(changedFile.getCommits().size() > 0);
 	}
 
 	@Test

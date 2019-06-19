@@ -82,12 +82,30 @@ public interface ChangedFile extends Node {
 	boolean isJavaClass();
 
 	/**
-	 * Returns true if the file is a Java class and exists in currently checked out version of the git
-	 * repository. False means that the file could have been deleted or that its
-	 * name has been changed.
+	 * Returns true if the file is a Java class and exists in currently checked out
+	 * version of the git repository. False means that the file could have been
+	 * deleted or that its name has been changed.
 	 * 
-	 * @return true if the file is a Java class and exists in currently checked out version of the git
-	 *         repository.
+	 * @return true if the file is a Java class and exists in currently checked out
+	 *         version of the git repository.
 	 */
 	boolean isExistingJavaClass();
+
+	/**
+	 * Returns the commits that the file was changed in as a list of
+	 * {@link GitCommit} objects.
+	 * 
+	 * @return commits that the file was changed in as a list of {@link GitCommit}
+	 *         objects.
+	 */
+	List<GitCommit> getCommits();
+
+	/**
+	 * Adds a {@link GitCommit} objects to the list of commits that the file was
+	 * changed in.
+	 * 
+	 * @param gitCommits
+	 *            that the file was changed in as {@link GitCommit} objects.
+	 */
+	void addCommit(GitCommit gitCommit);
 }

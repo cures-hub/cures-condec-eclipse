@@ -30,7 +30,7 @@ public class TestGitClient {
 		path = initPathToGitRepo();
 		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
 	}
-	
+
 	public static IPath initPathToGitRepo() {
 		File file = new File(".");
 		String canonicalPath = "";
@@ -110,7 +110,7 @@ public class TestGitClient {
 	@Test
 	public void testGitClientCreationWithSettings() {
 		assertNotNull(new GitClientImpl());
-		assertEquals(GitClient.getOrCreate(), GitClient.getOrCreate());
+		assertNotNull(GitClient.getOrCreate());
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class TestGitClient {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertNotNull(gitClient.getDiff(commits.get(0)));
 	}
-	
+
 	@Test
 	public void testGetChangedFiles() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");

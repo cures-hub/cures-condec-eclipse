@@ -185,7 +185,9 @@ public class GitClientImpl implements GitClient {
 
 		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
 		for (DiffEntry entry : diff.keySet()) {
-			changedFiles.add(ChangedFile.getOrCreate(entry, pathToGit));
+			ChangedFile changedFile = ChangedFile.getOrCreate(entry, pathToGit);
+			changedFile.addCommit(commit);
+			changedFiles.add(changedFile);
 		}
 		return changedFiles;
 	}
