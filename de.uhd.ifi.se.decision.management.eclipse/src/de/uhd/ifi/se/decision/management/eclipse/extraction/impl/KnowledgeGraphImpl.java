@@ -212,7 +212,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void addCommitsForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
-		List<GitCommit> commits = gitClient.getCommitsForJiraIssue(jiraIssue.getJiraIssueKey());
+		List<GitCommit> commits = jiraIssue.getCommits();
 		for (GitCommit commit : commits) {
 			this.addVertex(commit);
 			this.addEdge(jiraIssue, commit);

@@ -12,6 +12,7 @@ import java.util.concurrent.TimeoutException;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
@@ -126,7 +127,7 @@ public class MockIssueRestClient implements IssueRestClient {
 
 			@Override
 			public Issue get() throws InterruptedException, ExecutionException {
-				return MockJiraRestClient.createIssue("WI: Create empty Eclipse plugin", key);
+				return createIssue("WI: Create empty Eclipse plugin", key);
 			}
 
 			@Override
@@ -272,4 +273,10 @@ public class MockIssueRestClient implements IssueRestClient {
 		return null;
 	}
 
+	public static Issue createIssue(String summary, String key) {
+		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null,
+				new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+				null, null, null);
+	}
 }

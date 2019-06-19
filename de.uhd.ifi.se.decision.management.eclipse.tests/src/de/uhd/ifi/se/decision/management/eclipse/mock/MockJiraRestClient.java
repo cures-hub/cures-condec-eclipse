@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.mock;
 
 import java.io.IOException;
-import java.net.URI;
 
 import com.atlassian.jira.rest.client.api.AuditRestClient;
 import com.atlassian.jira.rest.client.api.ComponentRestClient;
@@ -15,8 +14,6 @@ import com.atlassian.jira.rest.client.api.SearchRestClient;
 import com.atlassian.jira.rest.client.api.SessionRestClient;
 import com.atlassian.jira.rest.client.api.UserRestClient;
 import com.atlassian.jira.rest.client.api.VersionRestClient;
-import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.Issue;
 
 public class MockJiraRestClient implements JiraRestClient {
 
@@ -88,12 +85,5 @@ public class MockJiraRestClient implements JiraRestClient {
 	public VersionRestClient getVersionRestClient() {
 		// Not used.
 		return null;
-	}
-	
-	public static Issue createIssue(String summary, String key) {
-		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null,
-				new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-				null, null, null);
 	}
 }

@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
@@ -93,4 +94,11 @@ public interface JiraIssue extends Node {
 	 * @return URL to the JIRA issue on the JIRA server as a URI object.
 	 */
 	URI getUri();
+	
+	/**
+	 * Returns the commits linked to a JIRA issue as a list of {@link GitCommit} objects.
+	 * 
+	 * @return commits linked to a JIRA issue as a list of {@link GitCommit} objects.
+	 */
+	List<GitCommit> getCommits();
 }

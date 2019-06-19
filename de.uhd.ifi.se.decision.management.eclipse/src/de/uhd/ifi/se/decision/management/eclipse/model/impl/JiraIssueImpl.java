@@ -1,9 +1,12 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
@@ -12,24 +15,26 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
  */
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	private Issue issue;
+	private String jiraIssueKey;
 
 	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
+		this.jiraIssueKey = issue.getKey();
 	}
 
 	@Override
 	public Issue getIssue() {
-		return this.issue;
+		return issue;
 	}
 
 	@Override
 	public String getJiraIssueKey() {
-		return this.issue.getKey();
+		return jiraIssueKey;
 	}
 
 	@Override
 	public String toString() {
-		return this.getJiraIssueKey() + ":" + this.issue.getSummary();
+		return getJiraIssueKey() + ":" + issue.getSummary();
 	}
 
 	@Override
@@ -44,5 +49,23 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 			jiraIssueUri += uriPart + "/";
 		}
 		return URI.create(jiraIssueUri);
+	}
+
+	/**
+	 * @issue How to retrieve the commits linked to a JIRA issue?
+	 * @decision Iterate over GitCommit objects and check whether they contain the
+	 *           key!
+	 * @alternative GitClient.getOrCreate().getCommitsForJiraIssue(jiraIssueKey);
+	 */
+	@Override
+	public List<GitCommit> getCommits() {
+		List<GitCommit> allCommits = new ArrayList<GitCommit>(GitCommit.instances.values());
+		List<GitCommit> commitsForJiraIssue = new ArrayList<GitCommit>();
+		for (GitCommit gitCommit : allCommits) {
+			if (gitCommit.getJiraIssueKeys().contains(jiraIssueKey)) {
+				commitsForJiraIssue.add(gitCommit);
+			}
+		}
+		return commitsForJiraIssue;
 	}
 }
