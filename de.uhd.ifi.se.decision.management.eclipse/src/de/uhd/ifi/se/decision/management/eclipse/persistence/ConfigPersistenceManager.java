@@ -40,14 +40,14 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static IPath getPathToGit() {
-		return new Path(getPreference(PATH_TO_GIT, "")).makeAbsolute();
+		return new Path(getPreference(PATH_TO_GIT, ".git")).makeAbsolute();
 	}
 
 	public static String getBranch() {
 		return getPreference(BRANCH, "HEAD");
 	}
 
-	public static URI getJiraURI() {
+	public static URI getJiraUri() {
 		return URI.create(getPreference(JIRA_URL, ""));
 	}
 
@@ -64,7 +64,13 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static int getLinkDistance() {
-		return Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
+		int linkDistance = 4;
+		try {
+			linkDistance = Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
+		} catch (NullPointerException e) {
+			System.err.print("The default preference value is used due to a " + e + ".");
+		}
+		return linkDistance;
 	}
 
 	public static float getDecreaseFactor() {

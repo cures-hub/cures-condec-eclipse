@@ -47,7 +47,7 @@ public class JiraClientImpl implements JiraClient {
 
 	@Override
 	public boolean authenticate() {
-		return authenticate(ConfigPersistenceManager.getJiraURI(), ConfigPersistenceManager.getJiraUser(),
+		return authenticate(ConfigPersistenceManager.getJiraUri(), ConfigPersistenceManager.getJiraUser(),
 				ConfigPersistenceManager.getJiraPassword());
 	}
 

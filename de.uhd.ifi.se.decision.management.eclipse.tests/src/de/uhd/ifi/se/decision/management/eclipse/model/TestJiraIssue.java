@@ -30,7 +30,7 @@ public class TestJiraIssue {
 		jiraClient = new JiraClientImpl();
 		jiraClient.setJiraRestClient(new MockJiraRestClient());
 		JiraClient.instances.clear();
-		JiraClient.instances.put(ConfigPersistenceManager.getJiraURI(), jiraClient);
+		JiraClient.instances.put(ConfigPersistenceManager.getJiraUri(), jiraClient);
 	}
 
 	@Test
@@ -97,5 +97,4 @@ public class TestJiraIssue {
 		JiraClient.instances.clear();
 		GitClient.instances.clear();
 	}
-
 }

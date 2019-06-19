@@ -34,7 +34,7 @@ public interface JiraClient {
 	 * @return JiraClient instance.
 	 */
 	public static JiraClient getOrCreate() {
-		URI uri = ConfigPersistenceManager.getJiraURI();
+		URI uri = ConfigPersistenceManager.getJiraUri();
 		JiraClient jiraClient;
 		if (JiraClient.instances.containsKey(uri)) {
 			jiraClient = JiraClient.instances.get(uri);
