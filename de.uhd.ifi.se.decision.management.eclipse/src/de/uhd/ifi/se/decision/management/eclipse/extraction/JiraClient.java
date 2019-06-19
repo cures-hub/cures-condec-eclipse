@@ -38,7 +38,6 @@ public interface JiraClient {
 		JiraClient jiraClient;
 		if (JiraClient.instances.containsKey(uri)) {
 			jiraClient = JiraClient.instances.get(uri);
-			jiraClient.authenticate();
 		} else {
 			jiraClient = new JiraClientImpl();
 			JiraClient.instances.put(uri, jiraClient);
@@ -95,14 +94,6 @@ public interface JiraClient {
 	public JiraIssue getJiraIssue(String jiraIssueKey);
 
 	/**
-	 * Returns the JiraRestClient instance.
-	 * 
-	 * @see JiraRestClient
-	 * @return JiraRestClient instance.
-	 */
-	public JiraRestClient getJiraRestClient();
-
-	/**
 	 * Retrieves keys of the JIRA issues linked to a JIRA issue at link distance 1.
 	 * 
 	 * @param jiraIssue
@@ -128,4 +119,21 @@ public interface JiraClient {
 	 *         accessable
 	 */
 	public boolean isWorking();
+
+	/**
+	 * Returns the JiraRestClient instance.
+	 * 
+	 * @see JiraRestClient
+	 * @return JiraRestClient instance.
+	 */
+	public JiraRestClient getJiraRestClient();
+
+	/**
+	 * Sets the JiraRestClient instance.
+	 * 
+	 * @see JiraRestClient
+	 * @param JiraRestClient
+	 *            instance.
+	 */
+	public void setJiraRestClient(JiraRestClient jiraRestClient);
 }

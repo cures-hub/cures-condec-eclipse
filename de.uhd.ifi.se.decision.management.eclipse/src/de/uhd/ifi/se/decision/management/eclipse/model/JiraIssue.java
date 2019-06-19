@@ -68,7 +68,7 @@ public interface JiraIssue extends Node {
 	 *         to a JIRA issue instance.
 	 */
 	static JiraIssue getOrCreate(String key) {
-		return getOrCreate(key, JiraClient.getOrCreate());
+		return JiraIssue.getOrCreate(key, JiraClient.getOrCreate());
 	}
 
 	/**

@@ -103,13 +103,13 @@ public class JiraClientImpl implements JiraClient {
 
 	@Override
 	public JiraIssue getJiraIssue(String jiraIssueKey) {
-		Issue jiraIssue = null;
+		Issue issue = null;
 		try {
-			jiraIssue = this.getJiraRestClient().getIssueClient().getIssue(jiraIssueKey).get();
+			issue = this.jiraRestClient.getIssueClient().getIssue(jiraIssueKey).get();
 		} catch (InterruptedException | ExecutionException e) {
 			System.err.println(jiraIssueKey + ": " + e.getMessage());
 		}
-		return JiraIssue.getOrCreate(jiraIssue);
+		return JiraIssue.getOrCreate(issue);
 	}
 
 	@Override
@@ -169,12 +169,17 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
+	public boolean isWorking() {
+		return isWorking;
+	}
+
+	@Override
 	public JiraRestClient getJiraRestClient() {
 		return this.jiraRestClient;
 	}
 
 	@Override
-	public boolean isWorking() {
-		return isWorking;
+	public void setJiraRestClient(JiraRestClient jiraRestClient) {
+		this.jiraRestClient = jiraRestClient;
 	}
 }

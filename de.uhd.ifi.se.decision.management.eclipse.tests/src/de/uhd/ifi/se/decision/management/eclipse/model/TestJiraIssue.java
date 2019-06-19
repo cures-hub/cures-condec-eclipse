@@ -11,7 +11,8 @@ import org.junit.Test;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraRestClient;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class TestJiraIssue {
@@ -20,7 +21,8 @@ public class TestJiraIssue {
 
 	@Before
 	public void setUp() {
-		jiraClient = new MockJiraClient();
+		jiraClient = new JiraClientImpl();
+		jiraClient.setJiraRestClient(new MockJiraRestClient());
 		JiraClient.instances.clear();
 		JiraClient.instances.put(ConfigPersistenceManager.getJiraURI(), jiraClient);
 	}
@@ -46,23 +48,26 @@ public class TestJiraIssue {
 
 	@Test
 	public void testGetOrCreateIssue() {
-		Issue newIssue = MockJiraClient.createIssue("WI: Add preference/settings page for Eclipse plugin", "ECONDEC-2");
+		Issue newIssue = MockJiraRestClient.createIssue("WI: Add preference/settings page for Eclipse plugin",
+				"ECONDEC-2");
 		assertNotNull(JiraIssue.getOrCreate(newIssue));
 	}
-	
+
 	@Test
 	public void testToString() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		assertEquals(jiraClient, JiraClient.getOrCreate());
+		assertNotNull(jiraIssue);
 		assertEquals("ECONDEC-1:WI: Create empty Eclipse plugin", jiraIssue.toString());
 	}
 
 	@Test
 	public void testGetOrCreateKeyValidNoJiraClient() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1");
-		assertEquals(jiraClient, JiraClient.getOrCreate());
+		assertNotNull(jiraIssue);
 		assertEquals("ECONDEC-1", jiraIssue.getJiraIssueKey());
 	}
-	
+
 	@Test
 	public void testGetUri() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
