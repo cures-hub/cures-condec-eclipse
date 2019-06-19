@@ -40,7 +40,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static IPath getPathToGit() {
-		return new Path(getPreference(PATH_TO_GIT, ""));
+		return new Path(getPreference(PATH_TO_GIT, "")).makeAbsolute();
 	}
 
 	public static String getBranch() {
@@ -76,7 +76,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		try {
 			preference = Activator.getDefault().getPreferenceStore().getString(key.getQualifier());
 		} catch (NullPointerException e) {
-			System.err.print(e);
+			System.err.print("The default preference value is used due to a " + e + ".");
 		}
 		return preference;
 	}
