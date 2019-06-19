@@ -30,10 +30,10 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		store.setDefault("PATH_TO_GIT", new Path(".git").toString());
 		store.setDefault("BRANCH", "HEAD");
 
-		store.setDefault("JIRA_URL", "http://jira-se.ifi.uni-heidelberg.de");
+		store.setDefault("JIRA_URL", "");
 		store.setDefault("JIRA_USER", "");
 		store.setDefault("JIRA_PASSWORD", "");
-		store.setDefault("JIRA_PROJECT_KEY", "ConDec");
+		store.setDefault("JIRA_PROJECT_KEY", "");
 
 		store.setDefault("LINK_DISTANCE", 4);
 		store.setDefault("DECREASE_FACTOR", "1.5");

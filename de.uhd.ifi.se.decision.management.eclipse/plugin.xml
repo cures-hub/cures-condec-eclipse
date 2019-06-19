@@ -38,8 +38,8 @@
        </page>
    </extension>
       <extension
-            id="de.uhd.ifi.se.decision.management.eclipse.PreferenceInitializer"
-            name="PreferenceInitializer"
+            id="de.uhd.ifi.se.decision.management.persistence.ConfigPersistenceManager"
+            name="ConfigPersistenceManager"
             point="org.eclipse.core.runtime.preferences">
       <initializer
             class="de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager">
