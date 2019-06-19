@@ -27,7 +27,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault("PATH_TO_GIT", new Path("\\.git").toString());
+		store.setDefault("PATH_TO_GIT", new Path(".git").toString());
 		store.setDefault("BRANCH", "HEAD");
 
 		store.setDefault("JIRA_URL", "http://jira-se.ifi.uni-heidelberg.de");
@@ -40,7 +40,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static IPath getPathToGit() {
-		return new Path(getPreference(PATH_TO_GIT, ".git"));
+		return new Path(getPreference(PATH_TO_GIT, ""));
 	}
 
 	public static String getBranch() {
