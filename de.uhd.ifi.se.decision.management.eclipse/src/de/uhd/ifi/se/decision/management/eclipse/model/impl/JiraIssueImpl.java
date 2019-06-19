@@ -34,9 +34,9 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 
 	@Override
 	public URI getUri() {
-		String restUri = issue.getSelf().toString();
+		URI restUri = issue.getSelf();
 		String jiraIssueUri = "";
-		for (String uriPart : restUri.split("/")) {
+		for (String uriPart : restUri.toString().split("/")) {
 			if ("rest".equals(uriPart)) {
 				jiraIssueUri += "projects/" + issue.getProject().getKey() + "/issues/" + issue.getKey();
 				break;

@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 
 public class MockJiraClient implements JiraClient {
 
@@ -36,7 +38,8 @@ public class MockJiraClient implements JiraClient {
 
 	@Override
 	public JiraIssue getJiraIssue(String jiraIssueKey) {
-		JiraIssue jiraIssue = new MockJiraIssue();
+		Issue issue = createIssue("WI: Create empty Eclipse plugin", "ECONDEC-1");
+		JiraIssue jiraIssue = new JiraIssueImpl(issue);
 		return jiraIssue;
 	}
 
@@ -61,6 +64,11 @@ public class MockJiraClient implements JiraClient {
 	public boolean isWorking() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public static Issue createIssue(String summary, String key) {
+		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null, new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 	}
 
 }
