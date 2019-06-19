@@ -40,7 +40,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static IPath getPathToGit() {
-		return new Path(getPreference(PATH_TO_GIT, "\\.git"));
+		return new Path(getPreference(PATH_TO_GIT, ".git"));
 	}
 
 	public static String getBranch() {

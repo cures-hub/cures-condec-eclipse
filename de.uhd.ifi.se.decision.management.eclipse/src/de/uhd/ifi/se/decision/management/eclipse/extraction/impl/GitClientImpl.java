@@ -52,7 +52,7 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * @alternative Extend the RepositoryProvider class of EGit!
  * 
  * @issue How to access commits related to a JIRA issue?
- * @decision The jgit library is used to access git repositories!
+ * @decision The jGit library is used to access git repositories!
  * @pro The jGit library is open source and no third party JIRA plug-in needs to
  *      be installed.
  */

@@ -16,10 +16,12 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	private Issue issue;
 	private String jiraIssueKey;
+	private List<GitCommit> commits;
 
 	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
 		this.jiraIssueKey = issue.getKey();
+		this.commits = new ArrayList<GitCommit>();
 	}
 
 	@Override
@@ -52,20 +54,26 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	}
 
 	/**
-	 * @issue How to retrieve the commits linked to a JIRA issue?
+	 * @issue How to retrieve the commits linked to a JIRA issue? *
 	 * @decision Iterate over GitCommit objects and check whether they contain the
 	 *           key!
 	 * @alternative GitClient.getOrCreate().getCommitsForJiraIssue(jiraIssueKey);
 	 */
 	@Override
 	public List<GitCommit> getCommits() {
-		List<GitCommit> allCommits = new ArrayList<GitCommit>(GitCommit.instances.values());
-		List<GitCommit> commitsForJiraIssue = new ArrayList<GitCommit>();
-		for (GitCommit gitCommit : allCommits) {
-			if (gitCommit.getJiraIssueKeys().contains(jiraIssueKey)) {
-				commitsForJiraIssue.add(gitCommit);
+		if (commits.isEmpty()) {
+			List<GitCommit> allCommits = new ArrayList<GitCommit>(GitCommit.instances.values());
+			for (GitCommit gitCommit : allCommits) {
+				if (gitCommit.getJiraIssueKeys().contains(jiraIssueKey)) {
+					addCommit(gitCommit);
+				}
 			}
 		}
-		return commitsForJiraIssue;
+		return commits;
+	}
+
+	@Override
+	public void addCommit(GitCommit gitCommit) {
+		this.commits.add(gitCommit);
 	}
 }
