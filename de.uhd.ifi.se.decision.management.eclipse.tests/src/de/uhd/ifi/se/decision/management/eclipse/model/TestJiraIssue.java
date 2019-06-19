@@ -3,7 +3,6 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -86,9 +85,10 @@ public class TestJiraIssue {
 		IPath path = TestGitClient.initPathToGitRepo();
 		GitClient gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		
+
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(commits.size(), jiraIssue.getCommits().size());
+		assertEquals(5, commits.size());
 	}
 
 	@AfterClass

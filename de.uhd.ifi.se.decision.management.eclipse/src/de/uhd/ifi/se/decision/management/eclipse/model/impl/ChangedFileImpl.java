@@ -50,7 +50,7 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 		MethodVisitor methodVistor = getMethodVisitor();
 		for (MethodDeclaration methodDeclaration : methodVistor.getMethodDeclarations()) {
-			CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString());
+			CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString(), this);
 			methodsInClass.add(codeMethod);
 			this.addLinkedNode(codeMethod);
 			codeMethod.addLinkedNode(this);

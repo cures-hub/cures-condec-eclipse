@@ -28,4 +28,11 @@ public interface CodeMethod extends Node {
 	 * @return method name.
 	 */
 	String getMethodName();
+
+	/**
+	 * Returns the Java class that the method belongs to.
+	 * 
+	 * @return Java class that the method belongs to as a {@link ChangedFile} object.
+	 */
+	ChangedFile getJavaClass();
 }
