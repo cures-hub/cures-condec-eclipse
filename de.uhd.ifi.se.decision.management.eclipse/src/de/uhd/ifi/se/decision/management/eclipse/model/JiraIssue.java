@@ -110,4 +110,11 @@ public interface JiraIssue extends Node {
 	 *            that the file was changed in as {@link GitCommit} objects.
 	 */
 	void addCommit(GitCommit gitCommit);
+
+	/**
+	 * Returns the JIRA issues linked to a JIRA issue as a list of {@link JiraIssue} objects.
+	 * 
+	 * @return JIRA issues linked to a JIRA issue as a list of {@link JiraIssue} objects.
+	 */
+	List<JiraIssue> getLinkedJiraIssues();
 }

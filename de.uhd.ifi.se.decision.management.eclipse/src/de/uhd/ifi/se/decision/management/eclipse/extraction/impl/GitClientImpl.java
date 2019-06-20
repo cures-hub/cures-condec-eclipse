@@ -60,6 +60,7 @@ public class GitClientImpl implements GitClient {
 
 	private Repository repository;
 	private Git git;
+	private IPath path;
 	private DiffFormatter diffFormatter;
 	private String projectKey;
 
@@ -83,6 +84,7 @@ public class GitClientImpl implements GitClient {
 	 *            of the associated JIRA project.
 	 */
 	public GitClientImpl(IPath path, String reference, String projectKey) {
+		this.path = path;
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
 		repositoryBuilder.setGitDir(path.toFile());
@@ -176,16 +178,9 @@ public class GitClientImpl implements GitClient {
 	@Override
 	public List<ChangedFile> getChangedFiles(GitCommit commit) {
 		Map<DiffEntry, EditList> diff = getDiff(commit);
-		IPath pathToGit = null;
-		try {
-			pathToGit = new Path(this.repository.getDirectory().getCanonicalPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
 		for (DiffEntry entry : diff.keySet()) {
-			ChangedFile changedFile = ChangedFile.getOrCreate(entry, pathToGit);
+			ChangedFile changedFile = ChangedFile.getOrCreate(entry, path);
 			changedFile.addCommit(commit);
 			changedFiles.add(changedFile);
 		}

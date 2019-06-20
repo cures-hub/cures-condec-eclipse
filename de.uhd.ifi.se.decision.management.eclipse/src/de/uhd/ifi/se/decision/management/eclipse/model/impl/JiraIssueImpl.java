@@ -16,7 +16,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	private Issue issue;
 	private String jiraIssueKey;
+	
 	private List<GitCommit> commits;
+	private List<JiraIssue> linkedJiraIssues;
 
 	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
@@ -54,7 +56,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	}
 
 	/**
-	 * @issue How to retrieve the commits linked to a JIRA issue? *
+	 * @issue How to retrieve the commits linked to a JIRA issue?
 	 * @decision Iterate over GitCommit objects and check whether they contain the
 	 *           key!
 	 * @alternative GitClient.getOrCreate().getCommitsForJiraIssue(jiraIssueKey);
@@ -75,5 +77,10 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	@Override
 	public void addCommit(GitCommit gitCommit) {
 		this.commits.add(gitCommit);
+	}
+	
+	@Override
+	public List<JiraIssue> getLinkedJiraIssues() {		
+		return linkedJiraIssues;
 	}
 }
