@@ -88,12 +88,8 @@ public class JiraClientImpl implements JiraClient {
 	@Override
 	public Set<JiraIssue> getAllJiraIssues() {
 		Set<JiraIssue> jiraIssues = new HashSet<JiraIssue>();
-		if (!isWorking) {
-			System.err.println("The JIRA client cannot retrieve JIRA issues.");
-			return jiraIssues;
-		}
 		for (BasicIssue jiraIssue : this.getJiraRestClient().getSearchClient()
-				.searchJql("project=\"" + projectKey + "\"", -1, 0, null).claim().getIssues()) {
+				.searchJql("project=\"" + projectKey + "\"").claim().getIssues()) {
 			jiraIssues.add(JiraIssue.getOrCreate(jiraIssue.getKey(), this));
 		}
 		return jiraIssues;

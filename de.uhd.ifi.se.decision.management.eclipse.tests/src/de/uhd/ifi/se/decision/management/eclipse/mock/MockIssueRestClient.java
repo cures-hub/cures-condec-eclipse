@@ -35,7 +35,7 @@ import com.google.common.util.concurrent.FutureCallback;
 
 public class MockIssueRestClient implements IssueRestClient {
 
-	public Issue getMockIssue(String key) {
+	public static Issue getMockIssue(String key) {
 		List<IssueLink> issueLinks = new ArrayList<IssueLink>();
 		switch (key) {
 		case "ECONDEC-1":
@@ -49,6 +49,13 @@ public class MockIssueRestClient implements IssueRestClient {
 		default:
 			return null;
 		}
+	}
+	
+	public static List<Issue> getAllIssues() {
+		List<Issue> issues = new ArrayList<Issue>();
+		issues.add(getMockIssue("ECONDEC-1"));
+		issues.add(getMockIssue("ECONDEC-5"));
+		return issues;
 	}
 
 	public static Issue createIssue(String summary, String key, List<IssueLink> issueLinks) {

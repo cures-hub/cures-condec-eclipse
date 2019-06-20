@@ -47,7 +47,7 @@ public class TestJiraClient {
 
 	@Test
 	public void testGetAllJiraIssues() {
-		assertEquals(0, jiraClient.getAllJiraIssues().size());
+		assertEquals(2, jiraClient.getAllJiraIssues().size());
 	}
 
 	@Test

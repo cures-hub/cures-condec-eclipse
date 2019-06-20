@@ -65,8 +65,7 @@ public class MockJiraRestClient implements JiraRestClient {
 
 	@Override
 	public SearchRestClient getSearchClient() {
-		// Not used.
-		return null;
+		return new MockSearchRestClient();
 	}
 
 	@Override
