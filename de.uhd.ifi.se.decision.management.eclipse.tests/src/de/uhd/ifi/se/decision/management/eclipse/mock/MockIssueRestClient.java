@@ -35,6 +35,29 @@ import com.google.common.util.concurrent.FutureCallback;
 
 public class MockIssueRestClient implements IssueRestClient {
 
+	public Issue getMockIssue(String key) {
+		List<IssueLink> issueLinks = new ArrayList<IssueLink>();
+		switch (key) {
+		case "ECONDEC-1":
+			issueLinks.add(new IssueLink("ECONDEC-5", null, null));
+			return createIssue("WI: Create empty Eclipse plugin", key, issueLinks);
+
+		case "ECONDEC-5":
+			issueLinks.add(new IssueLink("ECONDEC-1", null, null));
+			return createIssue("SF: Show knowledge graph", key, issueLinks);
+
+		default:
+			return null;
+		}
+	}
+
+	public static Issue createIssue(String summary, String key, List<IssueLink> issueLinks) {
+		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null,
+				new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null, null, null, issueLinks, null, null, null, null,
+				null, null, null, null);
+	}
+
 	@Override
 	public Promise<Void> addAttachment(URI arg0, InputStream arg1, String arg2) {
 		// TODO Auto-generated method stub
@@ -130,19 +153,7 @@ public class MockIssueRestClient implements IssueRestClient {
 
 			@Override
 			public Issue get() throws InterruptedException, ExecutionException {
-				List<IssueLink> issueLinks = new ArrayList<IssueLink>();
-				switch (key) {
-				case "ECONDEC-1":
-					issueLinks.add(new IssueLink("ECONDEC-5", null, null));
-					return createIssue("WI: Create empty Eclipse plugin", key, issueLinks);
-					
-				case "ECONDEC-5":
-					issueLinks.add(new IssueLink("ECONDEC-1", null, null));
-					return createIssue("SF: Show knowledge graph", "ECONDEC-5", issueLinks);
-
-				default:
-					return null;
-				}
+				return getMockIssue(key);
 			}
 
 			@Override
@@ -286,12 +297,5 @@ public class MockIssueRestClient implements IssueRestClient {
 	public Promise<Void> watch(URI arg0) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public static Issue createIssue(String summary, String key, List<IssueLink> issueLinks) {
-		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null,
-				new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null, null, null, null, issueLinks, null, null, null, null,
-				null, null, null, null);
 	}
 }
