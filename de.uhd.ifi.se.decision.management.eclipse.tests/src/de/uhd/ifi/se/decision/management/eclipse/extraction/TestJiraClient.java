@@ -11,7 +11,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraRestClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class TestJiraClient {
 
@@ -19,7 +22,10 @@ public class TestJiraClient {
 
 	@Before
 	public void setUp() {
-		jiraClient = JiraClient.getOrCreate();
+		jiraClient = new JiraClientImpl();
+		jiraClient.setJiraRestClient(new MockJiraRestClient());
+		JiraClient.instances.clear();
+		JiraClient.instances.put(ConfigPersistenceManager.getJiraUri(), jiraClient);
 	}
 
 	@Test
@@ -31,6 +37,13 @@ public class TestJiraClient {
 	public void testGetLinkedJiraIssues() {
 		Set<JiraIssue> linkedJiraIssues = jiraClient.getLinkedJiraIssues(null);
 		assertEquals(0, linkedJiraIssues.size());
+		
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);		
+		JiraIssue systemFunction = JiraIssue.getOrCreate("ECONDEC-5", jiraClient);
+		
+		linkedJiraIssues = jiraClient.getLinkedJiraIssues(workItem);
+		assertFalse(linkedJiraIssues.isEmpty());
+		assertEquals(systemFunction, linkedJiraIssues.iterator().next());
 	}
 
 	@Test

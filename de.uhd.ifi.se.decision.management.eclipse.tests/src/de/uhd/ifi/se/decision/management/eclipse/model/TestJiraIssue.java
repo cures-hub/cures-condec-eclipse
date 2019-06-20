@@ -99,6 +99,12 @@ public class TestJiraIssue {
 		JiraIssue systemFunction = JiraIssue.getOrCreate("ECONDEC-5", jiraClient);
 		assertEquals(1, systemFunction.getKeysOfLinkedJiraIssues().size());
 	}
+	
+	@Test
+	public void testGetLinkedJiraIssues() {
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		assertEquals(1, workItem.getLinkedJiraIssues().size());
+	}
 
 	@AfterClass
 	public static void tearDown() {

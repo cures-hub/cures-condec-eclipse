@@ -10,6 +10,7 @@ import java.util.Set;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 
@@ -85,6 +86,9 @@ public class JiraIssueImpl extends NodeImpl implements JiraIssue {
 
 	@Override
 	public Set<JiraIssue> getLinkedJiraIssues() {
+		if (linkedJiraIssues.isEmpty()) {
+			linkedJiraIssues = JiraClient.getOrCreate().getLinkedJiraIssues(this);
+		}
 		return linkedJiraIssues;
 	}
 
