@@ -2,7 +2,6 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,12 +56,13 @@ public interface ChangedFile extends Node {
 	String getFileName();
 
 	/**
-	 * Returns a list of methods if the file is a Java class.
+	 * Returns a set of methods as {@link CodeMethod} objects if the file is a Java
+	 * class.
 	 * 
-	 * @return list of methods. Returns an empty list if the file is not existing
+	 * @return set of methods. Returns an empty list if the file is not existing
 	 *         (anymore) or if it is not a Java class.
 	 */
-	List<CodeMethod> getCodeMethods();
+	Set<CodeMethod> getCodeMethods();
 
 	/**
 	 * Returns true if the file exists in currently checked out version of the git
@@ -92,16 +92,16 @@ public interface ChangedFile extends Node {
 	boolean isExistingJavaClass();
 
 	/**
-	 * Returns the commits that the file was changed in as a list of
+	 * Returns the commits that the file was changed in as a set of
 	 * {@link GitCommit} objects.
 	 * 
-	 * @return commits that the file was changed in as a list of {@link GitCommit}
+	 * @return commits that the file was changed in as a set of {@link GitCommit}
 	 *         objects.
 	 */
-	List<GitCommit> getCommits();
+	Set<GitCommit> getCommits();
 
 	/**
-	 * Adds a {@link GitCommit} objects to the list of commits that the file was
+	 * Adds a {@link GitCommit} objects to the set of commits that the file was
 	 * changed in.
 	 * 
 	 * @param gitCommits

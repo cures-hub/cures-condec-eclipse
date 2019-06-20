@@ -1,8 +1,10 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -13,7 +15,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 
 public class CommitMessageParser {
 
-	public static List<DecisionKnowledgeElement> extractDecisionKnowledge(RevCommit commit) {
+	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(RevCommit commit) {
 		return extractDecisionKnowledge(commit.getFullMessage());
 	}
 
@@ -27,8 +29,8 @@ public class CommitMessageParser {
 	 * @return list of all decision knowledge elements explicitly marked in a
 	 *         message.
 	 */
-	public static List<DecisionKnowledgeElement> extractDecisionKnowledge(String message) {
-		List<DecisionKnowledgeElement> decisionKnowledgeElements = new ArrayList<DecisionKnowledgeElement>();
+	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(String message) {
+		Set<DecisionKnowledgeElement> decisionKnowledgeElements = new LinkedHashSet<DecisionKnowledgeElement>();
 		List<String> partsOfMessage = CommitMessageParser.getPartsOfMessage(message);
 		String description = "";
 		KnowledgeType type = null;
@@ -63,7 +65,7 @@ public class CommitMessageParser {
 		return parts;
 	}
 
-	public static List<String> getJiraIssueKeys(RevCommit revCommit, String projectKey) {
+	public static Set<String> getJiraIssueKeys(RevCommit revCommit, String projectKey) {
 		return getJiraIssueKeys(revCommit.getFullMessage(), projectKey);
 	}
 
@@ -74,11 +76,12 @@ public class CommitMessageParser {
 	 *            commit message that is parsed for JIRA issue keys.
 	 * @param projectKey
 	 *            key of the JIRA project that every JIRA issue key starts with.
-	 * @return list of all mentioned JIRA issue keys in upper case letters (might contain
-	 *         duplicates and is ordered by their appearance in the message).
+	 * @return list of all mentioned JIRA issue keys in upper case letters (might
+	 *         contain duplicates and is ordered by their appearance in the
+	 *         message).
 	 */
-	public static List<String> getJiraIssueKeys(String message, String projectKey) {
-		List<String> keys = new ArrayList<String>();
+	public static Set<String> getJiraIssueKeys(String message, String projectKey) {
+		Set<String> keys = new LinkedHashSet<String>();
 		if (projectKey == null) {
 			return keys;
 		}

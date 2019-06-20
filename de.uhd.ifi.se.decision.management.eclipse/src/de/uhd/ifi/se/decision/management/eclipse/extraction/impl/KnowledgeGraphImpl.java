@@ -1,6 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
@@ -198,11 +198,11 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void addJiraIssuesForCommit(GitCommit gitCommit, int currentDepth, int maxDepth) {
-		List<String> keys = gitCommit.getJiraIssueKeys();
+		Set<String> keys = gitCommit.getJiraIssueKeys();
 		if (keys.size() <= 0) {
 			return;
 		}
-		JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.get(0), jiraClient);
+		JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.iterator().next(), jiraClient);
 		if (jiraIssue == null) {
 			return;
 		}
@@ -212,7 +212,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void addCommitsForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
-		List<GitCommit> commits = jiraIssue.getCommits();
+		Set<GitCommit> commits = jiraIssue.getCommits();
 		for (GitCommit commit : commits) {
 			this.addVertex(commit);
 			this.addEdge(jiraIssue, commit);

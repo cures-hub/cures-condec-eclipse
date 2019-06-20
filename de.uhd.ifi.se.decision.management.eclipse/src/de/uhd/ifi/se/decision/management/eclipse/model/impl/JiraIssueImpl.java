@@ -2,28 +2,30 @@ package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
  * Class for JIRA issue as part of the knowledge graph.
  */
-public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
+public class JiraIssueImpl extends NodeImpl implements JiraIssue {
 	private Issue issue;
 	private String jiraIssueKey;
-	
-	private List<GitCommit> commits;
-	private List<JiraIssue> linkedJiraIssues;
+
+	private Set<GitCommit> commits;
+	private Set<JiraIssue> linkedJiraIssues;
 
 	public JiraIssueImpl(Issue issue) {
 		this.issue = issue;
 		this.jiraIssueKey = issue.getKey();
-		this.commits = new ArrayList<GitCommit>();
+		this.commits = new HashSet<GitCommit>();
+		this.linkedJiraIssues = new HashSet<JiraIssue>();
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	 * @alternative GitClient.getOrCreate().getCommitsForJiraIssue(jiraIssueKey);
 	 */
 	@Override
-	public List<GitCommit> getCommits() {
+	public Set<GitCommit> getCommits() {
 		if (commits.isEmpty()) {
 			List<GitCommit> allCommits = new ArrayList<GitCommit>(GitCommit.instances.values());
 			for (GitCommit gitCommit : allCommits) {
@@ -78,9 +80,9 @@ public class JiraIssueImpl extends NodeImpl implements Node, JiraIssue {
 	public void addCommit(GitCommit gitCommit) {
 		this.commits.add(gitCommit);
 	}
-	
+
 	@Override
-	public List<JiraIssue> getLinkedJiraIssues() {		
+	public Set<JiraIssue> getLinkedJiraIssues() {
 		return linkedJiraIssues;
 	}
 }

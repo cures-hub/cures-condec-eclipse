@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -125,7 +126,7 @@ public class GitClientImpl implements GitClient {
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
 				GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
-				List<ChangedFile> changedFiles = getChangedFiles(commit);
+				Set<ChangedFile> changedFiles = getChangedFiles(commit);
 				commit.setChangedFiles(changedFiles);
 				commits.add(commit);
 			}
@@ -176,9 +177,9 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public List<ChangedFile> getChangedFiles(GitCommit commit) {
+	public Set<ChangedFile> getChangedFiles(GitCommit commit) {
 		Map<DiffEntry, EditList> diff = getDiff(commit);
-		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
+		Set<ChangedFile> changedFiles = new HashSet<ChangedFile>();
 		for (DiffEntry entry : diff.keySet()) {
 			ChangedFile changedFile = ChangedFile.getOrCreate(entry, path);
 			changedFile.addCommit(commit);

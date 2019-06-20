@@ -31,4 +31,13 @@ public class TestNode {
 		assertFalse(decision.addLinkedNode(decision));
 		assertTrue(decision.addLinkedNode(issue));
 	}
+
+	@Test
+	public void testGetLinkedNode() {
+		DecisionKnowledgeElement decision = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
+				"This is a decision!");
+		DecisionKnowledgeElement issue = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE, "How should we...?");
+		decision.addLinkedNode(issue);
+		assertEquals(1, decision.getLinkedNodes().size());
+	}
 }

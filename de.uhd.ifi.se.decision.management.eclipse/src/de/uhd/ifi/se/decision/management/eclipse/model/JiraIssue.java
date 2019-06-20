@@ -2,8 +2,8 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
@@ -94,16 +94,17 @@ public interface JiraIssue extends Node {
 	 * @return URL to the JIRA issue on the JIRA server as a URI object.
 	 */
 	URI getUri();
-	
-	/**
-	 * Returns the commits linked to a JIRA issue as a list of {@link GitCommit} objects.
-	 * 
-	 * @return commits linked to a JIRA issue as a list of {@link GitCommit} objects.
-	 */
-	List<GitCommit> getCommits();
 
 	/**
-	 * Adds a {@link GitCommit} objects to the list of commits that the file was
+	 * Returns the commits linked to a JIRA issue as a set of {@link GitCommit}
+	 * objects.
+	 * 
+	 * @return commits linked to a JIRA issue as a set of {@link GitCommit} objects.
+	 */
+	Set<GitCommit> getCommits();
+
+	/**
+	 * Adds a {@link GitCommit} objects to the set of commits that the file was
 	 * changed in.
 	 * 
 	 * @param gitCommits
@@ -112,9 +113,11 @@ public interface JiraIssue extends Node {
 	void addCommit(GitCommit gitCommit);
 
 	/**
-	 * Returns the JIRA issues linked to a JIRA issue as a list of {@link JiraIssue} objects.
+	 * Returns the JIRA issues linked to a JIRA issue as a set of {@link JiraIssue}
+	 * objects.
 	 * 
-	 * @return JIRA issues linked to a JIRA issue as a list of {@link JiraIssue} objects.
+	 * @return JIRA issues linked to a JIRA issue as a set of {@link JiraIssue}
+	 *         objects.
 	 */
-	List<JiraIssue> getLinkedJiraIssues();
+	Set<JiraIssue> getLinkedJiraIssues();
 }

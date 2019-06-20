@@ -1,8 +1,8 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 
@@ -19,13 +19,13 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	private IPath path;
-	private List<CodeMethod> methodsInClass;
-	private List<GitCommit> commits;
+	private Set<CodeMethod> methodsInClass;
+	private Set<GitCommit> commits;
 
 	public ChangedFileImpl(IPath path) {
 		this.path = path;
 		this.methodsInClass = parseMethods();
-		this.commits = new ArrayList<GitCommit>();
+		this.commits = new LinkedHashSet<GitCommit>();
 	}
 
 	@Override
@@ -44,8 +44,8 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		return fileExtension != null && fileExtension.equalsIgnoreCase("java");
 	}
 
-	private List<CodeMethod> parseMethods() {
-		List<CodeMethod> methodsInClass = new ArrayList<CodeMethod>();
+	private Set<CodeMethod> parseMethods() {
+		Set<CodeMethod> methodsInClass = new LinkedHashSet<CodeMethod>();
 
 		if (!isExistingJavaClass()) {
 			return methodsInClass;
@@ -89,7 +89,7 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 	}
 
 	@Override
-	public List<CodeMethod> getCodeMethods() {
+	public Set<CodeMethod> getCodeMethods() {
 		return this.methodsInClass;
 	}
 
@@ -104,12 +104,12 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 	}
 
 	@Override
-	public List<GitCommit> getCommits() {
+	public Set<GitCommit> getCommits() {
 		return commits;
 	}
 
 	@Override
 	public void addCommit(GitCommit gitCommit) {
-		this.commits.add(gitCommit);		
+		this.commits.add(gitCommit);
 	}
 }

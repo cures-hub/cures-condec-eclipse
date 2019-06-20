@@ -3,6 +3,7 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.api.Git;
@@ -115,13 +116,13 @@ public interface GitClient {
 	Map<DiffEntry, EditList> getDiff(GitCommit commit);
 
 	/**
-	 * Get a list of changed files for a commit.
+	 * Returns a set of changed files for a commit.
 	 * 
 	 * @param commit
 	 *            as a {@link GitCommit} object
-	 * @return list of {@link ChangedFile} objects.
+	 * @return set of {@link ChangedFile} objects.
 	 */
-	List<ChangedFile> getChangedFiles(GitCommit commit);
+	Set<ChangedFile> getChangedFiles(GitCommit commit);
 
 	/**
 	 * Get the jgit git object.

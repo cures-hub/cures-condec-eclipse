@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -122,7 +123,7 @@ public class TestGitClient {
 	@Test
 	public void testGetChangedFiles() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		List<ChangedFile> changedFiles = gitClient.getChangedFiles(commits.get(0));
+		Set<ChangedFile> changedFiles = gitClient.getChangedFiles(commits.get(0));
 		assertEquals(5, changedFiles.size());
 	}
 

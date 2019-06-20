@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.junit.AfterClass;
@@ -38,15 +39,15 @@ public class TestGitCommit {
 	@Test
 	public void testGetJiraIssueKey() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		assertEquals("ECONDEC-1", commits.get(0).getJiraIssueKeys().get(0));
+		assertEquals("ECONDEC-1", commits.get(0).getJiraIssueKeys().iterator().next());
 	}
 
 	@Test
 	public void testGetDecisionKnowledgeFromMessage() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		List<DecisionKnowledgeElement> elements = commits.get(1).getDecisionKnowledgeFromMessage();
+		Set<DecisionKnowledgeElement> elements = commits.get(1).getDecisionKnowledgeFromMessage();
 		assertEquals(5, elements.size());
-		assertEquals("How to import dependencies for this plugin?", elements.get(0).getSummary());
+		assertEquals("How to import dependencies for this plugin?", elements.iterator().next().getSummary());
 	}
 
 	@Test
@@ -55,7 +56,7 @@ public class TestGitCommit {
 		GitCommit commit = commits.get(0);
 		assertEquals(5, commit.getChangedFiles().size());
 		
-		ChangedFile changedFile = commit.getChangedFiles().get(0);
+		ChangedFile changedFile = commit.getChangedFiles().iterator().next();
 		assertTrue(changedFile.getCommits().size() > 0);
 	}
 
