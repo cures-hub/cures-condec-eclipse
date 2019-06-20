@@ -14,7 +14,7 @@ import org.gephi.project.api.Workspace;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;

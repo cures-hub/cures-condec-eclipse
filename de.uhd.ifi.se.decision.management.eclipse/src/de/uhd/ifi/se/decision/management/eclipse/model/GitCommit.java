@@ -1,8 +1,8 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -46,37 +46,37 @@ public interface GitCommit extends Node {
 	 * Returns decision knowledge elements documented in the commit message.
 	 * 
 	 * @see CommitMessageParser
-	 * @return list of all decision knowledge elements explicitly marked in a commit
+	 * @return set of all decision knowledge elements explicitly marked in a commit
 	 *         message.
 	 */
-	List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage();
+	Set<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage();
 
 	/**
 	 * Returns the files changed by the commit (both java and other files).
 	 * 
 	 * @see ChangedFile
-	 * @return list of changed files.
+	 * @return set of changed files.
 	 */
-	List<ChangedFile> getChangedFiles();
+	Set<ChangedFile> getChangedFiles();
 
 	/**
 	 * Sets the files changed by the commit (both java and other files). This method
 	 * is used in the GitClient.
 	 * 
 	 * @param changedFiles
-	 *            list of changed files.
+	 *            set of changed files.
 	 * @see ChangedFile
 	 * @see GitClient
 	 */
-	void setChangedFiles(List<ChangedFile> changedFiles);
+	void setChangedFiles(Set<ChangedFile> changedFiles);
 
 	/**
 	 * Returns the JIRA issue keys mentioned in the commit message.
 	 * 
 	 * @see CommitMessageParser
-	 * @return list of the JIRA issue keys mentioned in a commit message.
+	 * @return set of the JIRA issue keys mentioned in a commit message.
 	 */
-	List<String> getJiraIssueKeys();
+	Set<String> getJiraIssueKeys();
 
 	/**
 	 * Returns the RevCommit object associated with this GitCommit.
@@ -85,4 +85,13 @@ public interface GitCommit extends Node {
 	 * @return object of class {@link RevCommit};
 	 */
 	RevCommit getRevCommit();
+
+	/**
+	 * Returns the JIRA issues linked to the commit as a set of {@link JiraIssue}
+	 * objects.
+	 * 
+	 * @return JIRA issues linked to the commit as a set of {@link JiraIssue}
+	 *         objects.
+	 */
+	Set<JiraIssue> getLinkedJiraIssues();
 }

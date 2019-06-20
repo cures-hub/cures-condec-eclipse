@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class TestGitClient {
 
@@ -28,9 +30,20 @@ public class TestGitClient {
 	@Before
 	public void setUp() {
 		path = initPathToGitRepo();
-		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		gitClient = initGitClient(path);
 	}
-	
+
+	public static GitClient initGitClient() {
+		return initGitClient(TestGitClient.initPathToGitRepo());
+	}
+
+	public static GitClient initGitClient(IPath path) {
+		GitClient gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		GitClient.instances.clear();
+		GitClient.instances.put(ConfigPersistenceManager.getPathToGit(), gitClient);
+		return gitClient;
+	}
+
 	public static IPath initPathToGitRepo() {
 		File file = new File(".");
 		String canonicalPath = "";
@@ -43,11 +56,6 @@ public class TestGitClient {
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
 		return path;
-	}
-
-	@Test
-	public void testGetOrCreate() {
-		assertEquals(gitClient, GitClient.getOrCreate(path, "HEAD", "ECONDEC"));
 	}
 
 	@Test
@@ -110,7 +118,7 @@ public class TestGitClient {
 	@Test
 	public void testGitClientCreationWithSettings() {
 		assertNotNull(new GitClientImpl());
-		assertEquals(GitClient.getOrCreate(), GitClient.getOrCreate());
+		assertNotNull(GitClient.getOrCreate());
 	}
 
 	@Test
@@ -118,11 +126,11 @@ public class TestGitClient {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertNotNull(gitClient.getDiff(commits.get(0)));
 	}
-	
+
 	@Test
 	public void testGetChangedFiles() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		List<ChangedFile> changedFiles = gitClient.getChangedFiles(commits.get(0));
+		Set<ChangedFile> changedFiles = gitClient.getChangedFiles(commits.get(0));
 		assertEquals(5, changedFiles.size());
 	}
 

@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
@@ -47,7 +45,7 @@ public class JiraClientImpl implements JiraClient {
 
 	@Override
 	public boolean authenticate() {
-		return authenticate(ConfigPersistenceManager.getJiraURI(), ConfigPersistenceManager.getJiraUser(),
+		return authenticate(ConfigPersistenceManager.getJiraUri(), ConfigPersistenceManager.getJiraUser(),
 				ConfigPersistenceManager.getJiraPassword());
 	}
 
@@ -90,30 +88,26 @@ public class JiraClientImpl implements JiraClient {
 	@Override
 	public Set<JiraIssue> getAllJiraIssues() {
 		Set<JiraIssue> jiraIssues = new HashSet<JiraIssue>();
-		if (!isWorking) {
-			System.err.println("The JIRA client cannot retrieve JIRA issues.");
-			return jiraIssues;
-		}
 		for (BasicIssue jiraIssue : this.getJiraRestClient().getSearchClient()
-				.searchJql("project=\"" + projectKey + "\"", -1, 0, null).claim().getIssues()) {
+				.searchJql("project=\"" + projectKey + "\"").claim().getIssues()) {
 			jiraIssues.add(JiraIssue.getOrCreate(jiraIssue.getKey(), this));
 		}
 		return jiraIssues;
 	}
 
 	@Override
-	public Issue getJiraIssue(String jiraIssueKey) {
-		Issue jiraIssue = null;
+	public JiraIssue getJiraIssue(String jiraIssueKey) {
+		Issue issue = null;
 		try {
-			jiraIssue = this.getJiraRestClient().getIssueClient().getIssue(jiraIssueKey).get();
+			issue = this.jiraRestClient.getIssueClient().getIssue(jiraIssueKey).get();
 		} catch (InterruptedException | ExecutionException e) {
 			System.err.println(jiraIssueKey + ": " + e.getMessage());
 		}
-		return jiraIssue;
+		return JiraIssue.getOrCreate(issue);
 	}
 
 	@Override
-	public Map<Issue, Integer> getLinkedJiraIssues(Issue jiraIssue, int distance) {
+	public Map<Issue, Integer> getLinkedJiraIssuesAtDistance(JiraIssue jiraIssue, int distance) {
 		Map<Issue, Integer> linkedJiraIssuesAtDistance = new HashMap<Issue, Integer>();
 
 		if (jiraIssue == null || distance == 0) {
@@ -121,13 +115,13 @@ public class JiraClientImpl implements JiraClient {
 		}
 
 		List<String> analyzedIssueKeys = new ArrayList<String>();
-		analyzedIssueKeys.add(jiraIssue.getKey());
+		analyzedIssueKeys.add(jiraIssue.getJiraIssueKey());
 		for (int i = 1; i <= distance; i++) {
-			List<String> neighborIssueKeys = getKeysOfNeighborJiraIssues(jiraIssue);
+			Set<String> neighborIssueKeys = jiraIssue.getKeysOfLinkedJiraIssues();
 			for (String issueKey : neighborIssueKeys) {
 				if (!analyzedIssueKeys.contains(issueKey)) {
 					analyzedIssueKeys.add(issueKey);
-					Issue linkedJiraIssue = this.getJiraIssue(issueKey);
+					Issue linkedJiraIssue = this.getJiraIssue(issueKey).getIssue();
 					linkedJiraIssuesAtDistance.put(linkedJiraIssue, i);
 				}
 			}
@@ -136,24 +130,19 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public List<String> getKeysOfNeighborJiraIssues(Issue jiraIssue) {
-		List<String> neighborIssueKeys = new ArrayList<String>();
+	public Set<JiraIssue> getLinkedJiraIssues(JiraIssue jiraIssue) {
+		Set<JiraIssue> linkedJiraIssues = new HashSet<JiraIssue>();
 
 		if (jiraIssue == null) {
-			return neighborIssueKeys;
+			return linkedJiraIssues;
 		}
 
-		Iterable<IssueLink> issueLinkIterable = jiraIssue.getIssueLinks();
-		Iterator<IssueLink> issueLinkIterator = issueLinkIterable.iterator();
-
-		while (issueLinkIterator.hasNext()) {
-			IssueLink link = issueLinkIterator.next();
-
-			String neighborIssueKey = link.getTargetIssueKey();
-			neighborIssueKeys.add(neighborIssueKey);
+		Set<String> neighborJiraIssueKeys = jiraIssue.getKeysOfLinkedJiraIssues();
+		for (String key : neighborJiraIssueKeys) {
+			JiraIssue linkedJiraIssue = this.getJiraIssue(key);
+			linkedJiraIssues.add(linkedJiraIssue);
 		}
-
-		return neighborIssueKeys;
+		return linkedJiraIssues;
 	}
 
 	@Override
@@ -169,12 +158,17 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
+	public boolean isWorking() {
+		return isWorking;
+	}
+
+	@Override
 	public JiraRestClient getJiraRestClient() {
 		return this.jiraRestClient;
 	}
 
 	@Override
-	public boolean isWorking() {
-		return isWorking;
+	public void setJiraRestClient(JiraRestClient jiraRestClient) {
+		this.jiraRestClient = jiraRestClient;
 	}
 }

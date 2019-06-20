@@ -1,6 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 
 /**
  * Interface to create a view for the knowledge graph model class.

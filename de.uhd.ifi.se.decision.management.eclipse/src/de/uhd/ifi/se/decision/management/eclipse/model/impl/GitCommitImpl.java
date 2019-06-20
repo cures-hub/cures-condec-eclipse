@@ -1,7 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -9,16 +9,18 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
  * Class for git commits as part of the knowledge graph.
  */
-public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
+public class GitCommitImpl extends NodeImpl implements GitCommit {
 	private RevCommit revCommit;
-	private List<String> jiraIssueKeys = new ArrayList<String>();
-	private List<ChangedFile> changedFiles;
-	private List<DecisionKnowledgeElement> decisionKnowledgeElements;
+	private Set<String> jiraIssueKeys;
+	private Set<ChangedFile> changedFiles;
+	private Set<DecisionKnowledgeElement> decisionKnowledgeElements;
+	private Set<JiraIssue> linkedJiraIssues;
 
 	public GitCommitImpl(RevCommit revCommit, String projectKey) {
 		this.revCommit = revCommit;
@@ -27,14 +29,9 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 		}
 
 		this.jiraIssueKeys = CommitMessageParser.getJiraIssueKeys(revCommit, projectKey);
-
 		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(revCommit);
-		for (DecisionKnowledgeElement knowledgeElement : decisionKnowledgeElements) {
-			this.addLinkedNode(knowledgeElement);
-			knowledgeElement.addLinkedNode(this);
-		}
-
-		this.changedFiles = new ArrayList<ChangedFile>();
+		this.changedFiles = new HashSet<ChangedFile>();
+		this.linkedJiraIssues = new HashSet<JiraIssue>();
 	}
 
 	public GitCommitImpl(RevCommit commit) {
@@ -42,26 +39,22 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 	}
 
 	@Override
-	public List<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage() {
+	public Set<DecisionKnowledgeElement> getDecisionKnowledgeFromMessage() {
 		return decisionKnowledgeElements;
 	}
 
 	@Override
-	public List<ChangedFile> getChangedFiles() {
+	public Set<ChangedFile> getChangedFiles() {
 		return changedFiles;
 	}
 
 	@Override
-	public void setChangedFiles(List<ChangedFile> changedFiles) {
+	public void setChangedFiles(Set<ChangedFile> changedFiles) {
 		this.changedFiles = changedFiles;
-		for (Node node : this.changedFiles) {
-			this.addLinkedNode(node);
-			node.addLinkedNode(this);
-		}
 	}
 
 	@Override
-	public List<String> getJiraIssueKeys() {
+	public Set<String> getJiraIssueKeys() {
 		return jiraIssueKeys;
 	}
 
@@ -76,5 +69,19 @@ public class GitCommitImpl extends NodeImpl implements Node, GitCommit {
 			return "";
 		}
 		return revCommit.getShortMessage();
+	}
+
+	@Override
+	public Set<JiraIssue> getLinkedJiraIssues() {
+		return linkedJiraIssues;
+	}
+
+	@Override
+	public Set<Node> getLinkedNodes() {
+		Set<Node> linkedNodes = new HashSet<Node>();
+		linkedNodes.addAll(this.getChangedFiles());
+		linkedNodes.addAll(this.getDecisionKnowledgeFromMessage());
+		linkedNodes.addAll(this.getLinkedJiraIssues());
+		return linkedNodes;
 	}
 }

@@ -3,7 +3,7 @@ package de.uhd.ifi.se.decision.management.eclipse.view;
 import org.gephi.graph.api.NodeIterable;
 import org.jgrapht.Graph;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**

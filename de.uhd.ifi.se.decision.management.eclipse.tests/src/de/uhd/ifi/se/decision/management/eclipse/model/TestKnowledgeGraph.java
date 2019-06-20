@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
-
 import org.eclipse.core.runtime.IPath;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,11 +11,9 @@ import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 
 public class TestKnowledgeGraph {
 
@@ -26,10 +22,8 @@ public class TestKnowledgeGraph {
 
 	@Before
 	public void setUp() {
-		IPath path = TestGitClient.initPathToGitRepo();
-		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
-
-		jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
+		gitClient = TestGitClient.initGitClient();
+		jiraClient = TestJiraClient.initJiraClient();
 	}
 
 	@Test
@@ -43,18 +37,35 @@ public class TestKnowledgeGraph {
 	}
 
 	@Test
-	public void testKnowledgeGraphForSubGraph() {
-		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
-				"This is a decision!");
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, element, 0);
-		assertTrue(knowledgeGraph.vertexSet().size() == 1);
+	public void testKnowledgeGraphForSubGraphFromWorkItem() {
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		assertEquals(1, workItem.getLinkedJiraIssues().size());
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, workItem, 1);
+		assertEquals(7, knowledgeGraph.vertexSet().size());
 	}
-	
+
+	@Test
+	public void testKnowledgeGraphForSubGraphFromFile() {
+		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
+		ChangedFile file = ChangedFile.getOrCreate(path);
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, file, 1);
+
+		assertTrue(knowledgeGraph.vertexSet().size() >= 10);
+	}
+
+	@Test
+	public void testKnowledgeGraphImplicitGitAndJiraClients() {
+		assertNotNull(new KnowledgeGraphImpl());
+		assertNotNull(new KnowledgeGraphImpl(null, 0));
+	}
+
 	@AfterClass
 	public static void tearDown() {
 		Node.nodes.clear();
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
 		ChangedFile.instances.clear();
+		JiraIssue.instances.clear();
+		JiraClient.instances.clear();
 	}
 }

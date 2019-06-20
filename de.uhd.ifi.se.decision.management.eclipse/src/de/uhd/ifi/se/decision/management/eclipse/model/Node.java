@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-
 /**
  * Interface for nodes of the knowledge graph.
  * 
@@ -39,16 +37,7 @@ public interface Node {
 	 * @return id of the node.
 	 */
 	long getId();
-
-	/**
-	 * Add a reference to another node to create a link/an edge.
-	 * 
-	 * @param node
-	 *            is the node, where the link is pointing to.
-	 * @return is true, if linking was successful.
-	 */
-	boolean addLinkedNode(Node node);
-
+	
 	/**
 	 * Get a set of all linked nodes.
 	 * 

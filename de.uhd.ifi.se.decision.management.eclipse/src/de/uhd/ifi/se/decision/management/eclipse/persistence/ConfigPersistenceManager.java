@@ -27,27 +27,27 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault("PATH_TO_GIT", new Path("\\.git").toString());
+		store.setDefault("PATH_TO_GIT", new Path(".git").toString());
 		store.setDefault("BRANCH", "HEAD");
 
-		store.setDefault("JIRA_URL", "http://jira-se.ifi.uni-heidelberg.de");
+		store.setDefault("JIRA_URL", "");
 		store.setDefault("JIRA_USER", "");
 		store.setDefault("JIRA_PASSWORD", "");
-		store.setDefault("JIRA_PROJECT_KEY", "ConDec");
+		store.setDefault("JIRA_PROJECT_KEY", "");
 
 		store.setDefault("LINK_DISTANCE", 4);
 		store.setDefault("DECREASE_FACTOR", "1.5");
 	}
 
 	public static IPath getPathToGit() {
-		return new Path(getPreference(PATH_TO_GIT, "\\.git"));
+		return new Path(getPreference(PATH_TO_GIT, ".git")).makeAbsolute();
 	}
 
 	public static String getBranch() {
 		return getPreference(BRANCH, "HEAD");
 	}
 
-	public static URI getJiraURI() {
+	public static URI getJiraUri() {
 		return URI.create(getPreference(JIRA_URL, ""));
 	}
 
@@ -64,7 +64,13 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static int getLinkDistance() {
-		return Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
+		int linkDistance = 4;
+		try {
+			linkDistance = Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
+		} catch (NullPointerException e) {
+			System.err.print("The default preference value is used due to a " + e + ".");
+		}
+		return linkDistance;
 	}
 
 	public static float getDecreaseFactor() {
@@ -76,7 +82,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		try {
 			preference = Activator.getDefault().getPreferenceStore().getString(key.getQualifier());
 		} catch (NullPointerException e) {
-			System.err.print(e);
+			System.err.print("The default preference value is used due to a " + e + ".");
 		}
 		return preference;
 	}

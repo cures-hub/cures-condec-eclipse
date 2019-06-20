@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -52,7 +53,7 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * @alternative Extend the RepositoryProvider class of EGit!
  * 
  * @issue How to access commits related to a JIRA issue?
- * @decision The jgit library is used to access git repositories!
+ * @decision The jGit library is used to access git repositories!
  * @pro The jGit library is open source and no third party JIRA plug-in needs to
  *      be installed.
  */
@@ -60,6 +61,7 @@ public class GitClientImpl implements GitClient {
 
 	private Repository repository;
 	private Git git;
+	private IPath path;
 	private DiffFormatter diffFormatter;
 	private String projectKey;
 
@@ -83,6 +85,7 @@ public class GitClientImpl implements GitClient {
 	 *            of the associated JIRA project.
 	 */
 	public GitClientImpl(IPath path, String reference, String projectKey) {
+		this.path = path;
 		FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
 		repositoryBuilder.setMustExist(true);
 		repositoryBuilder.setGitDir(path.toFile());
@@ -123,7 +126,7 @@ public class GitClientImpl implements GitClient {
 			Iterator<RevCommit> iterator = iterable.iterator();
 			while (iterator.hasNext()) {
 				GitCommit commit = GitCommit.getOrCreate(iterator.next(), projectKey);
-				List<ChangedFile> changedFiles = getChangedFiles(commit);
+				Set<ChangedFile> changedFiles = getChangedFiles(commit);
 				commit.setChangedFiles(changedFiles);
 				commits.add(commit);
 			}
@@ -174,18 +177,13 @@ public class GitClientImpl implements GitClient {
 	}
 
 	@Override
-	public List<ChangedFile> getChangedFiles(GitCommit commit) {
+	public Set<ChangedFile> getChangedFiles(GitCommit commit) {
 		Map<DiffEntry, EditList> diff = getDiff(commit);
-		IPath pathToGit = null;
-		try {
-			pathToGit = new Path(this.repository.getDirectory().getCanonicalPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		List<ChangedFile> changedFiles = new ArrayList<ChangedFile>();
+		Set<ChangedFile> changedFiles = new HashSet<ChangedFile>();
 		for (DiffEntry entry : diff.keySet()) {
-			changedFiles.add(ChangedFile.getOrCreate(entry, pathToGit));
+			ChangedFile changedFile = ChangedFile.getOrCreate(entry, path);
+			changedFile.addCommit(commit);
+			changedFiles.add(changedFile);
 		}
 		return changedFiles;
 	}
@@ -310,5 +308,10 @@ public class GitClientImpl implements GitClient {
 		} catch (RevisionSyntaxException | IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public IPath getPath() {
+		return path;
 	}
 }

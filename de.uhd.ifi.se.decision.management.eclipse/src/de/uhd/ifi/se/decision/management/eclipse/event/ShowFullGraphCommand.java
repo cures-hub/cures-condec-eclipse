@@ -4,8 +4,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;

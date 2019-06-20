@@ -2,7 +2,6 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,11 +33,10 @@ public interface JiraClient {
 	 * @return JiraClient instance.
 	 */
 	public static JiraClient getOrCreate() {
-		URI uri = ConfigPersistenceManager.getJiraURI();
+		URI uri = ConfigPersistenceManager.getJiraUri();
 		JiraClient jiraClient;
 		if (JiraClient.instances.containsKey(uri)) {
 			jiraClient = JiraClient.instances.get(uri);
-			jiraClient.authenticate();
 		} else {
 			jiraClient = new JiraClientImpl();
 			JiraClient.instances.put(uri, jiraClient);
@@ -92,7 +90,25 @@ public interface JiraClient {
 	 *            JIRA issue key as a String.
 	 * @return JIRA issue for the given key.
 	 */
-	public Issue getJiraIssue(String jiraIssueKey);
+	public JiraIssue getJiraIssue(String jiraIssueKey);
+
+	/**
+	 * Retrieves the issues linked to a given issue with a certain link distance
+	 * 
+	 * @param issue
+	 *            JIRA issue
+	 * @return Linked issues mapped to link distance
+	 */
+	public Map<Issue, Integer> getLinkedJiraIssuesAtDistance(JiraIssue issue, int distance);
+
+	/**
+	 * Determines whether the JIRA REST client is authenticated and the project is
+	 * accessable.
+	 * 
+	 * @return true if the JIRA REST client is authenticated and the project is
+	 *         accessable
+	 */
+	public boolean isWorking();
 
 	/**
 	 * Returns the JiraRestClient instance.
@@ -103,29 +119,13 @@ public interface JiraClient {
 	public JiraRestClient getJiraRestClient();
 
 	/**
-	 * Retrieves keys of the JIRA issues linked to a JIRA issue at link distance 1.
+	 * Sets the JiraRestClient instance.
 	 * 
-	 * @param jiraIssue
-	 *            JIRA issue.
-	 * @return keys of linked JIRA issues as a list of Strings.
+	 * @see JiraRestClient
+	 * @param JiraRestClient
+	 *            instance.
 	 */
-	public List<String> getKeysOfNeighborJiraIssues(Issue jiraIssue);
+	public void setJiraRestClient(JiraRestClient jiraRestClient);
 
-	/**
-	 * Retrieves the issues linked to a given issue with a certain link distance
-	 * 
-	 * @param issue
-	 *            JIRA issue
-	 * @return Linked issues mapped to link distance
-	 */
-	public Map<Issue, Integer> getLinkedJiraIssues(Issue issue, int distance);
-
-	/**
-	 * Determines whether the JIRA REST client is authenticated and the project is
-	 * accessable.
-	 * 
-	 * @return true if the JIRA REST client is authenticated and the project is
-	 *         accessable
-	 */
-	public boolean isWorking();
+	Set<JiraIssue> getLinkedJiraIssues(JiraIssue jiraIssue);
 }
