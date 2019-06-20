@@ -1,9 +1,9 @@
-package de.uhd.ifi.se.decision.management.eclipse.extraction;
+package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import org.jgrapht.Graph;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.Link;
-import de.uhd.ifi.se.decision.management.eclipse.model.Node;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 
 /**
  * Interface to create a knowledge graph for the entire project or a sub-graph

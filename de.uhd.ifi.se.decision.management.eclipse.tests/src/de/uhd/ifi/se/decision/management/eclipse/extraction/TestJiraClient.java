@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -24,7 +25,7 @@ public class TestJiraClient {
 	public void setUp() {
 		jiraClient = initJiraClient();
 	}
-	
+
 	public static JiraClient initJiraClient() {
 		JiraClient jiraClient = new JiraClientImpl();
 		jiraClient.setJiraRestClient(new MockJiraRestClient());
@@ -37,7 +38,13 @@ public class TestJiraClient {
 	public void testGetOrCreate() {
 		assertEquals(jiraClient, JiraClient.getOrCreate());
 	}
-	
+
+	@Test
+	public void testConstructorNotWorking() {
+		JiraClient jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
+		assertFalse(jiraClient.isWorking());
+	}
+
 	@Test
 	public void testGetAllJiraIssues() {
 		assertEquals(0, jiraClient.getAllJiraIssues().size());
@@ -47,10 +54,10 @@ public class TestJiraClient {
 	public void testGetLinkedJiraIssues() {
 		Set<JiraIssue> linkedJiraIssues = jiraClient.getLinkedJiraIssues(null);
 		assertEquals(0, linkedJiraIssues.size());
-		
-		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);		
+
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		JiraIssue systemFunction = JiraIssue.getOrCreate("ECONDEC-5", jiraClient);
-		
+
 		linkedJiraIssues = jiraClient.getLinkedJiraIssues(workItem);
 		assertFalse(linkedJiraIssues.isEmpty());
 		assertEquals(systemFunction, linkedJiraIssues.iterator().next());

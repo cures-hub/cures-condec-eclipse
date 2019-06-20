@@ -1,7 +1,5 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-
 /**
  * Interface for links (=edges) in the knowledge graph.
  * 

@@ -40,6 +40,12 @@ public class TestJiraIssue {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("", jiraClient);
 		assertNull(jiraIssue);
 	}
+	
+	@Test
+	public void testGetOrCreateKeyWrong() {
+		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-0", jiraClient);
+		assertNull(jiraIssue);
+	}
 
 	@Test
 	public void testGetOrCreateKeyValid() {

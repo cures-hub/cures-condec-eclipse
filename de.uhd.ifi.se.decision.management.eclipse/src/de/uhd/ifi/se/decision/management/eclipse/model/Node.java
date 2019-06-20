@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
-
 /**
  * Interface for nodes of the knowledge graph.
  * 

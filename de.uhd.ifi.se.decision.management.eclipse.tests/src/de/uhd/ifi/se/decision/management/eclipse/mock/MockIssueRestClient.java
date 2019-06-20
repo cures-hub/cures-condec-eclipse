@@ -132,13 +132,16 @@ public class MockIssueRestClient implements IssueRestClient {
 			public Issue get() throws InterruptedException, ExecutionException {
 				List<IssueLink> issueLinks = new ArrayList<IssueLink>();
 				switch (key) {
+				case "ECONDEC-1":
+					issueLinks.add(new IssueLink("ECONDEC-5", null, null));
+					return createIssue("WI: Create empty Eclipse plugin", key, issueLinks);
+					
 				case "ECONDEC-5":
 					issueLinks.add(new IssueLink("ECONDEC-1", null, null));
 					return createIssue("SF: Show knowledge graph", "ECONDEC-5", issueLinks);
 
 				default:
-					issueLinks.add(new IssueLink("ECONDEC-5", null, null));
-					return createIssue("WI: Create empty Eclipse plugin", key, issueLinks);
+					return null;
 				}
 			}
 
