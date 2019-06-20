@@ -16,10 +16,8 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.mock.MockIssueRestClient;
-import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraRestClient;
-import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class TestJiraIssue {
 
@@ -27,10 +25,7 @@ public class TestJiraIssue {
 
 	@Before
 	public void setUp() {
-		jiraClient = new JiraClientImpl();
-		jiraClient.setJiraRestClient(new MockJiraRestClient());
-		JiraClient.instances.clear();
-		JiraClient.instances.put(ConfigPersistenceManager.getJiraUri(), jiraClient);
+		jiraClient = TestJiraClient.initJiraClient();
 	}
 
 	@Test
@@ -90,20 +85,30 @@ public class TestJiraIssue {
 		assertEquals(commits.size(), jiraIssue.getCommits().size());
 		assertEquals(5, commits.size());
 	}
-	
+
 	@Test
 	public void testGetKeysOfLinkedJiraIssues() {
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(1, workItem.getKeysOfLinkedJiraIssues().size());
-		
+
 		JiraIssue systemFunction = JiraIssue.getOrCreate("ECONDEC-5", jiraClient);
 		assertEquals(1, systemFunction.getKeysOfLinkedJiraIssues().size());
 	}
-	
+
 	@Test
 	public void testGetLinkedJiraIssues() {
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(1, workItem.getLinkedJiraIssues().size());
+	}
+
+	@Test
+	public void testGetLinkedNodes() {
+		IPath path = TestGitClient.initPathToGitRepo();
+		GitClient gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		gitClient.getCommitsForJiraIssue("ECONDEC-1");
+
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		assertEquals(6, workItem.getLinkedNodes().size());
 	}
 
 	@AfterClass

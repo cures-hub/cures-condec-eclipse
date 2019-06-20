@@ -22,15 +22,25 @@ public class TestJiraClient {
 
 	@Before
 	public void setUp() {
-		jiraClient = new JiraClientImpl();
+		jiraClient = initJiraClient();
+	}
+	
+	public static JiraClient initJiraClient() {
+		JiraClient jiraClient = new JiraClientImpl();
 		jiraClient.setJiraRestClient(new MockJiraRestClient());
 		JiraClient.instances.clear();
 		JiraClient.instances.put(ConfigPersistenceManager.getJiraUri(), jiraClient);
+		return jiraClient;
 	}
 
 	@Test
 	public void testGetOrCreate() {
 		assertEquals(jiraClient, JiraClient.getOrCreate());
+	}
+	
+	@Test
+	public void testGetAllJiraIssues() {
+		assertEquals(0, jiraClient.getAllJiraIssues().size());
 	}
 
 	@Test

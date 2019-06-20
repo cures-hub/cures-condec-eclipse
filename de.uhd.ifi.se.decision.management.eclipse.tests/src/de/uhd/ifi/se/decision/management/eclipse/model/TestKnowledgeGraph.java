@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
-
 import org.eclipse.core.runtime.IPath;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +13,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
@@ -29,7 +27,7 @@ public class TestKnowledgeGraph {
 		IPath path = TestGitClient.initPathToGitRepo();
 		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
 
-		jiraClient = new JiraClientImpl(URI.create(""), "", "", "");
+		jiraClient = TestJiraClient.initJiraClient();
 	}
 
 	@Test
