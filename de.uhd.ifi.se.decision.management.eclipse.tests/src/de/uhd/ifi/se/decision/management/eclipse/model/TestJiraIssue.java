@@ -55,7 +55,7 @@ public class TestJiraIssue {
 	@Test
 	public void testGetOrCreateIssue() {
 		Issue newIssue = MockIssueRestClient.createIssue("WI: Add preference/settings page for Eclipse plugin",
-				"ECONDEC-2");
+				"ECONDEC-2", null);
 		assertNotNull(JiraIssue.getOrCreate(newIssue));
 	}
 
@@ -93,8 +93,11 @@ public class TestJiraIssue {
 	
 	@Test
 	public void testGetKeysOfLinkedJiraIssues() {
-		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
-		assertEquals(0, jiraIssue.getKeysOfLinkedJiraIssues().size());
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		assertEquals(1, workItem.getKeysOfLinkedJiraIssues().size());
+		
+		JiraIssue systemFunction = JiraIssue.getOrCreate("ECONDEC-5", jiraClient);
+		assertEquals(1, systemFunction.getKeysOfLinkedJiraIssues().size());
 	}
 
 	@AfterClass

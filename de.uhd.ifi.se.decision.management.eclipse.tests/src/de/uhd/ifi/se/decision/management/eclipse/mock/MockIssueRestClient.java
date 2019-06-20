@@ -130,7 +130,16 @@ public class MockIssueRestClient implements IssueRestClient {
 
 			@Override
 			public Issue get() throws InterruptedException, ExecutionException {
-				return createIssue("WI: Create empty Eclipse plugin", key);
+				List<IssueLink> issueLinks = new ArrayList<IssueLink>();
+				switch (key) {
+				case "ECONDEC-5":
+					issueLinks.add(new IssueLink("ECONDEC-1", null, null));
+					return createIssue("SF: Show knowledge graph", "ECONDEC-5", issueLinks);
+
+				default:
+					issueLinks.add(new IssueLink("ECONDEC-5", null, null));
+					return createIssue("WI: Create empty Eclipse plugin", key, issueLinks);
+				}
 			}
 
 			@Override
@@ -276,9 +285,7 @@ public class MockIssueRestClient implements IssueRestClient {
 		return null;
 	}
 
-	public static Issue createIssue(String summary, String key) {
-		List<IssueLink> issueLinks = new ArrayList<IssueLink>();
-
+	public static Issue createIssue(String summary, String key, List<IssueLink> issueLinks) {
 		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null,
 				new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null,
 				null, null, null, null, null, null, null, null, null, null, null, issueLinks, null, null, null, null,
