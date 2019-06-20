@@ -120,4 +120,14 @@ public interface JiraIssue extends Node {
 	 *         objects.
 	 */
 	Set<JiraIssue> getLinkedJiraIssues();
+
+	/**
+	 * Retrieves keys of the JIRA issues linked to a JIRA issue at link distance 1,
+	 * i.e. the keys of the neighbor JIRA issues.
+	 * 
+	 * @param jiraIssue
+	 *            JIRA issue.
+	 * @return keys of linked JIRA issues as a set of Strings.
+	 */
+	Set<String> getKeysOfLinkedJiraIssues();
 }

@@ -2,7 +2,6 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,22 +93,13 @@ public interface JiraClient {
 	public JiraIssue getJiraIssue(String jiraIssueKey);
 
 	/**
-	 * Retrieves keys of the JIRA issues linked to a JIRA issue at link distance 1.
-	 * 
-	 * @param jiraIssue
-	 *            JIRA issue.
-	 * @return keys of linked JIRA issues as a list of Strings.
-	 */
-	public List<String> getKeysOfNeighborJiraIssues(Issue jiraIssue);
-
-	/**
 	 * Retrieves the issues linked to a given issue with a certain link distance
 	 * 
 	 * @param issue
 	 *            JIRA issue
 	 * @return Linked issues mapped to link distance
 	 */
-	public Map<Issue, Integer> getLinkedJiraIssues(Issue issue, int distance);
+	public Map<Issue, Integer> getLinkedJiraIssuesAtDistance(JiraIssue issue, int distance);
 
 	/**
 	 * Determines whether the JIRA REST client is authenticated and the project is
@@ -136,4 +126,6 @@ public interface JiraClient {
 	 *            instance.
 	 */
 	public void setJiraRestClient(JiraRestClient jiraRestClient);
+
+	Set<JiraIssue> getLinkedJiraIssues(JiraIssue jiraIssue);
 }

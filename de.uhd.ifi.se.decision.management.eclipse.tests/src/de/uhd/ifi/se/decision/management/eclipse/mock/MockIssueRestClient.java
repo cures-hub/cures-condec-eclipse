@@ -3,7 +3,9 @@ package de.uhd.ifi.se.decision.management.eclipse.mock;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,7 @@ import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.Votes;
 import com.atlassian.jira.rest.client.api.domain.Watchers;
@@ -274,9 +277,11 @@ public class MockIssueRestClient implements IssueRestClient {
 	}
 
 	public static Issue createIssue(String summary, String key) {
+		List<IssueLink> issueLinks = new ArrayList<IssueLink>();
+
 		return new Issue(summary, URI.create("https://my-raspberry.pi/rest/" + key), key, null,
 				new BasicProject(null, "ECONDEC", null, "Eclipse ConDec"), null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-				null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null, issueLinks, null, null, null, null,
+				null, null, null, null);
 	}
 }

@@ -12,6 +12,7 @@ import org.eclipse.jgit.diff.EditList;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -54,10 +55,10 @@ public class TextualRepresentation {
 		JiraClient jiraClient = JiraClient.getOrCreate();
 
 		jiraClient.authenticate();
-		Issue issue = jiraClient.getJiraIssue(issueKey).getIssue();
+		JiraIssue issue = jiraClient.getJiraIssue(issueKey);
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssues(issue, distance);
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssuesAtDistance(issue, distance);
 
 		String outputCia2 = "";
 
@@ -153,7 +154,8 @@ public class TextualRepresentation {
 		}
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient.getLinkedJiraIssues(issue, distance);
+		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient
+				.getLinkedJiraIssuesAtDistance(jiraClient.getJiraIssue(issueKey), distance);
 
 		String linkedIssues = "Link distance " + distance + " was chosen. Linked issues are:\n";
 

@@ -90,6 +90,12 @@ public class TestJiraIssue {
 		assertEquals(commits.size(), jiraIssue.getCommits().size());
 		assertEquals(5, commits.size());
 	}
+	
+	@Test
+	public void testGetKeysOfLinkedJiraIssues() {
+		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		assertEquals(0, jiraIssue.getKeysOfLinkedJiraIssues().size());
+	}
 
 	@AfterClass
 	public static void tearDown() {
