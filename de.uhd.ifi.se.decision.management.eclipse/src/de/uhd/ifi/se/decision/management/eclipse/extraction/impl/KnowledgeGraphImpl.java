@@ -5,8 +5,6 @@ import java.util.Set;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import com.atlassian.jira.rest.client.api.domain.IssueLink;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.KnowledgeGraph;
@@ -173,6 +171,9 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void createGraph(Node node, int distance) {
+		if (node == null) {
+			return;
+		}
 		this.addVertex(node);
 		createLinks(node, 0, distance);
 
@@ -187,6 +188,13 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 			return;
 		}
 
+		if (node instanceof ChangedFile) {
+			for (GitCommit commit : ((ChangedFile) node).getCommits()) {
+				this.addVertex(commit);
+				this.addEdge(node, commit);
+				createLinks(commit, currentDepth + 1, maxDepth);
+			}
+		}
 		if (node instanceof GitCommit) {
 			addJiraIssuesForCommit((GitCommit) node, currentDepth, maxDepth);
 		}
@@ -221,11 +229,8 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 
 	private void addLinkedJiraIssuesForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
-		for (IssueLink jiraIssueLink : jiraIssue.getIssue().getIssueLinks()) {
-			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(jiraIssueLink.getTargetIssueKey(), jiraClient);
-			if (linkedJiraIssue == null) {
-				return;
-			}
+		for (String key : jiraIssue.getKeysOfLinkedJiraIssues()) {
+			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(key, jiraClient);
 			this.addVertex(linkedJiraIssue);
 			this.addEdge(jiraIssue, linkedJiraIssue);
 			createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);

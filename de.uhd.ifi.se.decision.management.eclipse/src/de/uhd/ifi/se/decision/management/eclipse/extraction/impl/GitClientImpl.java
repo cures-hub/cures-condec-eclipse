@@ -309,4 +309,9 @@ public class GitClientImpl implements GitClient {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public IPath getPath() {
+		return path;
+	}
 }

@@ -20,6 +20,7 @@ import org.junit.Test;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 public class TestGitClient {
 
@@ -29,7 +30,18 @@ public class TestGitClient {
 	@Before
 	public void setUp() {
 		path = initPathToGitRepo();
-		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		gitClient = initGitClient(path);
+	}
+
+	public static GitClient initGitClient() {
+		return initGitClient(TestGitClient.initPathToGitRepo());
+	}
+
+	public static GitClient initGitClient(IPath path) {
+		GitClient gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		GitClient.instances.clear();
+		GitClient.instances.put(ConfigPersistenceManager.getPathToGit(), gitClient);
+		return gitClient;
 	}
 
 	public static IPath initPathToGitRepo() {
@@ -44,11 +56,6 @@ public class TestGitClient {
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
 		return path;
-	}
-
-	@Test
-	public void testGetOrCreate() {
-		assertEquals(gitClient, GitClient.getOrCreate(path, "HEAD", "ECONDEC"));
 	}
 
 	@Test

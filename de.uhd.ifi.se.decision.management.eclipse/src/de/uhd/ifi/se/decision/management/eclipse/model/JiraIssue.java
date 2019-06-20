@@ -96,10 +96,10 @@ public interface JiraIssue extends Node {
 	URI getUri();
 
 	/**
-	 * Returns the commits linked to a JIRA issue as a set of {@link GitCommit}
+	 * Returns the commits linked to the JIRA issue as a set of {@link GitCommit}
 	 * objects.
 	 * 
-	 * @return commits linked to a JIRA issue as a set of {@link GitCommit} objects.
+	 * @return commits linked to the JIRA issue as a set of {@link GitCommit} objects.
 	 */
 	Set<GitCommit> getCommits();
 

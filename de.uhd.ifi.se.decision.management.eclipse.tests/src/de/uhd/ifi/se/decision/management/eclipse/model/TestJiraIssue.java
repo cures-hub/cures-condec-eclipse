@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,10 +21,12 @@ import de.uhd.ifi.se.decision.management.eclipse.mock.MockIssueRestClient;
 public class TestJiraIssue {
 
 	private JiraClient jiraClient;
+	private GitClient gitClient;
 
 	@Before
 	public void setUp() {
 		jiraClient = TestJiraClient.initJiraClient();
+		gitClient = TestGitClient.initGitClient();
 	}
 
 	@Test
@@ -77,8 +78,6 @@ public class TestJiraIssue {
 
 	@Test
 	public void testGetCommits() {
-		IPath path = TestGitClient.initPathToGitRepo();
-		GitClient gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
@@ -103,8 +102,6 @@ public class TestJiraIssue {
 
 	@Test
 	public void testGetLinkedNodes() {
-		IPath path = TestGitClient.initPathToGitRepo();
-		GitClient gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
 		gitClient.getCommitsForJiraIssue("ECONDEC-1");
 
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);

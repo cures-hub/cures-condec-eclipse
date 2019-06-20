@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +21,7 @@ public class TestGitCommit {
 
 	@Before
 	public void setUp() {
-		IPath path = TestGitClient.initPathToGitRepo();
-		gitClient = GitClient.getOrCreate(path, "HEAD", "ECONDEC");
+		gitClient = TestGitClient.initGitClient();
 	}
 
 	@Test
@@ -55,7 +53,7 @@ public class TestGitCommit {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		GitCommit commit = commits.get(0);
 		assertEquals(5, commit.getChangedFiles().size());
-		
+
 		ChangedFile changedFile = commit.getChangedFiles().iterator().next();
 		assertTrue(changedFile.getCommits().size() > 0);
 	}

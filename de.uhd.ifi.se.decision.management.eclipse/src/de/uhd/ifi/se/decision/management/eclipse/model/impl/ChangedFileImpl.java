@@ -12,6 +12,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
@@ -105,6 +106,9 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	@Override
 	public Set<GitCommit> getCommits() {
+		if (commits.isEmpty()) {
+			GitClient.getOrCreate().getCommits();
+		}
 		return commits;
 	}
 

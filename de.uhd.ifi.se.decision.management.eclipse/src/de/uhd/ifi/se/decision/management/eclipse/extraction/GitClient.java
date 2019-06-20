@@ -125,11 +125,18 @@ public interface GitClient {
 	Set<ChangedFile> getChangedFiles(GitCommit commit);
 
 	/**
-	 * Get the jgit git object.
+	 * Returns the jgit git object.
 	 * 
 	 * @return jgit git object.
 	 */
 	Git getGit();
+	
+	/**
+	 * Returns the path to the .git folder.
+	 * 
+	 * @return path to the .git folder.
+	 */
+	IPath getPath();
 
 	/**
 	 * Show what author and revision last modified each line of a file.
