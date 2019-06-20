@@ -85,4 +85,13 @@ public interface GitCommit extends Node {
 	 * @return object of class {@link RevCommit};
 	 */
 	RevCommit getRevCommit();
+
+	/**
+	 * Returns the JIRA issues linked to the commit as a set of {@link JiraIssue}
+	 * objects.
+	 * 
+	 * @return JIRA issues linked to the commit as a set of {@link JiraIssue}
+	 *         objects.
+	 */
+	Set<JiraIssue> getLinkedJiraIssues();
 }

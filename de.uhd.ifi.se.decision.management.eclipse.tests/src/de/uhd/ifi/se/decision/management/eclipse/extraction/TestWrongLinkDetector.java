@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.WrongLinkDetector;
-
 public class TestWrongLinkDetector {
 
 	private String projectID;

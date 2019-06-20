@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Ignore;
 import org.junit.Test;

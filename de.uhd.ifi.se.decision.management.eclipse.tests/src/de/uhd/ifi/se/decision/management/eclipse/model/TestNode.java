@@ -28,8 +28,8 @@ public class TestNode {
 		DecisionKnowledgeElement decision = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
 		DecisionKnowledgeElement issue = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE, "How should we...?");
-		assertFalse(decision.addLinkedNode(decision));
-		assertTrue(decision.addLinkedNode(issue));
+		assertFalse(decision.addLinkedDecisionKnowledgeElement(decision));
+		assertTrue(decision.addLinkedDecisionKnowledgeElement(issue));
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class TestNode {
 		DecisionKnowledgeElement decision = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
 		DecisionKnowledgeElement issue = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE, "How should we...?");
-		decision.addLinkedNode(issue);
+		decision.addLinkedDecisionKnowledgeElement(issue);
 		assertEquals(1, decision.getLinkedNodes().size());
 	}
 }

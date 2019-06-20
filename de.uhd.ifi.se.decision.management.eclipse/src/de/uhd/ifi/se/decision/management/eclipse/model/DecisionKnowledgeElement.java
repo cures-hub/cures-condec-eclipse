@@ -1,5 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+import java.util.Set;
+
 /**
  * Interface for decision knowledge elements as part of the knowledge graph.
  */
@@ -50,4 +52,21 @@ public interface DecisionKnowledgeElement extends Node {
 	 *            of the decision knowledge element.
 	 */
 	void setType(KnowledgeType type);
+
+	/**
+	 * Returns decision knowledge elements linked to this element.
+	 * 
+	 * @return set of all decision knowledge elements linked to this element.
+	 */
+	Set<DecisionKnowledgeElement> getLinkedDecisionKnowledgeElements();
+
+	/**
+	 * Links a decision knowledge element to this element.
+	 * 
+	 * @param element
+	 *            {@link DecisionKnowledgeElement} object.
+	 * 
+	 * @return true if element was linked.
+	 */
+	boolean addLinkedDecisionKnowledgeElement(DecisionKnowledgeElement element);
 }

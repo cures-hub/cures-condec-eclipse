@@ -9,6 +9,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
@@ -19,6 +20,7 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 	private Set<String> jiraIssueKeys;
 	private Set<ChangedFile> changedFiles;
 	private Set<DecisionKnowledgeElement> decisionKnowledgeElements;
+	private Set<JiraIssue> linkedJiraIssues;
 
 	public GitCommitImpl(RevCommit revCommit, String projectKey) {
 		this.revCommit = revCommit;
@@ -27,14 +29,9 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 		}
 
 		this.jiraIssueKeys = CommitMessageParser.getJiraIssueKeys(revCommit, projectKey);
-
 		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(revCommit);
-		for (DecisionKnowledgeElement knowledgeElement : decisionKnowledgeElements) {
-			this.addLinkedNode(knowledgeElement);
-			knowledgeElement.addLinkedNode(this);
-		}
-
 		this.changedFiles = new HashSet<ChangedFile>();
+		this.linkedJiraIssues = new HashSet<JiraIssue>();
 	}
 
 	public GitCommitImpl(RevCommit commit) {
@@ -54,10 +51,6 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 	@Override
 	public void setChangedFiles(Set<ChangedFile> changedFiles) {
 		this.changedFiles = changedFiles;
-		for (Node node : this.changedFiles) {
-			this.addLinkedNode(node);
-			node.addLinkedNode(this);
-		}
 	}
 
 	@Override
@@ -76,5 +69,19 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 			return "";
 		}
 		return revCommit.getShortMessage();
+	}
+
+	@Override
+	public Set<JiraIssue> getLinkedJiraIssues() {
+		return linkedJiraIssues;
+	}
+
+	@Override
+	public Set<Node> getLinkedNodes() {
+		Set<Node> linkedNodes = new HashSet<Node>();
+		linkedNodes.addAll(this.getChangedFiles());
+		linkedNodes.addAll(this.getDecisionKnowledgeFromMessage());
+		linkedNodes.addAll(this.getLinkedJiraIssues());
+		return linkedNodes;
 	}
 }

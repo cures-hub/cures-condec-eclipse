@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
 import java.io.FileInputStream;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
@@ -55,8 +57,6 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		for (MethodDeclaration methodDeclaration : methodVistor.getMethodDeclarations()) {
 			CodeMethod codeMethod = new CodeMethodImpl(methodDeclaration.getNameAsString(), this);
 			methodsInClass.add(codeMethod);
-			this.addLinkedNode(codeMethod);
-			codeMethod.addLinkedNode(this);
 		}
 
 		return methodsInClass;
@@ -111,5 +111,13 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 	@Override
 	public void addCommit(GitCommit gitCommit) {
 		this.commits.add(gitCommit);
+	}
+
+	@Override
+	public Set<Node> getLinkedNodes() {
+		Set<Node> linkedNodes = new HashSet<Node>();
+		linkedNodes.addAll(this.getCodeMethods());
+		linkedNodes.addAll(this.getCommits());
+		return linkedNodes;
 	}
 }

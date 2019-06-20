@@ -113,8 +113,8 @@ public interface JiraIssue extends Node {
 	void addCommit(GitCommit gitCommit);
 
 	/**
-	 * Returns the JIRA issues linked to a JIRA issue as a set of {@link JiraIssue}
-	 * objects.
+	 * Returns the JIRA issues linked to the JIRA issue as a set of
+	 * {@link JiraIssue} objects.
 	 * 
 	 * @return JIRA issues linked to a JIRA issue as a set of {@link JiraIssue}
 	 *         objects.
@@ -122,8 +122,8 @@ public interface JiraIssue extends Node {
 	Set<JiraIssue> getLinkedJiraIssues();
 
 	/**
-	 * Retrieves keys of the JIRA issues linked to a JIRA issue at link distance 1,
-	 * i.e. the keys of the neighbor JIRA issues.
+	 * Retrieves the keys of the JIRA issues linked to the JIRA issue at link
+	 * distance 1, i.e. the keys of the neighbor JIRA issues.
 	 * 
 	 * @param jiraIssue
 	 *            JIRA issue.

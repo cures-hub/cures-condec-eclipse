@@ -13,6 +13,7 @@ import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
  * Class for JIRA issue as part of the knowledge graph.
@@ -106,5 +107,13 @@ public class JiraIssueImpl extends NodeImpl implements JiraIssue {
 		}
 
 		return neighborJiraIssueKeys;
+	}
+
+	@Override
+	public Set<Node> getLinkedNodes() {
+		Set<Node> linkedNodes = new HashSet<Node>();
+		linkedNodes.addAll(this.getCommits());
+		linkedNodes.addAll(this.getLinkedJiraIssues());
+		return linkedNodes;
 	}
 }

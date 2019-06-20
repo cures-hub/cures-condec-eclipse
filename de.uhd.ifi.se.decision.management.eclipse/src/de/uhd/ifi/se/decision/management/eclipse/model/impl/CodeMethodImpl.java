@@ -1,7 +1,11 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
  * Class for methods as part of the knowledge graph.
@@ -29,5 +33,12 @@ public class CodeMethodImpl extends NodeImpl implements CodeMethod {
 	@Override
 	public ChangedFile getJavaClass() {
 		return javaClass;
+	}
+
+	@Override
+	public Set<Node> getLinkedNodes() {
+		Set<Node> linkedNodes = new HashSet<Node>();
+		linkedNodes.add(this.getJavaClass());
+		return linkedNodes;
 	}
 }
