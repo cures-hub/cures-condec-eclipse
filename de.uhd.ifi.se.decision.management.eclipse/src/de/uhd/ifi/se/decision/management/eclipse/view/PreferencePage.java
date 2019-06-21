@@ -8,10 +8,14 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
  * Creates the plugins preference page accessable via Window -> Preferences ->
  * ConDec.
+ * 
+ * @see ConfigPersistenceManager
+ * @see PropertyPage
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 

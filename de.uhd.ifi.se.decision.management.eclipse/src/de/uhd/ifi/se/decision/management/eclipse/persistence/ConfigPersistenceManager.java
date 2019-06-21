@@ -9,9 +9,14 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
+import de.uhd.ifi.se.decision.management.eclipse.view.PreferencePage;
+import de.uhd.ifi.se.decision.management.eclipse.view.PropertyPage;
 
 /**
  * Manages the persistence of the preferences and properties.
+ * 
+ * @see PropertyPage
+ * @see PreferencePage
  */
 public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 
@@ -85,5 +90,9 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 			System.err.print("The default preference value is used due to a " + e + ".");
 		}
 		return preference;
+	}
+
+	public static void setPreference(QualifiedName key, String value) {
+		Activator.getDefault().getPreferenceStore().setValue(key.getQualifier(), value);
 	}
 }
