@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
@@ -262,5 +263,25 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	@Override
 	public JiraClient getJiraClient() {
 		return jiraClient;
+	}
+	
+	@Override
+	public String toString() {
+		String graphAsString = "The start node for knowledge exploration is the ";
+		int distance = 0;
+
+		BreadthFirstIterator<Node, Link> iterator = new BreadthFirstIterator<Node, Link>(this, this.getStartNodes());
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
+
+			if (iterator.getDepth(node) > distance) {
+				distance++;
+				graphAsString += "\n" + "At distance " + distance + " the following nodes are linked:\n";
+			}
+
+			graphAsString += node.toString() + "\n";
+		}
+
+		return graphAsString;
 	}
 }

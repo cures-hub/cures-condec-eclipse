@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IPath;
@@ -31,6 +32,7 @@ public class TestKnowledgeGraph {
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
 		assertNotNull(knowledgeGraph);
 		assertTrue(knowledgeGraph.vertexSet().size() > 0);
+		assertNull(knowledgeGraph.getStartNode());
 
 		assertEquals(gitClient, knowledgeGraph.getGitClient());
 		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
@@ -57,6 +59,17 @@ public class TestKnowledgeGraph {
 	public void testKnowledgeGraphImplicitGitAndJiraClients() {
 		assertNotNull(new KnowledgeGraphImpl());
 		assertNotNull(new KnowledgeGraphImpl(null, 0));
+	}
+
+	@Test
+	public void testToString() {
+		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
+		ChangedFile file = ChangedFile.getOrCreate(path);
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, file, 0);
+		assertEquals(file, knowledgeGraph.getStartNode());
+		assertTrue(
+				knowledgeGraph.toString().startsWith("The start node for knowledge exploration is the File: pom.xml\n\n"
+						+ "At distance 1 the following nodes are linked:\n"));
 	}
 
 	@AfterClass
