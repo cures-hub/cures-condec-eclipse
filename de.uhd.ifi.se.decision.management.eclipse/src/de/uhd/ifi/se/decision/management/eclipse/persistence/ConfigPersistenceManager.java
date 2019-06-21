@@ -93,6 +93,10 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static void setPreference(QualifiedName key, String value) {
-		Activator.getDefault().getPreferenceStore().setValue(key.getQualifier(), value);
+		try {
+			Activator.getDefault().getPreferenceStore().setValue(key.getQualifier(), value);
+		} catch (NullPointerException e) {
+			System.err.println("The preference value could not be stored due to a " + e + ".");
+		}
 	}
 }
