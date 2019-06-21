@@ -50,6 +50,12 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<excludes>
+								<exclude>**/Activator.class</exclude>
+								<exclude>**/event/*</exclude>
+							</excludes>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
