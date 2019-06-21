@@ -19,7 +19,7 @@ public class TestCodeMethod {
 		
 		CodeMethod codeMethod = new CodeMethodImpl("createGraph()", file);
 		assertEquals("createGraph()", codeMethod.getMethodName());
-		assertEquals("createGraph()", codeMethod.toString());
+		assertEquals("Method: createGraph()", codeMethod.toString());
 		assertEquals(file, codeMethod.getJavaClass());
 	}
 

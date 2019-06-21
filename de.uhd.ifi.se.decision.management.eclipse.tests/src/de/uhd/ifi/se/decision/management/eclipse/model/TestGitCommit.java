@@ -61,7 +61,7 @@ public class TestGitCommit {
 	@Test
 	public void testToString() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
-		assertEquals("EConDec-1: Add classpath and project files", commits.get(0).toString());
+		assertEquals("Commit: EConDec-1: Add classpath and project files", commits.get(0).toString());
 	}
 
 	@AfterClass

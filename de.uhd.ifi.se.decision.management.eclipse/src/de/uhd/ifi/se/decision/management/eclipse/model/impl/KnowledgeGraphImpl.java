@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jgrapht.Graph;
@@ -30,6 +31,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	private static final long serialVersionUID = 1L;
 	private GitClient gitClient;
 	private JiraClient jiraClient;
+	private Set<Node> startNodes;
 
 	/**
 	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
@@ -48,6 +50,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 */
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		super(LinkImpl.class);
+		this.startNodes = new HashSet<Node>();
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		createGraph();
@@ -107,6 +110,8 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		super(LinkImpl.class);
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
+		this.startNodes = new HashSet<Node>();
+		this.startNodes.add(startNode);
 		createGraph(startNode, distance);
 	}
 
@@ -234,6 +239,19 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 			this.addEdge(jiraIssue, linkedJiraIssue);
 			createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);
 		}
+	}
+	
+	@Override
+	public Set<Node> getStartNodes() {
+		return this.startNodes;
+	}
+
+	@Override
+	public Node getStartNode() {
+		if (getStartNodes().isEmpty()) {
+			return null;
+		}
+		return getStartNodes().iterator().next();
 	}
 
 	@Override

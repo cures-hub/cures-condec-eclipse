@@ -21,7 +21,7 @@ public class TestChangedFile {
 		assertFalse(file.isExistingJavaClass());
 
 		assertEquals(file, ChangedFile.getOrCreate(path));
-		assertEquals("pom.xml", file.toString());
+		assertEquals("File: pom.xml", file.toString());
 		assertEquals(path, file.getPath());
 		assertTrue(file.getCodeMethods().size() == 0);
 	}

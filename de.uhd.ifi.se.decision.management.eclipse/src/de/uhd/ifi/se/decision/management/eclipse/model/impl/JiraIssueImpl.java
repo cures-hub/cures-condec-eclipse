@@ -44,7 +44,7 @@ public class JiraIssueImpl extends NodeImpl implements JiraIssue {
 
 	@Override
 	public String toString() {
-		return getJiraIssueKey() + ":" + issue.getSummary();
+		return "JIRA Issue " + getJiraIssueKey() + ": " + issue.getSummary();
 	}
 
 	@Override

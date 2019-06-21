@@ -1,5 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+import java.util.Locale;
+
 /**
  * Type of decision knowledge element.
  */
@@ -26,6 +28,17 @@ public enum KnowledgeType {
 			}
 		}
 		return KnowledgeType.OTHER;
+	}
+
+	/**
+	 * Returns the knowledge type as a String starting with a capital letter, e.g.,
+	 * Argument, Decision, or Alternative.
+	 *
+	 * @return knowledge type as a String starting with a capital letter.
+	 */
+	public String getName() {
+		return this.name().substring(0, 1).toUpperCase(Locale.ENGLISH)
+				+ this.name().substring(1).toLowerCase(Locale.ENGLISH);
 	}
 
 }

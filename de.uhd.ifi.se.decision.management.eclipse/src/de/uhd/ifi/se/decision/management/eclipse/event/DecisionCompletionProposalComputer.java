@@ -12,9 +12,14 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.ChangeImpactAnalysisView;
 import de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView;
-import de.uhd.ifi.se.decision.management.eclipse.view.TextualRepresentation;
+import de.uhd.ifi.se.decision.management.eclipse.view.GraphToTextConverter;
+import de.uhd.ifi.se.decision.management.eclipse.view.impl.GraphToTextConverterImpl;
 
 /**
  * 
@@ -75,16 +80,21 @@ public class DecisionCompletionProposalComputer implements IJavaCompletionPropos
 	public static void showRelatedKnowledge() {
 		IPath pathOfFile = CurrentFile.getOpenFilePath();
 		int line = CurrentFile.getLineOfCursorPosition();
-		
+
 		DecisionExplorationView explorationView = (DecisionExplorationView) Activator
 				.getViewPart("de.uhd.ifi.se.decision.management.eclipse.view.DecisionExploration");
 
-		explorationView.setContent(TextualRepresentation.produceDecisionExploration(pathOfFile, line));
+		ChangedFile selectedFile = ChangedFile.getOrCreate(pathOfFile);
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(selectedFile,
+				ConfigPersistenceManager.getLinkDistance());
+		
+		GraphToTextConverter converter = new GraphToTextConverterImpl(knowledgeGraph);
+		explorationView.setContent(converter.produceDecisionExploration(line));
 
 		ChangeImpactAnalysisView changeImpactView = (ChangeImpactAnalysisView) Activator
 				.getViewPart("de.uhd.ifi.se.decision.management.eclipse.view.ChangeImpactAnalysis");
 
-		changeImpactView.setContent(TextualRepresentation.analyzeChange(pathOfFile, line));
+		changeImpactView.setContent(GraphToTextConverterImpl.analyzeChange(pathOfFile, line));
 	}
 
 	/**

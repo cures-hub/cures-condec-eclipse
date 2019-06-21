@@ -66,7 +66,7 @@ public class TestJiraIssue {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(jiraClient, JiraClient.getOrCreate());
 		assertNotNull(jiraIssue);
-		assertEquals("ECONDEC-1:WI: Create empty Eclipse plugin", jiraIssue.toString());
+		assertEquals("JIRA Issue ECONDEC-1: WI: Create empty Eclipse plugin", jiraIssue.toString());
 	}
 
 	@Test
