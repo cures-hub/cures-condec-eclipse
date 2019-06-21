@@ -50,7 +50,7 @@
          <page
                class="de.uhd.ifi.se.decision.management.eclipse.view.PropertyPage"
                icon="icons/pluginIcon.png"
-               id="de.uhd.ifi.se.decision.management.eclipse.view.propertyPage"
+               id="de.uhd.ifi.se.decision.management.eclipse.view.PropertyPage"
                name="ConDec">
          </page>
       </extension>

@@ -13,6 +13,11 @@ import org.junit.Test;
 public class TestConfigPersistenceManager {
 
 	@Test
+	public void testConstructor() {
+		assertNotNull(new ConfigPersistenceManager());
+	}
+
+	@Test
 	public void testPathToGit() {
 		IPath path = ConfigPersistenceManager.getPathToGit();
 		assertNotNull(path);
@@ -21,7 +26,8 @@ public class TestConfigPersistenceManager {
 	}
 
 	@Test
-	public void testGetBranch() {
+	public void testSetAndGetBranch() {
+		ConfigPersistenceManager.setPreference(ConfigPersistenceManager.BRANCH, "HEAD");
 		assertEquals("HEAD", ConfigPersistenceManager.getBranch());
 	}
 

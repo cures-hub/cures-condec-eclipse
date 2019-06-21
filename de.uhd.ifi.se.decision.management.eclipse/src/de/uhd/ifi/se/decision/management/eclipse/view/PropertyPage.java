@@ -1,7 +1,5 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -13,16 +11,18 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
-import de.uhd.ifi.se.decision.management.eclipse.persistence.CryptoHelper;
 
 /**
  * Creates the plugins property page accessable via Project -> Properties ->
- * ConDec. The properties inherit from the global preferences but can be changed
- * by the user.
+ * ConDec. The properties inherit from the global preferences. Changes to the
+ * properties also affect the preferences.
  * 
- * @issue Currently, only the preferences are used. The project properties don't
- *        have any effect. How can we access the project properties in the
- *        ConfigPersistenceManager class?
+ * @see ConfigPersistenceManager
+ * @see PreferencePage
+ * 
+ * @issue Currently, only the preferences are used. The project properties are
+ *        treated the same as the preferences. How can we access the project
+ *        properties in the ConfigPersistenceManager class?
  */
 public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements IWorkbenchPropertyPage {
 	private Text textGitPath;
@@ -48,7 +48,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		labelGitPath.setText("Path to Git-Repository (Path must end with \"\\.git\"):");
 		textGitPath = new Text(composite, SWT.BORDER);
 		textGitPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textGitPath.setText(getProperty(ConfigPersistenceManager.PATH_TO_GIT));
+		textGitPath.setText(ConfigPersistenceManager.getPathToGit().toString());
 
 		// Git branch/tag
 		Label labelBranch = new Label(composite, SWT.NONE);
@@ -56,7 +56,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		labelBranch.setText("Branch/Tag of the Repository (e.g. master or HEAD):");
 		textBranch = new Text(composite, SWT.BORDER);
 		textBranch.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textBranch.setText(getProperty(ConfigPersistenceManager.BRANCH));
+		textBranch.setText(ConfigPersistenceManager.getBranch());
 
 		// Jira URL
 		Label labelJiraUrl = new Label(composite, SWT.NONE);
@@ -64,7 +64,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		labelJiraUrl.setText("JIRA URL:");
 		textJiraUrl = new Text(composite, SWT.BORDER);
 		textJiraUrl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textJiraUrl.setText(getProperty(ConfigPersistenceManager.JIRA_URL));
+		textJiraUrl.setText(ConfigPersistenceManager.getJiraUri().toString());
 
 		// Jira project key
 		Label labelProjectKey = new Label(composite, SWT.NONE);
@@ -72,7 +72,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		labelProjectKey.setText("JIRA Project Key:");
 		textJiraProjectKey = new Text(composite, SWT.BORDER);
 		textJiraProjectKey.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textJiraProjectKey.setText(getProperty(ConfigPersistenceManager.JIRA_PROJECT_KEY));
+		textJiraProjectKey.setText(ConfigPersistenceManager.getProjectKey());
 
 		// Jira username
 		Label labelJiraUser = new Label(composite, SWT.NONE);
@@ -80,7 +80,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		labelJiraUser.setText("JIRA Username:");
 		textJiraUser = new Text(composite, SWT.BORDER);
 		textJiraUser.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textJiraUser.setText(getProperty(ConfigPersistenceManager.JIRA_USER));
+		textJiraUser.setText(ConfigPersistenceManager.getJiraUser());
 
 		// Jira password
 		Label labelPassword = new Label(composite, SWT.NONE);
@@ -89,7 +89,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		textJiraPassword = new Text(composite, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
 		textJiraPassword.setEchoChar('*');
 		textJiraPassword.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textJiraPassword.setText(getPropertyDecrypted(ConfigPersistenceManager.JIRA_PASSWORD));
+		textJiraPassword.setText(ConfigPersistenceManager.getJiraPassword());
 
 		// Link distance
 		Label labelLinkDistance = new Label(composite, SWT.NONE);
@@ -97,7 +97,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		labelLinkDistance.setText("Highlight-Distance (recommended: between 2 and 5):");
 		textLinkDistance = new Text(composite, SWT.BORDER);
 		textLinkDistance.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textLinkDistance.setText(getProperty(ConfigPersistenceManager.LINK_DISTANCE));
+		textLinkDistance.setText(ConfigPersistenceManager.getLinkDistance() + "");
 
 		// Decrease factor
 		Label lbl4 = new Label(composite, SWT.NONE);
@@ -105,7 +105,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		lbl4.setText("Highlight Decrease Factor (float, should be bigger than 1.3f):");
 		textDecreaseFactor = new Text(composite, SWT.BORDER);
 		textDecreaseFactor.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textDecreaseFactor.setText(getProperty(ConfigPersistenceManager.DECREASE_FACTOR));
+		textDecreaseFactor.setText(ConfigPersistenceManager.getDecreaseFactor() + "");
 
 		return composite;
 	}
@@ -119,7 +119,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		setProperty(ConfigPersistenceManager.JIRA_URL, textJiraUrl);
 		setProperty(ConfigPersistenceManager.JIRA_PROJECT_KEY, textJiraProjectKey);
 		setProperty(ConfigPersistenceManager.JIRA_USER, textJiraUser);
-		setPropertyEncrypted(ConfigPersistenceManager.JIRA_PASSWORD, textJiraPassword);
+		setProperty(ConfigPersistenceManager.JIRA_PASSWORD, textJiraPassword);
 		return super.performOk();
 	}
 
@@ -127,41 +127,7 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		setProperty(key, text.getText());
 	}
 
-	private void setPropertyEncrypted(QualifiedName key, Text text) {
-		setProperty(key, CryptoHelper.encrypt(text.getText()));
-	}
-
 	private void setProperty(QualifiedName key, String value) {
-		if (value == null || value.isEmpty()) {
-			return;
-		}
-		IResource resource = getResource();
-		try {
-			resource.setPersistentProperty(key, value);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public IResource getResource() {
-		return getElement().getAdapter(IResource.class);
-	}
-
-	public String getProperty(QualifiedName key) {
-		try {
-			IResource resource = getResource();
-			String property = resource.getPersistentProperty(key);
-			if (property != null) {
-				return property;
-			}
-			return ConfigPersistenceManager.getPreference(key, "");
-		} catch (CoreException e) {
-			System.err.println(e);
-		}
-		return "";
-	}
-
-	public String getPropertyDecrypted(QualifiedName key) {
-		return CryptoHelper.decrypt(getProperty(key));
+		ConfigPersistenceManager.setPreference(key, value);
 	}
 }

@@ -9,9 +9,14 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
+import de.uhd.ifi.se.decision.management.eclipse.view.PreferencePage;
+import de.uhd.ifi.se.decision.management.eclipse.view.PropertyPage;
 
 /**
  * Manages the persistence of the preferences and properties.
+ * 
+ * @see PropertyPage
+ * @see PreferencePage
  */
 public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 
@@ -68,7 +73,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		try {
 			linkDistance = Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
 		} catch (NullPointerException e) {
-			System.err.print("The default preference value is used due to a " + e + ".");
+			System.err.println("The default preference value is used due to a " + e + ".");
 		}
 		return linkDistance;
 	}
@@ -82,8 +87,16 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		try {
 			preference = Activator.getDefault().getPreferenceStore().getString(key.getQualifier());
 		} catch (NullPointerException e) {
-			System.err.print("The default preference value is used due to a " + e + ".");
+			System.err.println("The default preference value is used due to a " + e + ".");
 		}
 		return preference;
+	}
+
+	public static void setPreference(QualifiedName key, String value) {
+		try {
+			Activator.getDefault().getPreferenceStore().setValue(key.getQualifier(), value);
+		} catch (NullPointerException e) {
+			System.err.println("The preference value could not be stored due to a " + e + ".");
+		}
 	}
 }
