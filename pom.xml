@@ -53,6 +53,8 @@
 						<configuration>
 							<excludes>
 								<exclude>**/Activator.class</exclude>
+								<exclude>**/PreferencePage.class</exclude>
+								<exclude>**/PropertyPage.class</exclude>
 								<exclude>**/event/*</exclude>
 							</excludes>
 						</configuration>

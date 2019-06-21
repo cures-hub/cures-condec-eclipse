@@ -11,6 +11,11 @@ import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
 public class TestConfigPersistenceManager {
+	
+	@Test
+	public void testConstructor() {
+		assertNotNull(new ConfigPersistenceManager());
+	}
 
 	@Test
 	public void testPathToGit() {
@@ -22,6 +27,7 @@ public class TestConfigPersistenceManager {
 
 	@Test
 	public void testGetBranch() {
+		new ConfigPersistenceManager();
 		assertEquals("HEAD", ConfigPersistenceManager.getBranch());
 	}
 
@@ -48,5 +54,10 @@ public class TestConfigPersistenceManager {
 	@Test
 	public void testLinkDistance() {
 		assertEquals(4, ConfigPersistenceManager.getLinkDistance());
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void setPreference() {
+		ConfigPersistenceManager.setPreference(ConfigPersistenceManager.BRANCH, "develop");
 	}
 }

@@ -73,7 +73,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		try {
 			linkDistance = Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
 		} catch (NullPointerException e) {
-			System.err.print("The default preference value is used due to a " + e + ".");
+			System.err.println("The default preference value is used due to a " + e + ".");
 		}
 		return linkDistance;
 	}
@@ -87,7 +87,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		try {
 			preference = Activator.getDefault().getPreferenceStore().getString(key.getQualifier());
 		} catch (NullPointerException e) {
-			System.err.print("The default preference value is used due to a " + e + ".");
+			System.err.println("The default preference value is used due to a " + e + ".");
 		}
 		return preference;
 	}

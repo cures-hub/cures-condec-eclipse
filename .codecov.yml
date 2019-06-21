@@ -7,4 +7,6 @@ coverage:
   range: "50...90"
 ignore:
   - "de.uhd.ifi.se.decision.management.eclipse/src/de/uhd/ifi/se/decision/management/eclipse/event"
-  - "de.uhd.ifi.se.decision.management.eclipse/src/de/uhd/ifi/se/decision/management/eclipse/Activator.java"
+  - "de.uhd.ifi.se.decision.management.eclipse/src/de/uhd/ifi/se/decision/management/eclipse/Activator.java"  
+  - "de.uhd.ifi.se.decision.management.eclipse/src/de/uhd/ifi/se/decision/management/eclipse/view/PreferencePage.java"  
+  - "de.uhd.ifi.se.decision.management.eclipse/src/de/uhd/ifi/se/decision/management/eclipse/view/PropertyPage.java"
