@@ -1,25 +1,20 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
@@ -32,14 +27,8 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseResult;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.MethodDeclaration;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.MethodVisitor;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
@@ -225,56 +214,6 @@ public class GitClientImpl implements GitClient {
 			System.err.println("Could not get the parent commit for " + commit + " Message: " + e.getMessage());
 		}
 		return parentCommit;
-	}
-
-	@Override
-	public String whichMethodsChanged(DiffEntry diffEntry, EditList editList) {
-		if (diffEntry == null) {
-			return "Diff entry is missing.\n";
-		}
-
-		String newPath = diffEntry.getNewPath();
-		if (!newPath.endsWith(".java")) {
-			return "The plugin can only parse *.java files.\n";
-		}
-
-		IPath filePath = new Path(this.getRepository().getDirectory().toPath().toString()).removeLastSegments(1)
-				.append(newPath);
-		System.out.println(filePath);
-		File file = filePath.toFile();
-
-		if (!file.isFile()) {
-			return "File does not exist in file system (anymore).\n";
-		}
-
-		Set<MethodDeclaration> methodDeclarations = new LinkedHashSet<MethodDeclaration>();
-
-		FileInputStream fileInputStream;
-		ParseResult<CompilationUnit> parseResult;
-		try {
-			fileInputStream = new FileInputStream(filePath.toString());
-			JavaParser javaParser = new JavaParser();
-			parseResult = javaParser.parse(fileInputStream); // produces real readable code
-			fileInputStream.close();
-
-			CompilationUnit compilationUnit = parseResult.getResult().get();
-			MethodVisitor methodVisitor = new MethodVisitor();
-			compilationUnit.accept(methodVisitor, null);
-			methodDeclarations = methodVisitor.getMethodDeclarations();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		String methodsToString = "";
-		for (Edit edit : editList) {
-			for (MethodDeclaration methodDeclaration : methodDeclarations)
-				if (edit.getEndB() >= methodDeclaration.getBegin().get().line
-						&& edit.getBeginB() <= methodDeclaration.getEnd().get().line) {
-					methodsToString = methodsToString + "An Insert happened in the method "
-							+ methodDeclaration.getNameAsString() + "\n";
-				}
-		}
-		return methodsToString;
 	}
 
 	@Override

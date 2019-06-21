@@ -43,7 +43,7 @@ public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKn
 
 	@Override
 	public String toString() {
-		return this.type.name() + ": " + this.summary;
+		return this.type.getName() + ": " + this.summary;
 	}
 
 	@Override

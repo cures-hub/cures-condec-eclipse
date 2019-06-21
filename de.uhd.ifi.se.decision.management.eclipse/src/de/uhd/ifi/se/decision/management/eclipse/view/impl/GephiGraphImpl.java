@@ -50,7 +50,7 @@ public class GephiGraphImpl implements GephiGraph {
 		Set<Node> nodes = graph.vertexSet();
 		float positionOffset = (float) Math.sqrt(nodes.size());
 
-		Iterator<Node> iterator = new DepthFirstIterator<>(graph, nodes.iterator().next());
+		Iterator<Node> iterator = new DepthFirstIterator<Node, Link>(graph, nodes.iterator().next());
 		while (iterator.hasNext()) {
 			Node node = iterator.next();
 			org.gephi.graph.api.Node gephiNode = createNode(node);

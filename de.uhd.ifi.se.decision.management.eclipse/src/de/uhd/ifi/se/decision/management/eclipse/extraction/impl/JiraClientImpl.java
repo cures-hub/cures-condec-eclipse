@@ -2,11 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction.impl;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -104,29 +100,6 @@ public class JiraClientImpl implements JiraClient {
 			System.err.println(jiraIssueKey + ": " + e.getMessage());
 		}
 		return JiraIssue.getOrCreate(issue);
-	}
-
-	@Override
-	public Map<Issue, Integer> getLinkedJiraIssuesAtDistance(JiraIssue jiraIssue, int distance) {
-		Map<Issue, Integer> linkedJiraIssuesAtDistance = new HashMap<Issue, Integer>();
-
-		if (jiraIssue == null || distance == 0) {
-			return linkedJiraIssuesAtDistance;
-		}
-
-		List<String> analyzedIssueKeys = new ArrayList<String>();
-		analyzedIssueKeys.add(jiraIssue.getJiraIssueKey());
-		for (int i = 1; i <= distance; i++) {
-			Set<String> neighborIssueKeys = jiraIssue.getKeysOfLinkedJiraIssues();
-			for (String issueKey : neighborIssueKeys) {
-				if (!analyzedIssueKeys.contains(issueKey)) {
-					analyzedIssueKeys.add(issueKey);
-					Issue linkedJiraIssue = this.getJiraIssue(issueKey).getIssue();
-					linkedJiraIssuesAtDistance.put(linkedJiraIssue, i);
-				}
-			}
-		}
-		return linkedJiraIssuesAtDistance;
 	}
 
 	@Override

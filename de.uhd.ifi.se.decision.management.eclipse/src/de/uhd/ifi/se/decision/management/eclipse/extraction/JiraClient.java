@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
@@ -91,15 +90,6 @@ public interface JiraClient {
 	 * @return JIRA issue for the given key.
 	 */
 	public JiraIssue getJiraIssue(String jiraIssueKey);
-
-	/**
-	 * Retrieves the issues linked to a given issue with a certain link distance
-	 * 
-	 * @param issue
-	 *            JIRA issue
-	 * @return Linked issues mapped to link distance
-	 */
-	public Map<Issue, Integer> getLinkedJiraIssuesAtDistance(JiraIssue issue, int distance);
 
 	/**
 	 * Determines whether the JIRA REST client is authenticated and the project is

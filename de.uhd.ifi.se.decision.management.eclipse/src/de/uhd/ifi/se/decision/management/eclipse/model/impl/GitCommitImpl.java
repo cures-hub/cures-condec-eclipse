@@ -68,7 +68,7 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 		if (revCommit == null) {
 			return "";
 		}
-		return revCommit.getShortMessage();
+		return "Commit: " + revCommit.getShortMessage();
 	}
 
 	@Override

@@ -6,8 +6,10 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.TextualRepresentation;
-import de.uhd.ifi.se.decision.management.eclipse.view.ChangeImpactAnalysisView;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView;
 
 public class KnowledgeExtractionCommand extends AbstractHandler {
@@ -23,16 +25,13 @@ public class KnowledgeExtractionCommand extends AbstractHandler {
 	}
 
 	public void showRelatedKnowledge(IPath pathOfFile) {
-		int line = 1;
-
 		DecisionExplorationView explorationView = (DecisionExplorationView) Activator
 				.getViewPart("de.uhd.ifi.se.decision.management.eclipse.view.DecisionExploration");
 
-		explorationView.setContent(TextualRepresentation.produceDecisionExploration(pathOfFile, line));
+		ChangedFile selectedFile = ChangedFile.getOrCreate(pathOfFile);
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(selectedFile,
+				ConfigPersistenceManager.getLinkDistance());
 
-		ChangeImpactAnalysisView changeImpactView = (ChangeImpactAnalysisView) Activator
-				.getViewPart("de.uhd.ifi.se.decision.management.eclipse.view.ChangeImpactAnalysis");
-
-		changeImpactView.setContent(TextualRepresentation.analyzeChange(pathOfFile, line));
+		explorationView.setContent(knowledgeGraph.toString());
 	}
 }

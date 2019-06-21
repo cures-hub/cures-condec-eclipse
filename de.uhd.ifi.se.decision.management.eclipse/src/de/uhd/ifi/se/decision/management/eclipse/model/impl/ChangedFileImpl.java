@@ -96,7 +96,7 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 
 	@Override
 	public String toString() {
-		return this.getFileName();
+		return "File: " + this.getFileName();
 	}
 
 	@Override

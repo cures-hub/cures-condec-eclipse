@@ -1,9 +1,11 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
@@ -30,6 +32,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	private static final long serialVersionUID = 1L;
 	private GitClient gitClient;
 	private JiraClient jiraClient;
+	private Set<Node> startNodes;
 
 	/**
 	 * Constructor for the KnowledgeGraph. Creates a graph for the entire project.
@@ -48,6 +51,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 */
 	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		super(LinkImpl.class);
+		this.startNodes = new HashSet<Node>();
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		createGraph();
@@ -107,6 +111,8 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		super(LinkImpl.class);
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
+		this.startNodes = new HashSet<Node>();
+		this.startNodes.add(startNode);
 		createGraph(startNode, distance);
 	}
 
@@ -235,6 +241,19 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 			createLinks(linkedJiraIssue, currentDepth + 1, maxDepth);
 		}
 	}
+	
+	@Override
+	public Set<Node> getStartNodes() {
+		return this.startNodes;
+	}
+
+	@Override
+	public Node getStartNode() {
+		if (getStartNodes().isEmpty()) {
+			return null;
+		}
+		return getStartNodes().iterator().next();
+	}
 
 	@Override
 	public GitClient getGitClient() {
@@ -244,5 +263,25 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	@Override
 	public JiraClient getJiraClient() {
 		return jiraClient;
+	}
+	
+	@Override
+	public String toString() {
+		String graphAsString = "The start node for knowledge exploration is the ";
+		int distance = 0;
+
+		BreadthFirstIterator<Node, Link> iterator = new BreadthFirstIterator<Node, Link>(this, this.getStartNodes());
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
+
+			if (iterator.getDepth(node) > distance) {
+				distance++;
+				graphAsString += "\n" + "At distance " + distance + " the following nodes are linked:\n";
+			}
+
+			graphAsString += node.toString() + "\n";
+		}
+
+		return graphAsString;
 	}
 }

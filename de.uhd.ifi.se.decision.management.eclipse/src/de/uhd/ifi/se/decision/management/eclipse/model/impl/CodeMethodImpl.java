@@ -22,7 +22,7 @@ public class CodeMethodImpl extends NodeImpl implements CodeMethod {
 
 	@Override
 	public String toString() {
-		return methodName;
+		return "Method: " + getMethodName();
 	}
 
 	@Override

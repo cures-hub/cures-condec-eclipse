@@ -130,7 +130,7 @@ public interface GitClient {
 	 * @return jgit git object.
 	 */
 	Git getGit();
-	
+
 	/**
 	 * Returns the path to the .git folder.
 	 * 
@@ -177,15 +177,4 @@ public interface GitClient {
 	 *            git object identifier.
 	 */
 	void setReference(String reference);
-
-	/**
-	 * Gets the changed methods in a diff entry
-	 * 
-	 * @param diffEntry
-	 *            a git commit diff for one file
-	 * @param editList
-	 *            a list of changes for the file
-	 * @return Changed methods in a diff entry as a String
-	 */
-	String whichMethodsChanged(DiffEntry diffEntry, EditList editList);
 }

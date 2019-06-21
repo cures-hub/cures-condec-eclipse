@@ -28,7 +28,7 @@ public class TestDecisionKnowledgeElement {
 	public void testToString() {
 		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
-		assertEquals("DECISION: This is a decision!", element.toString());
+		assertEquals("Decision: This is a decision!", element.toString());
 	}
 
 }
