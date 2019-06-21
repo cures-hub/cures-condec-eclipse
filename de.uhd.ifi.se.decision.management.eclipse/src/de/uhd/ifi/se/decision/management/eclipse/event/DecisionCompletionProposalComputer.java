@@ -12,9 +12,9 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
 import de.uhd.ifi.se.decision.management.eclipse.Activator;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.TextualRepresentation;
 import de.uhd.ifi.se.decision.management.eclipse.view.ChangeImpactAnalysisView;
 import de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView;
+import de.uhd.ifi.se.decision.management.eclipse.view.TextualRepresentation;
 
 /**
  * 

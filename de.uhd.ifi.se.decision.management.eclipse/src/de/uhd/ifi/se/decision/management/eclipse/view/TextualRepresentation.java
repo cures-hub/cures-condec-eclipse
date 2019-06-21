@@ -1,18 +1,29 @@
-package de.uhd.ifi.se.decision.management.eclipse.extraction;
+package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.EditList;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
+import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.WrongLinkDetector;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 
 /**
@@ -20,6 +31,10 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * for the ChangeImpactAnalysisView
  */
 public class TextualRepresentation {
+
+	public TextualRepresentation() {
+
+	}
 
 	/**
 	 * Produces the content for the ChangeImpactAnalysisView
@@ -126,61 +141,93 @@ public class TextualRepresentation {
 	 * @return decision exploration String
 	 */
 	public static String produceDecisionExploration(IPath pathOfFile, int line) {
-		IPath pathToGit = ConfigPersistenceManager.getPathToGit();
-		GitClient gitClient = GitClient.getOrCreate();
 
-		String commitForLine = gitClient
-				.getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)), line);
-		String issueKey = CommitMessageParser.getJiraIssueKey(commitForLine);
-
-		JiraClient jiraClient = JiraClient.getOrCreate();
-
-		Issue issue = jiraClient.getJiraIssue(issueKey).getIssue();
-
-		String start = "Line " + (line + 1) + " of the current file is used for knowledge exploration.\n\n";
-		start += "The last commit message of the commit that changed this line is:\n" + commitToString(commitForLine)
-				+ "\n";
-		start += "The related issue " + issueKey + " has the following summary:\n" + issue.getSummary() + "\n";
-
-		List<GitCommit> otherCommitForIssue = gitClient.getCommitsForJiraIssue(issueKey);
-
-		String otherCommitsForIssue = "";
-		if (!otherCommitForIssue.isEmpty()) {
-			otherCommitsForIssue += "Other commit messages of the issue " + issueKey + " are:\n";
-		}
-
-		for (GitCommit commit : otherCommitForIssue) {
-			otherCommitsForIssue += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
-		}
-
+		ChangedFile selectedFile = ChangedFile.getOrCreate(pathOfFile);
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		Map<Issue, Integer> linkedIssuesAtDistance = jiraClient
-				.getLinkedJiraIssuesAtDistance(jiraClient.getJiraIssue(issueKey), distance);
 
-		String linkedIssues = "Link distance " + distance + " was chosen. Linked issues are:\n";
+		String graphAsString = "The selected file is " + selectedFile.getFileName() + ".\n\n";
 
-		for (Map.Entry<Issue, Integer> linkedIssueAtDistance : linkedIssuesAtDistance.entrySet()) {
+		KnowledgeGraph graph = new KnowledgeGraphImpl(selectedFile, distance);
 
-			String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
-
-			linkedIssues += linkedIssueKey + " at link distance " + linkedIssueAtDistance.getValue()
-					+ " with the following summary:\n" + linkedIssueAtDistance.getKey().getSummary() + "\n\n";
-
-			List<GitCommit> commitsForLinkedIssue = gitClient.getCommitsForJiraIssue(linkedIssueKey);
-			String commitForLinkedIssueString = "";
-			if (!commitsForLinkedIssue.isEmpty()) {
-				commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey + " are:\n";
-
-				for (GitCommit commit : commitsForLinkedIssue) {
-					commitForLinkedIssueString += commitToString(commit.getRevCommit().getFullMessage()) + "\n";
-				}
-			}
-
-			linkedIssues += commitForLinkedIssueString;
+		BreadthFirstIterator<Node, Link> iterator = new BreadthFirstIterator<Node, Link>(graph,
+				selectedFile);
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
+			graphAsString += node.toString() + " at distance " + iterator.getDepth(node) + "\n";
 		}
 
-		String generatedForView = start + "\n" + otherCommitsForIssue + "\n" + linkedIssues + "\n";
+		return graphAsString;
 
-		return generatedForView;
+		// IPath pathToGit = ConfigPersistenceManager.getPathToGit();
+		// GitClient gitClient = GitClient.getOrCreate();
+		//
+		// String commitForLine = gitClient
+		// .getCommitMessageForLine(pathOfFile.makeRelativeTo(pathToGit.removeLastSegments(1)),
+		// line);
+		// String issueKey = CommitMessageParser.getJiraIssueKey(commitForLine);
+		//
+		// JiraClient jiraClient = JiraClient.getOrCreate();
+		//
+		// Issue issue = jiraClient.getJiraIssue(issueKey).getIssue();
+		//
+		// String start = "Line " + (line + 1) + " of the current file is used for
+		// knowledge exploration.\n\n";
+		// start += "The last commit message of the commit that changed this line is:\n"
+		// + commitToString(commitForLine)
+		// + "\n";
+		// start += "The related issue " + issueKey + " has the following summary:\n" +
+		// issue.getSummary() + "\n";
+		//
+		// List<GitCommit> otherCommitForIssue =
+		// gitClient.getCommitsForJiraIssue(issueKey);
+		//
+		// String otherCommitsForIssue = "";
+		// if (!otherCommitForIssue.isEmpty()) {
+		// otherCommitsForIssue += "Other commit messages of the issue " + issueKey + "
+		// are:\n";
+		// }
+		//
+		// for (GitCommit commit : otherCommitForIssue) {
+		// otherCommitsForIssue +=
+		// commitToString(commit.getRevCommit().getFullMessage()) + "\n";
+		// }
+		//
+		//
+		// Map<Issue, Integer> linkedIssuesAtDistance = jiraClient
+		// .getLinkedJiraIssuesAtDistance(jiraClient.getJiraIssue(issueKey), distance);
+		//
+		// String linkedIssues = "Link distance " + distance + " was chosen. Linked
+		// issues are:\n";
+		//
+		// for (Map.Entry<Issue, Integer> linkedIssueAtDistance :
+		// linkedIssuesAtDistance.entrySet()) {
+		//
+		// String linkedIssueKey = linkedIssueAtDistance.getKey().getKey();
+		//
+		// linkedIssues += linkedIssueKey + " at link distance " +
+		// linkedIssueAtDistance.getValue()
+		// + " with the following summary:\n" +
+		// linkedIssueAtDistance.getKey().getSummary() + "\n\n";
+		//
+		// List<GitCommit> commitsForLinkedIssue =
+		// gitClient.getCommitsForJiraIssue(linkedIssueKey);
+		// String commitForLinkedIssueString = "";
+		// if (!commitsForLinkedIssue.isEmpty()) {
+		// commitForLinkedIssueString = "Commit messages of the issue " + linkedIssueKey
+		// + " are:\n";
+		//
+		// for (GitCommit commit : commitsForLinkedIssue) {
+		// commitForLinkedIssueString +=
+		// commitToString(commit.getRevCommit().getFullMessage()) + "\n";
+		// }
+		// }
+		//
+		// linkedIssues += commitForLinkedIssueString;
+		// }
+		//
+		// String generatedForView = start + "\n" + otherCommitsForIssue + "\n" +
+		// linkedIssues + "\n";
+		//
+		// return generatedForView;
 	}
 }
