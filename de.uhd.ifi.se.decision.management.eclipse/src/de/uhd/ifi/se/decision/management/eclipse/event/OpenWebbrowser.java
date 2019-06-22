@@ -1,4 +1,4 @@
-package de.uhd.ifi.se.decision.management.eclipse.extraction;
+package de.uhd.ifi.se.decision.management.eclipse.event;
 
 import java.awt.Desktop;
 import java.net.URI;

@@ -24,7 +24,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.extraction.OpenWebbrowser;
+import de.uhd.ifi.se.decision.management.eclipse.event.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
