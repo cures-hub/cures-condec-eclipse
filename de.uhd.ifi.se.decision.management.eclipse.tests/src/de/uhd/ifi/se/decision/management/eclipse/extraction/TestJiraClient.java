@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -36,7 +37,12 @@ public class TestJiraClient {
 
 	@Test
 	public void testGetOrCreate() {
-		assertEquals(jiraClient, JiraClient.getOrCreate());
+		JiraClient.instances.clear();
+		JiraClient newJiraClient = JiraClient.getOrCreate();		
+		assertNotEquals(jiraClient, newJiraClient);
+		
+		JiraClient.instances.put(ConfigPersistenceManager.getJiraUri(), jiraClient);
+		assertEquals(jiraClient, JiraClient.getOrCreate());	
 	}
 
 	@Test

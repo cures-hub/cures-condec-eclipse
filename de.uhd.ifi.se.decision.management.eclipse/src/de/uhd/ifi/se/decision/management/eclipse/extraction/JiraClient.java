@@ -117,5 +117,12 @@ public interface JiraClient {
 	 */
 	public void setJiraRestClient(JiraRestClient jiraRestClient);
 
+	/**
+	 * Returns the JIRA issues linked to the JIRA issue as a set of
+	 * {@link JiraIssue} objects.
+	 * 
+	 * @return JIRA issues linked to a JIRA issue as a set of {@link JiraIssue}
+	 *         objects.
+	 */
 	Set<JiraIssue> getLinkedJiraIssues(JiraIssue jiraIssue);
 }
