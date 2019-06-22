@@ -1,7 +1,5 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
-import org.eclipse.jgit.revwalk.RevCommit;
-
 /**
  * Analyzes commit messages for hints, whether or not the corresponding commit
  * is tangled
@@ -19,9 +17,9 @@ public class WrongLinkDetector {
 	 * @return String returns the verdict
 	 */
 	public static double assessTangledness(String commitMessage, String projectKey) {
-		return hasMultipleIds(commitMessage, projectKey) + includesAnd(commitMessage) + includesComma(commitMessage);
+		return hasMultipleKeys(commitMessage, projectKey) + includesAnd(commitMessage) + includesComma(commitMessage);
 	}
-	
+
 	/**
 	 * Looks if the commit message contains multiple issue keys, weight is 2/4
 	 * 
@@ -31,7 +29,7 @@ public class WrongLinkDetector {
 	 *            the project key currently used in the JIRA project
 	 * @return value that predicts whether the the link is wrong
 	 */
-	public static double hasMultipleIds(String message, String projectKey) {
+	public static double hasMultipleKeys(String message, String projectKey) {
 
 		// guess: is not tangled
 		double judge = 2;
@@ -84,10 +82,6 @@ public class WrongLinkDetector {
 		}
 
 		return judge;
-	}
-
-	public static String tanglednessToString(RevCommit commit, String projectKey) {
-		return tanglednessToString(commit.getFullMessage(), projectKey);
 	}
 
 	/**
