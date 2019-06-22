@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.extraction;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -10,6 +11,11 @@ import org.junit.Test;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 
 public class TestCommitMessageParser {
+	
+	@Test
+	public void testConstructor() {
+		assertNotNull(new CommitMessageParser());
+	}
 
 	@Test
 	public void testEmptyMessages() {
