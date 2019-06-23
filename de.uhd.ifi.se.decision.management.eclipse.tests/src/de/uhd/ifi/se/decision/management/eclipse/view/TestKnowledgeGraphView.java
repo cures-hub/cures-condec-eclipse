@@ -2,7 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -15,12 +15,11 @@ import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImp
 
 public class TestKnowledgeGraphView {
 
-	private KnowledgeGraph knowledgeGraph;
-	private KnowledgeGraphView knowledgeGraphView;
+	private static KnowledgeGraphView knowledgeGraphView;
 
-	@Before
-	public void setUp() {
-		knowledgeGraph = initKnowledgeGraph();
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		KnowledgeGraph knowledgeGraph = initKnowledgeGraph();
 		knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
 	}
 
@@ -33,10 +32,7 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testConstructor() {
 		assertNotNull(knowledgeGraphView);
-	}
-	
-	@Test
-	public void testHightlightNode() {
 		knowledgeGraphView.highlightNode(null);
+		knowledgeGraphView.highlightSelectedNode();
 	}
 }

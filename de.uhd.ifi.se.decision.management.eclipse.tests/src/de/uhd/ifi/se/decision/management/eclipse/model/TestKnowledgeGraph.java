@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IPath;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -18,11 +18,11 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 
 public class TestKnowledgeGraph {
 
-	private GitClient gitClient;
-	private JiraClient jiraClient;
+	private static GitClient gitClient;
+	private static JiraClient jiraClient;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		gitClient = TestGitClient.initGitClient();
 		jiraClient = TestJiraClient.initJiraClient();
 	}

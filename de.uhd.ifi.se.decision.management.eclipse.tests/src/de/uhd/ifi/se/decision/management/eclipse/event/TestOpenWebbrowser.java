@@ -5,22 +5,18 @@ import static org.junit.Assert.fail;
 
 import java.net.URL;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import de.uhd.ifi.se.decision.management.eclipse.event.OpenWebbrowser;
 
 public class TestOpenWebbrowser {
 
 	@Test
-	@Ignore
-	public void testWithURL() {
+	public void testWithUrl() {
 		try {
 			URL url = new URL("https://www.linux.org/");
 			boolean webbrowserOpened = OpenWebbrowser.openWebpage(url);
 			assertTrue(webbrowserOpened);
-		} catch (Exception ex) {
-			fail(ex.getMessage());
+		} catch (Exception e) {
+			fail(e.getMessage());
 		}
 	}
 }

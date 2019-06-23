@@ -14,7 +14,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
@@ -24,11 +24,11 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
 
 public class TestGitClient {
 
-	private GitClient gitClient;
-	private IPath path;
+	private static GitClient gitClient;
+	private static IPath path;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		path = initPathToGitRepo();
 		gitClient = initGitClient(path);
 	}
