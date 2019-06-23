@@ -5,10 +5,12 @@ import static org.junit.Assert.fail;
 
 import java.net.URL;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestOpenWebbrowser {
 
+	@Ignore
 	@Test
 	public void testWithUrl() {
 		try {
