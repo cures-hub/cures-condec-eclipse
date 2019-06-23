@@ -101,8 +101,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		createView(frameTitle);
 	}
 
-	@Override
-	public void createView(String frameTitle) {
+	private void createView(String frameTitle) {
 		updateNodeSizes();
 		initJFrame(frameTitle);
 		refresh();
@@ -325,12 +324,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return (float) Math.sqrt(degree) * 2;
 	}
 
-	private void highlightSelectedNode() {
+	@Override
+	public void highlightSelectedNode() {
 		Node node = Node.getNodeById(selectedNodeId);
-		highlightSelectedNode(node);
+		highlightNode(node);
 	}
 
-	private void highlightSelectedNode(Node node) {
+	@Override
+	public void highlightNode(Node node) {
 		if (node == null) {
 			return;
 		}

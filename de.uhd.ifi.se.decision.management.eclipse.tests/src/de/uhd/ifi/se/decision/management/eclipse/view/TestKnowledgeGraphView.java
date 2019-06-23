@@ -16,10 +16,12 @@ import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImp
 public class TestKnowledgeGraphView {
 
 	private KnowledgeGraph knowledgeGraph;
+	private KnowledgeGraphView knowledgeGraphView;
 
 	@Before
 	public void setUp() {
 		knowledgeGraph = initKnowledgeGraph();
+		knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
 	}
 
 	public static KnowledgeGraph initKnowledgeGraph() {
@@ -30,6 +32,11 @@ public class TestKnowledgeGraphView {
 
 	@Test
 	public void testConstructor() {
-		assertNotNull(new KnowledgeGraphViewImpl(knowledgeGraph));
+		assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
+	public void testHightlightNode() {
+		knowledgeGraphView.highlightNode(null);
 	}
 }
