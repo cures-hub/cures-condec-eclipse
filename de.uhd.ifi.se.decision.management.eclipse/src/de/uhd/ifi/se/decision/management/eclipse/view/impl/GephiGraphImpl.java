@@ -33,7 +33,7 @@ public class GephiGraphImpl implements GephiGraph {
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
 
-	public GephiGraphImpl() {
+	public GephiGraphImpl(KnowledgeGraph graph) {
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		Workspace workspace = projectController.getCurrentWorkspace();
@@ -43,10 +43,14 @@ public class GephiGraphImpl implements GephiGraph {
 
 		GraphView graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
+		this.createGephiGraph(graph);
 	}
 
 	@Override
 	public void createGephiGraph(KnowledgeGraph graph) {
+		if (graph == null) {
+			return;
+		}
 		Set<Node> nodes = graph.vertexSet();
 		float positionOffset = (float) Math.sqrt(nodes.size());
 
@@ -64,7 +68,7 @@ public class GephiGraphImpl implements GephiGraph {
 					directedGraph.addEdge(edge);
 				}
 			}
-			
+
 			Set<Link> ingoingEdges = graph.incomingEdgesOf(node);
 			for (Link ingoingEdge : ingoingEdges) {
 				Edge edge = initEdge(ingoingEdge.getSource(), node);

@@ -55,8 +55,24 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private int linkDistance;
 	private float decreaseFactor;
 
-	public KnowledgeGraphViewImpl() {
-		this.gephiGraph = new GephiGraphImpl();
+	public KnowledgeGraphViewImpl(KnowledgeGraph graph) {
+		this(graph, "Knowledge Graph");
+	}
+
+	/**
+	 * Creates an overview of the knowledge in the knowledge graph. The knowledge
+	 * covers decision knowledge, JIRA issues such as requirements and work items,
+	 * commits, and files (e.g., classes and methods).
+	 * 
+	 * @see KnowledgeGraph
+	 * @param graph
+	 *            graph of commits, changed files, decision knowledge, and JIRA
+	 *            issues such as requirements and work items.
+	 * @param frameTitle
+	 *            frame title of the view.
+	 */
+	public KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
+		this.gephiGraph = new GephiGraphImpl(graph);
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
@@ -82,16 +98,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.linkDistance = ConfigPersistenceManager.getLinkDistance();
 		this.decreaseFactor = ConfigPersistenceManager.getDecreaseFactor();
 		this.searchString = "";
+		createView(frameTitle);
 	}
 
 	@Override
-	public void createView(KnowledgeGraph knowledgeGraph) {
-		createView(knowledgeGraph, "Knowledge Graph");
-	}
-
-	@Override
-	public void createView(KnowledgeGraph knowledgeGraph, String frameTitle) {
-		this.gephiGraph.createGephiGraph(knowledgeGraph);
+	public void createView(String frameTitle) {
 		updateNodeSizes();
 		initJFrame(frameTitle);
 		refresh();
