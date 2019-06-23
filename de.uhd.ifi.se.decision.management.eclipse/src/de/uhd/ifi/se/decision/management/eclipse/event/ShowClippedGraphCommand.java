@@ -13,7 +13,6 @@ import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
-import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class ShowClippedGraphCommand extends AbstractHandler {
@@ -33,9 +32,9 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(startNode, distance);
-		KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
+
 		String title = "Knowledge Graph for \"" + startNode.toString() + "\" with Link Distance " + distance;
-		knowledgeGraphView.createView(knowledgeGraph, title);
+		new KnowledgeGraphViewImpl(knowledgeGraph, title);
 
 		return null;
 	}

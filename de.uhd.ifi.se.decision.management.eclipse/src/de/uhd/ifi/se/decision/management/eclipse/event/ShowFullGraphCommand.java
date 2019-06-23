@@ -7,7 +7,6 @@ import org.eclipse.core.commands.ExecutionException;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
-import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class ShowFullGraphCommand extends AbstractHandler {
@@ -17,12 +16,11 @@ public class ShowFullGraphCommand extends AbstractHandler {
 		if (!CommandHelper.isValidSelection(event)) {
 			return null;
 		}
-		
+
 		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl();
-		KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl();
 		String title = "Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"";
-		knowledgeGraphView.createView(knowledgeGraph, title);
-		
+		new KnowledgeGraphViewImpl(knowledgeGraph, title);
+
 		return null;
 	}
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -17,10 +17,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 public class TestGitCommit {
 
-	private GitClient gitClient;
+	private static GitClient gitClient;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		gitClient = TestGitClient.initGitClient();
 	}
 

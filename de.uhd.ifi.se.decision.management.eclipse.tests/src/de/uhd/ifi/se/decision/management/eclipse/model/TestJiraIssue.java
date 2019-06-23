@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
@@ -20,11 +20,11 @@ import de.uhd.ifi.se.decision.management.eclipse.mock.MockIssueRestClient;
 
 public class TestJiraIssue {
 
-	private JiraClient jiraClient;
-	private GitClient gitClient;
+	private static JiraClient jiraClient;
+	private static GitClient gitClient;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		jiraClient = TestJiraClient.initJiraClient();
 		gitClient = TestGitClient.initGitClient();
 	}
@@ -40,7 +40,7 @@ public class TestJiraIssue {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("", jiraClient);
 		assertNull(jiraIssue);
 	}
-	
+
 	@Test
 	public void testGetOrCreateKeyWrong() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-0", jiraClient);

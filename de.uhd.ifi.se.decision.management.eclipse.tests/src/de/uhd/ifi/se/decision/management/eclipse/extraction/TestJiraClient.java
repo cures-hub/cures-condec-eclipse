@@ -10,7 +10,7 @@ import java.net.URI;
 import java.util.Set;
 
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
@@ -20,10 +20,10 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
 
 public class TestJiraClient {
 
-	private JiraClient jiraClient;
+	private static JiraClient jiraClient;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		jiraClient = initJiraClient();
 	}
 
@@ -38,11 +38,11 @@ public class TestJiraClient {
 	@Test
 	public void testGetOrCreate() {
 		JiraClient.instances.clear();
-		JiraClient newJiraClient = JiraClient.getOrCreate();		
+		JiraClient newJiraClient = JiraClient.getOrCreate();
 		assertNotEquals(jiraClient, newJiraClient);
-		
+
 		JiraClient.instances.put(ConfigPersistenceManager.getJiraUri(), jiraClient);
-		assertEquals(jiraClient, JiraClient.getOrCreate());	
+		assertEquals(jiraClient, JiraClient.getOrCreate());
 	}
 
 	@Test

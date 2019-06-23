@@ -1,9 +1,12 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 
 /**
- * Interface to create a view for the knowledge graph model class.
+ * Interface to create a view for the knowledge graph model class. The knowledge
+ * covers decision knowledge, JIRA issues such as requirements and work items,
+ * commits, and files (e.g., classes and methods).
  * 
  * @see KnowledgeGraph
  * @see GephiGraph
@@ -11,28 +14,18 @@ import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 public interface KnowledgeGraphView {
 
 	/**
-	 * Creates an overview of all knowledge in the knowledge graph. The knowledge
-	 * covers decision knowledge, JIRA issues such as requirements and work items,
-	 * commits, and files (e.g., classes and methods).
+	 * Highlights the node by increasing its size.
 	 * 
-	 * @see KnowledgeGraph
-	 * @param knowledgeGraph
-	 *            graph of commits, changed files, decision knowledge, and JIRA
-	 *            issues such as requirements and work items.
+	 * @param node
+	 *            in the knowledge graph as a {@link Node} object.
 	 */
-	void createView(KnowledgeGraph knowledgeGraph);
+	void highlightNode(Node node);
 
 	/**
-	 * Creates an overview of the knowledge in the knowledge graph. The knowledge
-	 * covers decision knowledge, JIRA issues such as requirements and work items,
-	 * commits, and files (e.g., classes and methods).
+	 * Highlights the currently selected node by increasing its size.
 	 * 
-	 * @see KnowledgeGraph
-	 * @param knowledgeGraph
-	 *            graph of commits, changed files, decision knowledge, and JIRA
-	 *            issues such as requirements and work items.
-	 * @param title
-	 *            frame title of the view.
+	 * @param node
+	 *            in the knowledge graph as a {@link Node} object.
 	 */
-	void createView(KnowledgeGraph knowledgeGraph, String title);
+	void highlightSelectedNode();
 }
