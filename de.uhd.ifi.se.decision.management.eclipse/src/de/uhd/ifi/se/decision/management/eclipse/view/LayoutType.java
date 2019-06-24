@@ -7,7 +7,6 @@ import org.gephi.layout.plugin.fruchterman.FruchtermanReingold;
 import org.gephi.layout.plugin.labelAdjust.LabelAdjust;
 import org.gephi.layout.plugin.noverlap.NoverlapLayout;
 
-
 public enum LayoutType {
 	FORCE_ATLAS, FRUCHTERMAN_REINGOLD, LABEL_ADJUST, YIFAN_HU, NOVERLAP, EVENTGRAPH;
 
@@ -28,9 +27,6 @@ public enum LayoutType {
 			break;
 		case NOVERLAP:
 			LayoutType.setNoverlapLayout(graphModel, size);
-			break;
-		case EVENTGRAPH:
-			LayoutType.setEventGraphLayout(graphModel, size);
 			break;
 		default:
 			break;
@@ -73,7 +69,7 @@ public enum LayoutType {
 		}
 		yifanHu.endAlgo();
 	}
-	
+
 	public static void setNoverlapLayout(GraphModel graphModel, int size) {
 		NoverlapLayout noverlap = new NoverlapLayout(null);
 		noverlap.setGraphModel(graphModel);
@@ -84,16 +80,4 @@ public enum LayoutType {
 		}
 		noverlap.endAlgo();
 	}
-	
-	public static void setEventGraphLayout(GraphModel graphModel, int size) {
-//		EventGraphLayout noverlap = new NoverlapLayout(null);
-//		noverlap.setGraphModel(graphModel);
-//		noverlap.resetPropertiesValues();
-//		noverlap.initAlgo();
-//		for (int i = 0; i < 10 * Math.sqrt(size) && noverlap.canAlgo(); i++) {
-//			noverlap.goAlgo();
-//		}
-//		noverlap.endAlgo();
-	}
-
 }

@@ -16,7 +16,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 
 public class GraphSettings {
+	
 	public static LayoutType getLayoutType() {
+		// TODO Add possibility to Knowledge Graph View to choose the layout type.
 		return LayoutType.NOVERLAP;
 	}
 
@@ -54,7 +56,7 @@ public class GraphSettings {
 		}
 		return Color.PINK;
 	}
-	
+
 	public static PreviewModel initPreviewModel(PreviewController previewController) {
 		PreviewModel previewModel = previewController.getModel();
 		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
