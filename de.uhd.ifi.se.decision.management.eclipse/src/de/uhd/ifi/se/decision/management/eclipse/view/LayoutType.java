@@ -5,9 +5,11 @@ import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
 import org.gephi.layout.plugin.fruchterman.FruchtermanReingold;
 import org.gephi.layout.plugin.labelAdjust.LabelAdjust;
+import org.gephi.layout.plugin.noverlap.NoverlapLayout;
+
 
 public enum LayoutType {
-	FORCE_ATLAS, FRUCHTERMAN_REINGOLD, LABEL_ADJUST, YIFAN_HU;
+	FORCE_ATLAS, FRUCHTERMAN_REINGOLD, LABEL_ADJUST, YIFAN_HU, NOVERLAP, EVENTGRAPH;
 
 	public void generateLayout(GraphModel graphModel, int size) {
 		switch (this) {
@@ -23,6 +25,12 @@ public enum LayoutType {
 			break;
 		case YIFAN_HU:
 			LayoutType.setYifanHuLayout(graphModel, size);
+			break;
+		case NOVERLAP:
+			LayoutType.setNoverlapLayout(graphModel, size);
+			break;
+		case EVENTGRAPH:
+			LayoutType.setEventGraphLayout(graphModel, size);
 			break;
 		default:
 			break;
@@ -64,6 +72,28 @@ public enum LayoutType {
 			yifanHu.goAlgo();
 		}
 		yifanHu.endAlgo();
+	}
+	
+	public static void setNoverlapLayout(GraphModel graphModel, int size) {
+		NoverlapLayout noverlap = new NoverlapLayout(null);
+		noverlap.setGraphModel(graphModel);
+		noverlap.resetPropertiesValues();
+		noverlap.initAlgo();
+		for (int i = 0; i < 10 * Math.sqrt(size) && noverlap.canAlgo(); i++) {
+			noverlap.goAlgo();
+		}
+		noverlap.endAlgo();
+	}
+	
+	public static void setEventGraphLayout(GraphModel graphModel, int size) {
+//		EventGraphLayout noverlap = new NoverlapLayout(null);
+//		noverlap.setGraphModel(graphModel);
+//		noverlap.resetPropertiesValues();
+//		noverlap.initAlgo();
+//		for (int i = 0; i < 10 * Math.sqrt(size) && noverlap.canAlgo(); i++) {
+//			noverlap.goAlgo();
+//		}
+//		noverlap.endAlgo();
 	}
 
 }
