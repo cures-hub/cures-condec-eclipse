@@ -49,8 +49,8 @@ public class GephiGraphImpl implements GephiGraph {
 
 		GraphView graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
-		this.createGephiGraph(graph);
 		this.layoutType = layoutType;
+		this.createGephiGraph(graph);
 	}
 
 	@Override

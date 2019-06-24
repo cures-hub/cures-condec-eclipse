@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,6 +36,7 @@ import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
+import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 
 /**
@@ -127,8 +129,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JPanel initJPanel() {
 		JPanel panel = new JPanel();
 		panel.setMaximumSize(new Dimension(400, 1000));
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));	
+		
 		// Search Field
 		searchTextField = createTextField("Search...");
 		panel.add(searchTextField);
@@ -154,7 +156,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 		// Filters
 		JPanel filterPanel = createFilterPanel();
-		panel.add(filterPanel);
+		panel.add(filterPanel);		
+		
+		// Layout Type Combo Box
+		panel.add(createLayoutTypeComboBox());
+		
 		return panel;
 	}
 
@@ -230,7 +236,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JTextField createTextField(String text) {
 		JTextField textField = new JTextField();
 		textField.setSize(400, 40);
-		textField.setVisible(true);
 		textField.setMargin(new Insets(5, 5, 5, 5));
 		textField.setText(text);
 		return textField;
@@ -240,7 +245,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JButton button = new JButton();
 		button.setSize(400, 40);
 		button.setText(text);
-		button.setVisible(true);
 		button.setMargin(new Insets(5, 5, 5, 5));
 		return button;
 	}
@@ -258,6 +262,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		});
 		return searchButton;
+	}
+	
+	private JComboBox<LayoutType> createLayoutTypeComboBox() {
+		JComboBox<LayoutType> layoutTypeComboBox = new JComboBox<LayoutType>(LayoutType.values());
+		return layoutTypeComboBox;
 	}
 
 	private void refresh() {
