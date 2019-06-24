@@ -1,8 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Insets;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -128,9 +127,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	private JPanel initJPanel() {
 		JPanel panel = new JPanel();
-		panel.setMaximumSize(new Dimension(400, 1000));
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));	
-		
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
 		// Search Field
 		searchTextField = createTextField("Search...");
 		panel.add(searchTextField);
@@ -156,11 +154,12 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 		// Filters
 		JPanel filterPanel = createFilterPanel();
-		panel.add(filterPanel);		
-		
+		panel.add(filterPanel);
+
 		// Layout Type Combo Box
-		panel.add(createLayoutTypeComboBox());
-		
+		JPanel layoutPanel = createLayoutPanel();
+		panel.add(layoutPanel);
+
 		return panel;
 	}
 
@@ -224,7 +223,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	private JPanel createFilterPanel() {
 		JPanel filterPanel = new JPanel();
-		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.PAGE_AXIS));
+		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
+		filterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		JLabel label = new JLabel("Filters:");
 		filterPanel.add(label);
 		for (Filter filter : graphFiltering.filters.values()) {
@@ -235,17 +235,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	private JTextField createTextField(String text) {
 		JTextField textField = new JTextField();
-		textField.setSize(400, 40);
-		textField.setMargin(new Insets(5, 5, 5, 5));
 		textField.setText(text);
+		textField.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return textField;
 	}
 
 	private JButton createButton(String text) {
 		JButton button = new JButton();
-		button.setSize(400, 40);
 		button.setText(text);
-		button.setMargin(new Insets(5, 5, 5, 5));
+		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return button;
 	}
 
@@ -263,9 +261,20 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		});
 		return searchButton;
 	}
-	
+
+	private JPanel createLayoutPanel() {
+		JPanel layoutPanel = new JPanel();
+		layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
+		layoutPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JLabel label = new JLabel("Layout:");
+		layoutPanel.add(label);
+		layoutPanel.add(createLayoutTypeComboBox());
+		return layoutPanel;
+	}
+
 	private JComboBox<LayoutType> createLayoutTypeComboBox() {
 		JComboBox<LayoutType> layoutTypeComboBox = new JComboBox<LayoutType>(LayoutType.values());
+		layoutTypeComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return layoutTypeComboBox;
 	}
 
