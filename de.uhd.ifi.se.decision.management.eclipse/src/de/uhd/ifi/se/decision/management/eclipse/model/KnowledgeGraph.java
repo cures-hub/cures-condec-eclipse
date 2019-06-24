@@ -11,7 +11,8 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
  * Interface to create a knowledge graph for the entire project or a sub-graph
  * from a given start node with a certain distance (set in the constructor). The
  * knowledge covers decision knowledge, JIRA issues such as requirements and
- * work items, commits, files (e.g., Java classes), and methods.
+ * work items, commits, files (e.g., Java classes), and methods. Extends the
+ * JGraphT graph interface.
  * 
  * @see GitClient
  * @see JiraClient
@@ -20,8 +21,10 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 public interface KnowledgeGraph extends Graph<Node, Link> {
 
 	/**
-	 * Returns the start node that the graph is created from, e.g. a selected Java
-	 * class.
+	 * Returns the start node that the graph is created from. The start node can be
+	 * an object of the class {@link ChangedFile} (e.g. a selected Java class),
+	 * {@link GitCommit}, {@link JiraIssue}, {@link DecisionKnowledgeElement}, or
+	 * {@link CodeMethod}.
 	 * 
 	 * @return start node that the graph is created from as a {@link Node} object.
 	 *         The start node can be null.
