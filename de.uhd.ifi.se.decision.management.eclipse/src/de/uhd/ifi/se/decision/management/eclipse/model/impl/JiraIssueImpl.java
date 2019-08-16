@@ -1,5 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model.impl;
 
+import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +12,7 @@ import java.util.Set;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 
+import de.uhd.ifi.se.decision.management.eclipse.event.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
@@ -115,5 +118,10 @@ public class JiraIssueImpl extends NodeImpl implements JiraIssue {
 		linkedNodes.addAll(this.getCommits());
 		linkedNodes.addAll(this.getLinkedJiraIssues());
 		return linkedNodes;
+	}
+	
+	@Override
+	public void goToIssue() {
+		OpenWebbrowser.openWebpage(this);
 	}
 }

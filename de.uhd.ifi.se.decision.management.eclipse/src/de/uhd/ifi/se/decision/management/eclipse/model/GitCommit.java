@@ -94,4 +94,9 @@ public interface GitCommit extends Node {
 	 *         objects.
 	 */
 	Set<JiraIssue> getLinkedJiraIssues();
+	
+	/**
+	 * Opens the git commit message in the commit viewer
+	 */
+	void goToGitCommit();
 }
