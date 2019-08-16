@@ -18,8 +18,8 @@ public class JumpToCommand {
 	/**
 	 * Opens a JIRA issue in the web browser
 	 */
-	public static void jumpToJiraIssue(JiraIssue issue) {
-		OpenWebbrowser.openWebpage(issue);
+	public static boolean jumpToJiraIssue(JiraIssue issue) {
+		return OpenWebbrowser.openWebpage(issue);
 	}
 	
 	/**
