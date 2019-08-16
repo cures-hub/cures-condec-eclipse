@@ -5,13 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -129,16 +123,5 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		linkedNodes.addAll(this.getCodeMethods());
 		linkedNodes.addAll(this.getCommits());
 		return linkedNodes;
-	}
-	
-	@Override
-	public void goToChangedFile() {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try{
-			IDE.openEditor(page, file, true);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
 	}
 }

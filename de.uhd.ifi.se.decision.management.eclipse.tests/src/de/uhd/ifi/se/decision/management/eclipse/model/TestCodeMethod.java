@@ -22,16 +22,6 @@ public class TestCodeMethod {
 		assertEquals("Method: createGraph()", codeMethod.toString());
 		assertEquals(file, codeMethod.getJavaClass());
 	}
-	
-	@Test
-	public void testGoToMethod() {
-		IPath path = new Path("GodClass.java");
-		ChangedFile file = new ChangedFileImpl(path);
-		CodeMethod codeMethod = new CodeMethodImpl("createGraph()", file);
-		codeMethod.goToMethod();
-		
-		//TODO: write assertion
-	}
 
 	@AfterClass
 	public static void tearDown() {

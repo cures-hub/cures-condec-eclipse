@@ -108,9 +108,4 @@ public interface ChangedFile extends Node {
 	 *            that the file was changed in as {@link GitCommit} objects.
 	 */
 	void addCommit(GitCommit gitCommit);
-	
-	/**
-	 * Opens the changed file in an editor
-	 */
-	void goToChangedFile();
 }

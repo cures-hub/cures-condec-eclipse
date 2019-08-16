@@ -83,9 +83,4 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 		linkedNodes.addAll(this.getLinkedJiraIssues());
 		return linkedNodes;
 	}
-	
-	@Override
-	public void goToGitCommit() {
-		
-	}
 }

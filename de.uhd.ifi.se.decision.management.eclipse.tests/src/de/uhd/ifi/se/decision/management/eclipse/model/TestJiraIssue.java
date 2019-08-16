@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -114,20 +113,6 @@ public class TestJiraIssue {
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(6, workItem.getLinkedNodes().size());
 	}
-	
-	@Test
-	public void testGoToIssue() {
-		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
-		jiraIssue.goToIssue();
-		
-		//TODO: write assertion
-	}
-	
-	//@Test(expected = IOException.class)
-	//public void testGoToIssueIOException() {
-	//	JiraIssue jiraIssue = JiraIssue.getOrCreate("CONDEC", jiraClient);
-	//	jiraIssue.goToIssue();
-	//}
 
 	@AfterClass
 	public static void tearDown() {

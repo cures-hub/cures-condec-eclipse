@@ -35,9 +35,4 @@ public interface CodeMethod extends Node {
 	 * @return Java class that the method belongs to as a {@link ChangedFile} object.
 	 */
 	ChangedFile getJavaClass();
-	
-	/**
-	 * Opens the method in an editor
-	 */
-	void goToMethod();
 }

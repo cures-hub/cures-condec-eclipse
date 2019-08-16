@@ -130,9 +130,4 @@ public interface JiraIssue extends Node {
 	 * @return keys of linked JIRA issues as a set of Strings.
 	 */
 	Set<String> getKeysOfLinkedJiraIssues();
-	
-	/**
-	 * Opens the JIRA issue in the web browser
-	 */
-	void goToIssue();
 }

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.PartInitException;
 import org.junit.AfterClass;
 import org.junit.Test;
 
@@ -44,31 +43,6 @@ public class TestChangedFile {
 		assertTrue(file.isExistingJavaClass());
 
 		assertTrue(file.getCodeMethods().size() == 4);
-	}
-	
-	//@Test(expected = PartInitException.class)
-	//public void testGoToChangedFileNonExistingJavaFile() {
-	//	IPath path = new Path("GodClass.java");
-	//	ChangedFile file = new ChangedFileImpl(path);
-	//	file.goToChangedFile();
-	//}
-	
-	@Test
-	public void testGoToChangedFileExistingJavaFile() {
-		IPath path = new Path("src/de/uhd/ifi/se/decision/management/eclipse/model/TestChangedFile.java");
-		ChangedFile file = new ChangedFileImpl(path);
-		file.goToChangedFile();
-		
-		//TODO: write assertion
-	}
-	
-	@Test
-	public void testGoToChangedFileExistingNonJavaFile() {
-		IPath path = new Path("pom.xml");
-		ChangedFile file = ChangedFile.getOrCreate(path);
-		file.goToChangedFile();
-		
-		//TODO: write assertion
 	}
 
 	@AfterClass
