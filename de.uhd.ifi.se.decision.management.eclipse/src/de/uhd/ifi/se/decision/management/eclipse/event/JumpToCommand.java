@@ -31,15 +31,18 @@ public class JumpToCommand {
 	
 	/**
 	 * Opens a changed file in an editor
+	 * @return 
 	 */
-	public static void jumpToChangedFile(ChangedFile file) {
+	public static boolean jumpToChangedFile(ChangedFile file) {
 		IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(file.getPath());
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try{
 			IDE.openEditor(page, ifile, true);
+			return true;
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
 	/**
