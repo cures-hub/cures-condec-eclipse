@@ -25,7 +25,6 @@ import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommand;
-import de.uhd.ifi.se.decision.management.eclipse.event.OpenWebbrowser;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;

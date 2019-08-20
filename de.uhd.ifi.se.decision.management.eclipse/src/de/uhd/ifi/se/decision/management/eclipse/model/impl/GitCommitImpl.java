@@ -28,7 +28,7 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 		}
 
 		this.jiraIssueKeys = CommitMessageParser.getJiraIssueKeys(revCommit, projectKey);
-		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(revCommit);
+		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(this);
 		this.changedFiles = new HashSet<ChangedFile>();
 		this.linkedJiraIssues = new HashSet<JiraIssue>();
 	}
@@ -68,6 +68,14 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 			return "";
 		}
 		return "Commit: " + revCommit.getShortMessage();
+	}
+	
+	@Override
+	public String getFullMessage() {
+		if (revCommit == null) {
+			return "";
+		}
+		return revCommit.getFullMessage();
 	}
 
 	@Override

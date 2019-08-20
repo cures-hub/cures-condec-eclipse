@@ -85,6 +85,13 @@ public interface GitCommit extends Node {
 	 * @return object of class {@link RevCommit};
 	 */
 	RevCommit getRevCommit();
+	
+	/**
+	 * Returns the full message of the commit.
+	 * 
+	 * @return string with the full commit message;
+	 */
+	String getFullMessage();
 
 	/**
 	 * Returns the JIRA issues linked to the commit as a set of {@link JiraIssue}

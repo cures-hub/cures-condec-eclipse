@@ -15,8 +15,8 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 
 public class CommitMessageParser {
 
-	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(RevCommit commit) {
-		return extractDecisionKnowledge(commit.getFullMessage());
+	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(GitCommit commit) {
+		return extractDecisionKnowledge(commit, commit.getFullMessage());
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class CommitMessageParser {
 	 * @return list of all decision knowledge elements explicitly marked in a
 	 *         message.
 	 */
-	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(String message) {
+	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(GitCommit commit, String message) {
 		Set<DecisionKnowledgeElement> decisionKnowledgeElements = new LinkedHashSet<DecisionKnowledgeElement>();
 		List<String> partsOfMessage = CommitMessageParser.getPartsOfMessage(message);
 		String description = "";
@@ -38,7 +38,7 @@ public class CommitMessageParser {
 		for (String part : partsOfMessage) {
 			if (foundType) {
 				if (part.startsWith("/")) {
-					decisionKnowledgeElements.add(new DecisionKnowledgeElementImpl(type, description.trim()));
+					decisionKnowledgeElements.add(new DecisionKnowledgeElementImpl(commit, type, description.trim()));
 					description = "";
 					foundType = false;
 				} else {
