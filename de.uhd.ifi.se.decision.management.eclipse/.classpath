@@ -158,5 +158,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jheaps-0.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib" sourcepath="lib"/>
 	<classpathentry kind="lib" path="/home/markus/Downloads/eclipse/plugins/org.eclipse.team.ui_3.8.400.v20190216-2155.jar"/>
+	<classpathentry kind="lib" path="/home/markus/Downloads/eclipse/plugins/org.eclipse.core.filesystem_1.7.300.v20190218-2054.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

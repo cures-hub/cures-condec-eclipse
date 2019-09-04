@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.event;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.ui.history.IHistoryView;
@@ -9,6 +10,7 @@ import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
@@ -52,18 +54,19 @@ public class JumpToCommand {
 	/**
 	 * Opens a changed file in an editor.
 	 * @return
-	 * 		whether the filed was opened in the editor.
+	 * 		whether the file was opened in the editor.
 	 */
 	public static void jumpToChangedFile(ChangedFile file) {
 		Display.getDefault().asyncExec( new Runnable() {
 			@Override
 			public void run() {
+				IPath ipath = file.getPath();
+				IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(ipath);
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-				IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(file.getPath());
 				IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(ifile.getName());
-				
 				try {
 					page.openEditor(new FileEditorInput(ifile), desc.getId());
+					//IDE.openEditor(page, ifile);
 				} catch (PartInitException e) {
 					e.printStackTrace();
 				}
