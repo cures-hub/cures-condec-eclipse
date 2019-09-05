@@ -18,7 +18,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.e4.core.di.annotations,
  org.eclipse.e4.ui.services,
- org.apache.commons.codec
+ org.apache.commons.codec,
+ org.eclipse.team.ui,
+ org.eclipse.core.filesystem
 Bundle-Activator: de.uhd.ifi.se.decision.management.eclipse.Activator
 Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.internal.core,
