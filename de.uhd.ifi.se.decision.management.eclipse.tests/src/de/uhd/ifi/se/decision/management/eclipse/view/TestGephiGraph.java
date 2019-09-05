@@ -11,6 +11,7 @@ public class TestGephiGraph {
 	@Test
 	public void testKnowledgeGraphNull() {
 		assertNotNull(new GephiGraphImpl(null));
+		assertNotNull(new GephiGraphImpl(null, LayoutType.NOVERLAP));
 	}
 
 }

@@ -18,7 +18,7 @@ public class TestKnowledgeGraphView {
 	private static KnowledgeGraphView knowledgeGraphView;
 
 	@BeforeClass
-	public static void setUpBeforeClass() {
+	public static void setUp() {
 		KnowledgeGraph knowledgeGraph = initKnowledgeGraph();
 		knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
 	}
@@ -34,5 +34,9 @@ public class TestKnowledgeGraphView {
 		assertNotNull(knowledgeGraphView);
 		knowledgeGraphView.highlightNode(null);
 		knowledgeGraphView.highlightSelectedNode();
+	}
+	
+	public static void main(String[] args) {
+		setUp();
 	}
 }

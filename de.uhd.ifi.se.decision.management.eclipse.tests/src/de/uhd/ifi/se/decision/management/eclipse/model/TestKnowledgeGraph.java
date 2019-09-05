@@ -81,4 +81,12 @@ public class TestKnowledgeGraph {
 		JiraIssue.instances.clear();
 		JiraClient.instances.clear();
 	}
+	
+	public static void main(String[] args) {
+		setUp();
+		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
+		ChangedFile file = ChangedFile.getOrCreate(path);
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, file, 3);
+		System.out.println(knowledgeGraph.toString());
+	}
 }

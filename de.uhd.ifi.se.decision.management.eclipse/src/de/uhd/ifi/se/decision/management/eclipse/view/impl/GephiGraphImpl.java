@@ -19,6 +19,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
+import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 
 /**
  * Class to create a gephi graph from the knowledge graph. Used in the
@@ -32,8 +33,13 @@ public class GephiGraphImpl implements GephiGraph {
 
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
+	private LayoutType layoutType;
 
 	public GephiGraphImpl(KnowledgeGraph graph) {
+		this(graph, LayoutType.YIFAN_HU);
+	}
+
+	public GephiGraphImpl(KnowledgeGraph graph, LayoutType layoutType) {
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		Workspace workspace = projectController.getCurrentWorkspace();
@@ -43,6 +49,7 @@ public class GephiGraphImpl implements GephiGraph {
 
 		GraphView graphView = graphModel.getGraph().getView();
 		this.graphModel.setVisibleView(graphView);
+		this.layoutType = layoutType;
 		this.createGephiGraph(graph);
 	}
 
@@ -77,7 +84,7 @@ public class GephiGraphImpl implements GephiGraph {
 				}
 			}
 		}
-		GraphSettings.getLayoutType().generateLayout(graphModel, nodes.size());
+		this.layoutType.generateLayout(graphModel, nodes.size());
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {
