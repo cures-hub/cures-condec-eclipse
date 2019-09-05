@@ -28,6 +28,7 @@ The precompiled .jar-File for the latest release can be found here: https://gith
 To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
 - [Install Eclipse IDE for RCP and RAP Developers](https://www.eclipse.org/downloads/packages/) and open it.
 - [Install the Tycho Maven plug-in.](http://codeandme.blogspot.com/2012/12/tycho-build-1-building-plug-ins.html)
+- [Install the M2E Connector for the Maven Dependency Plugin.](https://marketplace.eclipse.org/content/m2e-connector-maven-dependency-plugin)
 - Import the project as an Existing Maven Project.
 - Run *mvn clean install* in the parent project (cures-condec-eclipse folder) to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
 - Configure the de.uhd.ifi.se.decision.management.eclipse project: Properties / Java Build Path / Libraries / 
