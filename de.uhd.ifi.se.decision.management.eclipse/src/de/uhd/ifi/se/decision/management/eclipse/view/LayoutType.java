@@ -8,7 +8,7 @@ import org.gephi.layout.plugin.labelAdjust.LabelAdjust;
 import org.gephi.layout.plugin.noverlap.NoverlapLayout;
 
 public enum LayoutType {
-	FORCE_ATLAS, FRUCHTERMAN_REINGOLD, LABEL_ADJUST, YIFAN_HU, NOVERLAP, EVENTGRAPH;
+	FORCE_ATLAS, FRUCHTERMAN_REINGOLD, LABEL_ADJUST, YIFAN_HU, NOVERLAP;
 
 	public void generateLayout(GraphModel graphModel, int size) {
 		switch (this) {
