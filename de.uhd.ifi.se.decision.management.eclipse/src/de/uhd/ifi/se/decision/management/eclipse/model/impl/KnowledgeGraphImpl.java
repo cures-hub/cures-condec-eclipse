@@ -201,7 +201,12 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 			}
 		}
 		if (node instanceof GitCommit) {
-			addJiraIssuesForCommit((GitCommit) node, currentDepth, maxDepth);
+			GitCommit commit = (GitCommit) node;
+			addJiraIssuesForCommit(commit, currentDepth, maxDepth);
+			for (DecisionKnowledgeElement element : commit.getDecisionKnowledgeFromMessage()) {
+				this.addVertex(element);
+				this.addEdge(element, commit);
+			}
 		}
 		if (node instanceof JiraIssue) {
 			JiraIssue jiraIssue = (JiraIssue) node;
