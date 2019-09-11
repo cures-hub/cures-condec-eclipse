@@ -19,7 +19,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 
-public class JumpToCommand {
+public class JumpToCommandHelper {
 	
 	/**
 	 * Opens a JIRA issue in the web browser.
@@ -35,7 +35,7 @@ public class JumpToCommand {
 	 * @return
 	 * 		whether the view was opened without error.
 	 */
-	public static void jumpToGitCommit(GitCommit commit) {
+	public static boolean jumpToGitCommit(GitCommit commit) {
 		Display.getDefault().asyncExec( new Runnable() {
 			@Override
 			public void run() {
@@ -47,9 +47,10 @@ public class JumpToCommand {
 					ipage.setInput(revCommit);
 				} catch (PartInitException e) {
 					e.printStackTrace();
-				};
+				}
 			}
 		});
+		return true;
 	}
 	
 	/**
@@ -57,7 +58,7 @@ public class JumpToCommand {
 	 * @return
 	 * 		whether the file was opened in the editor.
 	 */
-	public static void jumpToChangedFile(ChangedFile file) {
+	public static boolean jumpToChangedFile(ChangedFile file) {
 		Display.getDefault().asyncExec( new Runnable() {
 			@Override
 			public void run() {
@@ -78,6 +79,7 @@ public class JumpToCommand {
 				}
 			}
 		});
+		return true;
 	}
 	
 	/**
@@ -85,9 +87,10 @@ public class JumpToCommand {
 	 * @return
 	 * 		whether the method was opened in the editor.
 	 */
-	public static void jumpToMethod(CodeMethod method) {
+	public static boolean jumpToMethod(CodeMethod method) {
 		ChangedFile javaClass = method.getJavaClass();
 		jumpToChangedFile(javaClass);
+		return true;
 	}
 	
 	/**
@@ -95,11 +98,12 @@ public class JumpToCommand {
 	 * @return
 	 * 		whether the commit message was opened in the view.
 	 */
-	public static void jumpToDecisionKnowledgeElement(DecisionKnowledgeElement element) {
+	public static boolean jumpToDecisionKnowledgeElement(DecisionKnowledgeElement element) {
 		if(element.getCommit() != null) {
 			GitCommit commit = element.getCommit();
 			jumpToGitCommit(commit);
 		}
+		return true;
 	}
 
 }

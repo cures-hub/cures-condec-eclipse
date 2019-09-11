@@ -24,7 +24,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommand;
+import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommandHelper;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -206,19 +206,19 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 					return;
 				}
 				else if (node instanceof JiraIssueImpl) {
-					JumpToCommand.jumpToJiraIssue((JiraIssue) node);
+					JumpToCommandHelper.jumpToJiraIssue((JiraIssue) node);
 				}
 				else if (node instanceof GitCommit) {
-					JumpToCommand.jumpToGitCommit((GitCommit) node);
+					JumpToCommandHelper.jumpToGitCommit((GitCommit) node);
 				}
 				else if (node instanceof ChangedFile) {
-					JumpToCommand.jumpToChangedFile((ChangedFile) node);
+					JumpToCommandHelper.jumpToChangedFile((ChangedFile) node);
 				}
 				else if (node instanceof CodeMethod) {
-					JumpToCommand.jumpToMethod((CodeMethod) node);
+					JumpToCommandHelper.jumpToMethod((CodeMethod) node);
 				}
 				else if (node instanceof DecisionKnowledgeElement) {
-					JumpToCommand.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
+					JumpToCommandHelper.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
 				}
 			}
 		});
