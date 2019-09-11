@@ -3,14 +3,14 @@ package de.uhd.ifi.se.decision.management.eclipse.event;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.team.ui.history.IHistoryPage;
 import org.eclipse.team.ui.history.IHistoryView;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
@@ -39,11 +39,12 @@ public class JumpToCommand {
 		Display.getDefault().asyncExec( new Runnable() {
 			@Override
 			public void run() {
-				ObjectId commitID = commit.getRevCommit().getId();
+				RevCommit revCommit = commit.getRevCommit();
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try {
 					IHistoryView view = (IHistoryView) page.showView(IHistoryView.VIEW_ID);
-					view.showHistoryFor(commitID);
+					IHistoryPage ipage = view.getHistoryPage();
+					ipage.setInput(revCommit);
 				} catch (PartInitException e) {
 					e.printStackTrace();
 				};
@@ -61,12 +62,17 @@ public class JumpToCommand {
 			@Override
 			public void run() {
 				IPath ipath = file.getPath();
+				for(int i = 0; i < ipath.segmentCount(); ++i) {
+					if(ipath.segment(i).matches("src")) {
+						ipath = ipath.removeFirstSegments(i-1);
+						break;
+					}
+				}
 				IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(ipath);
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(ifile.getName());
 				try {
 					page.openEditor(new FileEditorInput(ifile), desc.getId());
-					//IDE.openEditor(page, ifile);
 				} catch (PartInitException e) {
 					e.printStackTrace();
 				}

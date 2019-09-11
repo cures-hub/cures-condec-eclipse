@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
-import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
+//import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
@@ -20,12 +20,12 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 public class TestJumpToCommand {
 	
 	private static JiraClient jiraClient;
-	private static GitClient gitClient;
+	//private static GitClient gitClient;
 	
 	@BeforeClass
 	public static void setUp() {
 		jiraClient = TestJiraClient.initJiraClient();
-		gitClient = TestGitClient.initGitClient();
+		//gitClient = TestGitClient.initGitClient();
 	}
 
 	@Ignore
