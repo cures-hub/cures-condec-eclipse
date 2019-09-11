@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -36,6 +37,7 @@ public class TestJumpToCommandHelper {
 		gitClient = TestGitClient.initGitClient();
 	}
 
+	@Ignore
 	@Test
 	public void testJumpToJiraIssue() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
