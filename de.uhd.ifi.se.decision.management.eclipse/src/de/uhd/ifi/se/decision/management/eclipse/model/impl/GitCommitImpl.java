@@ -69,14 +69,6 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 		}
 		return "Commit: " + revCommit.getShortMessage();
 	}
-	
-	@Override
-	public String getFullMessage() {
-		if (revCommit == null) {
-			return "";
-		}
-		return revCommit.getFullMessage();
-	}
 
 	@Override
 	public Set<JiraIssue> getLinkedJiraIssues() {

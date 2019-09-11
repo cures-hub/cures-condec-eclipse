@@ -16,7 +16,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 public class CommitMessageParser {
 
 	public static Set<DecisionKnowledgeElement> extractDecisionKnowledge(GitCommit commit) {
-		return extractDecisionKnowledge(commit, commit.getFullMessage());
+		return extractDecisionKnowledge(commit, commit.getRevCommit().getFullMessage());
 	}
 
 	/**
