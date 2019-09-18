@@ -69,4 +69,21 @@ public interface DecisionKnowledgeElement extends Node {
 	 * @return true if element was linked.
 	 */
 	boolean addLinkedDecisionKnowledgeElement(DecisionKnowledgeElement element);
+	
+	/**
+	 * Get the git commit this decision knowledge element is from.
+	 *
+	 * @see GitCommit
+	 * @return git commit this decision knowledge element is from.
+	 */
+	GitCommit getCommit();
+	
+	/**
+	 * Set the git commit this decision knowledge element is from
+	 *
+	 * @see GitCommit
+	 * @param commit
+	 *            this decision knowledge element is from.
+	 */
+	void setCommit(GitCommit commit);
 }

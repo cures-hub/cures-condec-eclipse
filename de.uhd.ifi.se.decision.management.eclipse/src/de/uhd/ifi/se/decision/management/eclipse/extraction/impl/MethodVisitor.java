@@ -7,7 +7,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 /**
- * Class responsbible to retrieve method declarations from a Java class. Used to
+ * Class responsible for retrieving method declarations from a Java class. Used to
  * parse changed files in commits.
  * 
  * @see ChangedFile

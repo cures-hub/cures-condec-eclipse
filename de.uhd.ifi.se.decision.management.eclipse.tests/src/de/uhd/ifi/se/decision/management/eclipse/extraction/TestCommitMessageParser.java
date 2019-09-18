@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 
 public class TestCommitMessageParser {
 	
@@ -20,14 +21,16 @@ public class TestCommitMessageParser {
 	@Test
 	public void testEmptyMessages() {
 		String message = "";
-		Set<DecisionKnowledgeElement> elements = CommitMessageParser.extractDecisionKnowledge(message);
+		GitCommit commit = null;
+		Set<DecisionKnowledgeElement> elements = CommitMessageParser.extractDecisionKnowledge(commit, message);
 		assertEquals(0, elements.size());
 	}
 
 	@Test
 	public void testFilledMessage() {
 		String message = "[decision] This is a decision! [/decision]";
-		Set<DecisionKnowledgeElement> elements = CommitMessageParser.extractDecisionKnowledge(message);
+		GitCommit commit = null;
+		Set<DecisionKnowledgeElement> elements = CommitMessageParser.extractDecisionKnowledge(commit, message);
 		assertEquals(1, elements.size());
 		assertEquals("This is a decision!", elements.iterator().next().getSummary());
 	}

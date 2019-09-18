@@ -43,7 +43,7 @@ public class TestChangedFile {
 		assertTrue(file.isExistingJavaClass());
 
 		assertTrue(file.getCodeMethods().size() == 4);
-	}	
+	}
 
 	@AfterClass
 	public static void tearDown() {

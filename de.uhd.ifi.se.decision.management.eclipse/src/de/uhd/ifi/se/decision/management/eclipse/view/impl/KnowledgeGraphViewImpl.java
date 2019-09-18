@@ -24,7 +24,11 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.event.OpenWebbrowser;
+import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommandHelper;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
@@ -194,15 +198,27 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				} catch (Exception ex) {
 					selectedNodeId = -1;
 				}
-				if (selectedNodeId <= 0) {
+				if (selectedNodeId < 0) {
 					return;
 				}
 				Node node = Node.getNodeById(selectedNodeId);
 				if (node == null) {
 					return;
 				}
-				if (node instanceof JiraIssueImpl) {
-					OpenWebbrowser.openWebpage((JiraIssue) node);
+				else if (node instanceof JiraIssueImpl) {
+					JumpToCommandHelper.jumpToJiraIssue((JiraIssue) node);
+				}
+				else if (node instanceof GitCommit) {
+					JumpToCommandHelper.jumpToGitCommit((GitCommit) node);
+				}
+				else if (node instanceof ChangedFile) {
+					JumpToCommandHelper.jumpToChangedFile((ChangedFile) node);
+				}
+				else if (node instanceof CodeMethod) {
+					JumpToCommandHelper.jumpToMethod((CodeMethod) node);
+				}
+				else if (node instanceof DecisionKnowledgeElement) {
+					JumpToCommandHelper.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
 				}
 			}
 		});

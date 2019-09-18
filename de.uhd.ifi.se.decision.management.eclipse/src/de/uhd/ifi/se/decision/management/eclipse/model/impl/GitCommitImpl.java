@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.CommitMessageParser;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -29,7 +28,7 @@ public class GitCommitImpl extends NodeImpl implements GitCommit {
 		}
 
 		this.jiraIssueKeys = CommitMessageParser.getJiraIssueKeys(revCommit, projectKey);
-		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(revCommit);
+		this.decisionKnowledgeElements = CommitMessageParser.extractDecisionKnowledge(this);
 		this.changedFiles = new HashSet<ChangedFile>();
 		this.linkedJiraIssues = new HashSet<JiraIssue>();
 	}
