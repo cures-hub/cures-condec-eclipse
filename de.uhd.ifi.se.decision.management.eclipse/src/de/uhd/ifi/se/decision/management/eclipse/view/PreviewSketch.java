@@ -1,4 +1,3 @@
-
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import java.awt.Graphics;
@@ -7,6 +6,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,11 +14,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewMouseEvent;
 import org.gephi.preview.api.Vector;
 import org.openide.util.Lookup;
+
+import de.uhd.ifi.se.decision.management.eclipse.view.ContextMenu;
 
 public class PreviewSketch extends JPanel implements MouseListener, MouseWheelListener, MouseMotionListener {
 
@@ -82,6 +89,11 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			ContextMenu contextMenu = new ContextMenu(getSelectedNode(e.getX(), e.getY()));
+			contextMenu.show(e.getComponent(), e.getX(), e.getY());
+		}
+		
 		previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.PRESSED));
 		ref.set(e.getX(), e.getY());
 		lastMove.set(target.getTranslate());
@@ -91,6 +103,11 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			ContextMenu contextMenu = new ContextMenu(getSelectedNode(e.getX(), e.getY()));
+			contextMenu.show(e.getComponent(), e.getX(), e.getY());
+		}
+		
 		if (!previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.RELEASED))) {
 			setMoving(false);
 		}
@@ -233,5 +250,27 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 			timer.cancel();
 			running.set(false);
 		}
+	}
+	
+	private Node getSelectedNode(int eX, int eY) {
+		Node selectedNode = null;
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+		Graph graph = graphModel.getGraph();
+		NodeIterable nodes = graph.getNodes();
+		Iterator<Node> nodeIterator = nodes.iterator();
+		while (nodeIterator.hasNext()) {
+	        Node nextNode = nodeIterator.next();
+	        float x = nextNode.x();
+	        float y = -nextNode.y();
+	        float size = nextNode.size();
+	        final int minX = Math.round(x - size);
+	        final int maxX = Math.round(x + size);
+	        final int minY = Math.round(y - size);
+	        final int maxY = Math.round(y + size);
+	        if (minX <= eX && eX <= maxX && minY <= eY && eY <= maxY) {
+	            selectedNode = nextNode;
+	        }
+	    }
+		return selectedNode;
 	}
 }
