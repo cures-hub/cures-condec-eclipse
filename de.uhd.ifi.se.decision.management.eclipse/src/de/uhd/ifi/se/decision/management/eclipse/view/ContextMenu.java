@@ -24,36 +24,38 @@ public class ContextMenu extends JPopupMenu {
     public ContextMenu(Node selectedNode) {
     	jumpTo = new JMenuItem("Jump to");
     	
-    	String nodeLabel = selectedNode.getLabel();
-    	int first = nodeLabel.indexOf('[');
-    	int second = nodeLabel.indexOf('[', first+1);
-    	int nodeId = Integer.parseInt(nodeLabel.substring(first, second));
-    	de.uhd.ifi.se.decision.management.eclipse.model.Node node = 
-    			de.uhd.ifi.se.decision.management.eclipse.model.Node.getNodeById(nodeId);
-    	
-    	if (node != null) {
+    	if (selectedNode != null) {
     		
-    		jumpTo.addActionListener(new ActionListener() {
-        		public void actionPerformed(ActionEvent e) {
-    				if (node instanceof JiraIssueImpl) {
-    					JumpToCommandHelper.jumpToJiraIssue((JiraIssue) node);
-    				}
-    				else if (node instanceof GitCommit) {
-    					JumpToCommandHelper.jumpToGitCommit((GitCommit) node);
-    				}
-    				else if (node instanceof ChangedFile) {
-    					JumpToCommandHelper.jumpToChangedFile((ChangedFile) node);
-    				}
-    				else if (node instanceof CodeMethod) {
-    					JumpToCommandHelper.jumpToMethod((CodeMethod) node);
-    				}
-    				else if (node instanceof DecisionKnowledgeElement) {
-    					JumpToCommandHelper.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
-    				}
-        		}
-        	});
+    		String nodeLabel = selectedNode.getLabel();
+        	int first = nodeLabel.indexOf('[');
+        	int second = nodeLabel.indexOf('[', first+1);
+        	int nodeId = Integer.parseInt(nodeLabel.substring(first, second));
+        	de.uhd.ifi.se.decision.management.eclipse.model.Node node = 
+        			de.uhd.ifi.se.decision.management.eclipse.model.Node.getNodeById(nodeId);
     		
-    		add(jumpTo);
+        	if (node != null) {
+        		jumpTo.addActionListener(new ActionListener() {
+            		public void actionPerformed(ActionEvent e) {
+        				if (node instanceof JiraIssueImpl) {
+        					JumpToCommandHelper.jumpToJiraIssue((JiraIssue) node);
+        				}
+        				else if (node instanceof GitCommit) {
+        					JumpToCommandHelper.jumpToGitCommit((GitCommit) node);
+        				}
+        				else if (node instanceof ChangedFile) {
+        					JumpToCommandHelper.jumpToChangedFile((ChangedFile) node);
+        				}
+        				else if (node instanceof CodeMethod) {
+        					JumpToCommandHelper.jumpToMethod((CodeMethod) node);
+        				}
+        				else if (node instanceof DecisionKnowledgeElement) {
+        					JumpToCommandHelper.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
+        				}
+            		}
+            	});
+        		
+        		add(jumpTo);
+        	}
     	}
     }
 }
