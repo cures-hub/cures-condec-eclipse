@@ -1,5 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
+import javax.swing.JOptionPane;
+
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.PreviewMouseEvent;
@@ -12,40 +14,22 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = PreviewMouseListener.class)
 public class GraphMouseListener implements PreviewMouseListener {
 	
-//	private Node getSelectedNode(int eX, int eY) {
-//		Node selectedNode = null;
-//		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-//		Graph graph = graphModel.getGraph();
-//		NodeIterable nodes = graph.getNodes();
-//		Iterator<Node> nodeIterator = nodes.iterator();
-//		System.out.println(Integer.toString(eX) + " " + Integer.toString(eY));
-//		while (nodeIterator.hasNext()) {
-//	        Node nextNode = nodeIterator.next();
-//	        System.out.println(Float.toString(nextNode.x()) + " " + Float.toString(nextNode.y()));
-//	        float x = nextNode.x();
-//	        float y = -nextNode.y();
-//	        float size = nextNode.size();
-//	        final int minX = Math.round(x - size);
-//	        final int maxX = Math.round(x + size);
-//	        final int minY = Math.round(y - size);
-//	        final int maxY = Math.round(y + size);
-//	        if (minX <= eX && eX <= maxX && minY <= eY && eY <= maxY) {
-//	            selectedNode = nextNode;
-//	        }
-//	    }
-//		return selectedNode;
-//	}
-	
 	@Override
     public void mouseClicked(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
 		for (Node node : Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace).getGraph().getNodes()) {
-            if (clickingInNode(node, event)) {
+//			if (event.button == PreviewMouseEvent.Button.RIGHT) {
+//				if (clickingInNode(node, event)) {
+//        			ContextMenu contextMenu = new ContextMenu(node);
+//            		contextMenu.show(event.keyEvent.getComponent(), event.x, event.y);
+//        		}
+//                event.setConsumed(true);
+//                return;
+//            }
+			if (clickingInNode(node, event)) {
                 properties.putValue("display-label.node.id", node.getId());
-                if (event.button == PreviewMouseEvent.Button.RIGHT) {
-        			ContextMenu contextMenu = new ContextMenu(node);
-            		contextMenu.show(event.keyEvent.getComponent(), event.x, event.y);
-        		}
-                event.setConsumed(true);
+                System.err.println("Node " + node.getLabel() + " clicked!");//System.out is ignored in Netbeans platform applications!!
+                JOptionPane.showMessageDialog(null, "Node " + node.getLabel() + " clicked!");
+                event.setConsumed(true);//So the renderer is executed and the graph repainted
                 return;
             }
         }
