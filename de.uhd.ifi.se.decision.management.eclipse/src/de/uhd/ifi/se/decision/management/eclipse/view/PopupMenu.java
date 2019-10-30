@@ -16,20 +16,20 @@ import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 
-public class ContextMenu extends JPopupMenu {
+public class PopupMenu extends JPopupMenu {
 	
 	private static final long serialVersionUID = -4578618714780522965L;
 	private final JMenuItem jumpTo;
 	
-    public ContextMenu(Node selectedNode) {
+    public PopupMenu(Node selectedNode) {
     	jumpTo = new JMenuItem("Jump to");
     	
     	if (selectedNode != null) {
     		
     		String nodeLabel = selectedNode.getLabel();
-        	int first = nodeLabel.indexOf('[');
-        	int second = nodeLabel.indexOf('[', first+1);
-        	int nodeId = Integer.parseInt(nodeLabel.substring(first, second));
+        	int start = nodeLabel.indexOf('[') + 1;
+        	int end = nodeLabel.indexOf(']');
+        	int nodeId = Integer.parseInt(nodeLabel.substring(start, end));
         	de.uhd.ifi.se.decision.management.eclipse.model.Node node = 
         			de.uhd.ifi.se.decision.management.eclipse.model.Node.getNodeById(nodeId);
     		

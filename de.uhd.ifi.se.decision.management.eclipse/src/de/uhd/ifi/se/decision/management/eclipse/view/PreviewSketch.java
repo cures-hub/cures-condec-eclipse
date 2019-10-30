@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -11,7 +12,6 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
@@ -181,18 +181,17 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	private PreviewMouseEvent buildPreviewMouseEvent(MouseEvent evt, PreviewMouseEvent.Type type) {
 		int mouseX = evt.getX();
 		int mouseY = evt.getY();
+		
 		PreviewMouseEvent.Button button = PreviewMouseEvent.Button.LEFT;
-		if (SwingUtilities.isMiddleMouseButton(evt)) {
-			button = PreviewMouseEvent.Button.MIDDLE;
-		} else if (SwingUtilities.isLeftMouseButton(evt)) {
-			button = PreviewMouseEvent.Button.LEFT;
-		} else if (SwingUtilities.isRightMouseButton(evt)) {
+		if (evt.isPopupTrigger()) {
 			button = PreviewMouseEvent.Button.RIGHT;
 		}
 
 		Vector pos = screenPositionToModelPosition(new Vector(mouseX, mouseY));
+		
+		KeyEvent keyEvent = new KeyEvent(evt.getComponent(), 0, 0, 0, 0, ' ');
 
-		return new PreviewMouseEvent((int) pos.x, (int) pos.y, type, button, null);
+		return new PreviewMouseEvent((int) pos.x, (int) pos.y, type, button, keyEvent);
 	}
 
 	private class RefreshLoop {
