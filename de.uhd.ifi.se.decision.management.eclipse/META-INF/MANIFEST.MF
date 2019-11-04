@@ -22,8 +22,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.team.ui,
  org.eclipse.core.filesystem
 Bundle-Activator: de.uhd.ifi.se.decision.management.eclipse.Activator
-Import-Package: de.uhd.ifi.se.decision.management.eclipse.view,
- org.eclipse.jdt.core,
+Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.internal.core,
  org.eclipse.jface.viewers,
  org.eclipse.swt,
