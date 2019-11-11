@@ -21,22 +21,22 @@ public class GraphMouseListener implements PreviewMouseListener {
 	
 	@Override
     public void mouseClicked(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
-		createPopupMenu(event, properties, workspace);
+		createPopupMenu(event, workspace);
     }
 
     @Override
     public void mousePressed(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
-    	createPopupMenu(event, properties, workspace);
+    	createPopupMenu(event, workspace);
     }
 
     @Override
     public void mouseDragged(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
-    	createPopupMenu(event, properties, workspace);
+    	createPopupMenu(event, workspace);
     }
 
     @Override
     public void mouseReleased(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
-    	createPopupMenu(event, properties, workspace);
+    	createPopupMenu(event, workspace);
     }
 
     /**
@@ -67,7 +67,7 @@ public class GraphMouseListener implements PreviewMouseListener {
      * @return
      * 		true, if a popup-menu was created; false, if no popup-menu was created
      */
-    private boolean createPopupMenu(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
+    private boolean createPopupMenu(PreviewMouseEvent event, Workspace workspace) {
     	if (event.button == PreviewMouseEvent.Button.RIGHT) {
 			for (Node node : Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace).getGraph().getNodes()) {
 				if (clickingInNode(node, event)) {

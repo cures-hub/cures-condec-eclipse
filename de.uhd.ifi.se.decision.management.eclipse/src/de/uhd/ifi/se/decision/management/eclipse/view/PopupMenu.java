@@ -23,7 +23,6 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 public class PopupMenu extends JPopupMenu {
 	
 	private static final long serialVersionUID = -4578618714780522965L;
-	private final JMenuItem jumpTo;
 	
     /**
      * Creates a popup-menuon a selected node
@@ -32,7 +31,7 @@ public class PopupMenu extends JPopupMenu {
      */
 	public PopupMenu(Node selectedNode) {
     	
-    	jumpTo = new JMenuItem("Jump to");
+		JMenuItem jumpTo = new JMenuItem("Jump to");
     	
     	de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
     		
