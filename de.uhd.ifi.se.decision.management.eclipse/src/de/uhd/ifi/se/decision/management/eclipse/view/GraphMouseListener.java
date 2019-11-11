@@ -12,6 +12,10 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ * Implementation of the Gephi-PreviewMouseListener
+ *
+ */
 @ServiceProvider(service = PreviewMouseListener.class)
 public class GraphMouseListener implements PreviewMouseListener {
 	
@@ -35,6 +39,15 @@ public class GraphMouseListener implements PreviewMouseListener {
     	createPopupMenu(event, properties, workspace);
     }
 
+    /**
+     * Checks if a mouse click of the mouse event was on a node
+     * @param node
+     * 		the node that is checked
+     * @param event
+     * 		the event containing the mouse click
+     * @return
+     * 		true, if the node was clicked; false, if the node was not clicked
+     */
     private boolean clickingInNode(Node node, PreviewMouseEvent event) {
     	float xdiff = node.x() - event.x;
         float ydiff = -node.y() - event.y;
@@ -43,7 +56,18 @@ public class GraphMouseListener implements PreviewMouseListener {
         return xdiff * xdiff + ydiff * ydiff < radius * radius;
     }
     
-    private void createPopupMenu(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
+    /**
+     * Creates a popup menu if a node was right clicked
+     * @param event
+     * 		the mouse event containing the mouse click
+     * @param properties
+     * 		the properties of the mouse event
+     * @param workspace
+     * 		the workspace this is taking place in
+     * @return
+     * 		true, if a popup-menu was created; false, if no popup-menu was created
+     */
+    private boolean createPopupMenu(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
     	if (event.button == PreviewMouseEvent.Button.RIGHT) {
 			for (Node node : Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace).getGraph().getNodes()) {
 				if (clickingInNode(node, event)) {
@@ -52,12 +76,14 @@ public class GraphMouseListener implements PreviewMouseListener {
             		Point point = component.getMousePosition();
             		popup.show(component, point.x, point.y);
             		
-                    return;
+                    return true;
         		}
 				
             }
 
         }
+    	
+    	return false;
 
     }
 

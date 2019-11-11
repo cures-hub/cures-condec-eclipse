@@ -6,6 +6,10 @@ import org.gephi.preview.spi.PreviewMouseListener;
 import org.gephi.preview.spi.Renderer;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ * Implementation of the Gephi-Renderer
+ *
+ */
 @ServiceProvider(service = Renderer.class)
 public class GraphRenderer extends NodeRenderer implements MouseResponsiveRenderer {
 

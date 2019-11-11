@@ -19,6 +19,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 
+/**
+ * Contains static methods to jump from a node to the corresponding knowledge element
+ *
+ */
 public class JumpToCommandHelper {
 	
 	/**
