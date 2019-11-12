@@ -45,8 +45,6 @@ public class GraphMouseListener implements PreviewMouseListener {
      * Creates a popup menu if a node was right clicked
      * @param event
      * 		the mouse event containing the mouse click
-     * @param properties
-     * 		the properties of the mouse event
      * @param workspace
      * 		the workspace this is taking place in
      * @return

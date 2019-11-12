@@ -12,6 +12,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openide.util.Lookup;
 
@@ -43,7 +44,7 @@ public class TestNodeUtils {
         pc.newProject();
         Workspace workspace = pc.getCurrentWorkspace();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        Node selectedNode = graphModel.factory().newNode("node");
+        Node selectedNode = graphModel.factory().newNode("0");
         selectedNode.setLabel("[0] Node");
         
         assertNotNull(NodeUtils.convertNode(selectedNode));
@@ -51,22 +52,18 @@ public class TestNodeUtils {
 	
 	@Test
 	public void testConvertNodeNull() {
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
-		
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.newProject();
         Workspace workspace = pc.getCurrentWorkspace();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        Node selectedNode = graphModel.factory().newNode("node");
-        selectedNode.setLabel("[1000] Node");
+        Node selectedNode = graphModel.factory().newNode("100000");
+        selectedNode.setLabel("[100000] Node");
         
         assertNull(NodeUtils.convertNode(selectedNode));
 	}
 	
 	@Test
 	public void testConvertNodeException() {
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
-		
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.newProject();
         Workspace workspace = pc.getCurrentWorkspace();
@@ -105,6 +102,24 @@ public class TestNodeUtils {
         node.setSize(5);
         
         assertFalse(NodeUtils.clickInNode(node, 4, 4));
+	}
+	
+	@Ignore
+	@Test
+	public void testCreateLink() {
+		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.newProject();
+        Workspace workspace = pc.getCurrentWorkspace();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        Node node1 = graphModel.factory().newNode("node1");
+        node1.setLabel("[0] Node");
+        Node node2 = graphModel.factory().newNode("node2");
+        node2.setLabel("[1] Node");
+        
+        NodeUtils.createLink(node1, node2);
+        
+        KnowledgeGraph graph = new KnowledgeGraphImpl();
+        assertTrue(graph.containsEdge(NodeUtils.convertNode(node1), NodeUtils.convertNode(node2)));
 	}
 	
 	@AfterClass
