@@ -12,6 +12,8 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
+import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+
 /**
  * Implementation of the Gephi-PreviewMouseListener
  *
@@ -38,23 +40,6 @@ public class GraphMouseListener implements PreviewMouseListener {
     public void mouseReleased(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace) {
     	createPopupMenu(event, workspace);
     }
-
-    /**
-     * Checks if a mouse click of the mouse event was on a node
-     * @param node
-     * 		the node that is checked
-     * @param event
-     * 		the event containing the mouse click
-     * @return
-     * 		true, if the node was clicked; false, if the node was not clicked
-     */
-    private boolean clickingInNode(Node node, PreviewMouseEvent event) {
-    	float xdiff = node.x() - event.x;
-        float ydiff = -node.y() - event.y;
-        float radius = node.size();
-
-        return xdiff * xdiff + ydiff * ydiff < radius * radius;
-    }
     
     /**
      * Creates a popup menu if a node was right clicked
@@ -70,7 +55,7 @@ public class GraphMouseListener implements PreviewMouseListener {
     private boolean createPopupMenu(PreviewMouseEvent event, Workspace workspace) {
     	if (event.button == PreviewMouseEvent.Button.RIGHT) {
 			for (Node node : Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace).getGraph().getNodes()) {
-				if (clickingInNode(node, event)) {
+				if (NodeUtils.clickInNode(node, event.x, event.y)) {
         			PopupMenu popup = new PopupMenu(node);
             		Component component = event.keyEvent.getComponent();
             		Point point = component.getMousePosition();

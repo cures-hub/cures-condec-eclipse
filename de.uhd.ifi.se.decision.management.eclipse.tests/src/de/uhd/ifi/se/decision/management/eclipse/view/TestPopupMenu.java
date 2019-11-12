@@ -19,7 +19,7 @@ public class TestPopupMenu {
         Workspace workspace = pc.getCurrentWorkspace();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         Node node = graphModel.factory().newNode("node");
-        node.setLabel("[0] node");
+        node.setLabel("[0] Node");
         
         assertNotNull(new PopupMenu(node));
 	}
