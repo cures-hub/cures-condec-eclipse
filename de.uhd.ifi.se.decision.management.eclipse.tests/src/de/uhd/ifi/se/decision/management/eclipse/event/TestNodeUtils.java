@@ -35,7 +35,7 @@ public class TestNodeUtils {
 	public static void setUp() {
 		gitClient = TestGitClient.initGitClient();
 		jiraClient = TestJiraClient.initJiraClient();
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+		new KnowledgeGraphImpl(gitClient, jiraClient);
 	}
 	
 	@Test
