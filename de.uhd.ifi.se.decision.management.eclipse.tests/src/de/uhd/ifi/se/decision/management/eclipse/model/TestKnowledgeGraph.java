@@ -14,6 +14,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 
 public class TestKnowledgeGraph {
@@ -70,6 +71,38 @@ public class TestKnowledgeGraph {
 		assertTrue(
 				knowledgeGraph.toString().startsWith("The start node for knowledge exploration is the File: pom.xml\n\n"
 						+ "At distance 1 the following nodes are linked:\n"));
+	}
+	
+	@Test
+	public void testCreateLink() {
+        DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is also a decision!");
+        
+        KnowledgeGraph graph = new KnowledgeGraphImpl();
+        
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        graph.createLink(node1, node2);
+        
+        assertTrue(graph.containsEdge(node1, node2));
+	}
+	
+	@Test
+	public void testLinkExists() {
+        DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is also a decision!");
+        
+        KnowledgeGraph graph = new KnowledgeGraphImpl();
+        
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        graph.addEdge(node1, node2);
+        
+        assertTrue(graph.linkExists(node1, node2));
 	}
 
 	@AfterClass

@@ -60,4 +60,24 @@ public interface KnowledgeGraph extends Graph<Node, Link> {
 	 * @return JIRA client to connect to a JIRA project.
 	 */
 	JiraClient getJiraClient();
+	
+	/**
+	 * Creates an edge from node node1 to node node2
+	 * @param node1
+	 * 		source node
+	 * @param node2
+	 * 		target node
+	 */
+	void createLink(Node node1, Node node2);
+	
+	/**
+	 * Checks whether a link between node1 and node2 exists
+	 * @param node1
+	 * 		source node
+	 * @param node2
+	 * 		target node
+	 * @return
+	 * 		true, if a link exists; false, if no link exists
+	 */
+	boolean linkExists(Node node1, Node node2);
 }

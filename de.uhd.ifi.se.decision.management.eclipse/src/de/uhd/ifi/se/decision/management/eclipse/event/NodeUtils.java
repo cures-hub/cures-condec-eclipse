@@ -2,9 +2,6 @@ package de.uhd.ifi.se.decision.management.eclipse.event;
 
 import org.gephi.graph.api.Node;
 
-import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
-
 /**
  * Contains static methods for nodes
  *
@@ -55,20 +52,5 @@ public class NodeUtils {
 
         return xdiff * xdiff + ydiff * ydiff < radius * radius;
     }
-	
-	/**
-	 * Creates an edge from node n1 to node n2
-	 * @param n1
-	 * 		source node
-	 * @param n2
-	 * 		target node
-	 */
-	public static void createLink(Node n1, Node n2) {
-		de.uhd.ifi.se.decision.management.eclipse.model.Node node1 = convertNode(n1);
-		de.uhd.ifi.se.decision.management.eclipse.model.Node node2 = convertNode(n2);
-		
-		KnowledgeGraph graph = new KnowledgeGraphImpl();
-		graph.addEdge(node1, node2);
-	}
 
 }

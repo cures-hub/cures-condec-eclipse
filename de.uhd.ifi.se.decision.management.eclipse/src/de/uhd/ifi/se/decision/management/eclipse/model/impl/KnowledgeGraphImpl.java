@@ -247,6 +247,18 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 	}
 	
+	public void createLink(Node node1, Node node2) {
+		this.addEdge(node1, node2);
+	}
+	
+	public boolean linkExists(Node node1, Node node2) {
+		if (this.containsEdge(node1, node2)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public Set<Node> getStartNodes() {
 		return this.startNodes;

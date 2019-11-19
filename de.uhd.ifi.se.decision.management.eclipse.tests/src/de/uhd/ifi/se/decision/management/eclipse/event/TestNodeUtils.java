@@ -12,7 +12,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openide.util.Lookup;
 
@@ -23,7 +22,6 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
-import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 
 public class TestNodeUtils {
@@ -102,24 +100,6 @@ public class TestNodeUtils {
         node.setSize(5);
         
         assertFalse(NodeUtils.clickInNode(node, 4, 4));
-	}
-	
-	@Ignore
-	@Test
-	public void testCreateLink() {
-		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.newProject();
-        Workspace workspace = pc.getCurrentWorkspace();
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        Node node1 = graphModel.factory().newNode("node1");
-        node1.setLabel("[0] Node");
-        Node node2 = graphModel.factory().newNode("node2");
-        node2.setLabel("[1] Node");
-        
-        NodeUtils.createLink(node1, node2);
-        
-        KnowledgeGraph graph = new KnowledgeGraphImpl();
-        assertTrue(graph.containsEdge(NodeUtils.convertNode(node1), NodeUtils.convertNode(node2)));
 	}
 	
 	@AfterClass
