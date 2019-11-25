@@ -19,7 +19,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
  * @see Graph
  */
 public interface KnowledgeGraph extends Graph<Node, Link> {
-
+	
 	/**
 	 * Returns the start node that the graph is created from. The start node can be
 	 * an object of the class {@link ChangedFile} (e.g. a selected Java class),

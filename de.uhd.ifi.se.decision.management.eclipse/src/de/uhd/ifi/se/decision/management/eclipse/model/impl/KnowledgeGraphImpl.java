@@ -30,6 +30,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> implements KnowledgeGraph {
 
 	private static final long serialVersionUID = 1L;
+	private static KnowledgeGraph knowledgeGraph;
 	private GitClient gitClient;
 	private JiraClient jiraClient;
 	private Set<Node> startNodes;
@@ -55,6 +56,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		createGraph();
+		knowledgeGraph = this;
 	}
 
 	/**
@@ -68,6 +70,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 */
 	public KnowledgeGraphImpl() {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate());
+		knowledgeGraph = this;
 	}
 
 	/**
@@ -86,6 +89,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 */
 	public KnowledgeGraphImpl(Node startNode, int distance) {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate(), startNode, distance);
+		knowledgeGraph = this;
 	}
 
 	/**
@@ -114,6 +118,16 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		this.startNodes = new HashSet<Node>();
 		this.startNodes.add(startNode);
 		createGraph(startNode, distance);
+		knowledgeGraph = this;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraph.
+	 * 
+	 * @return the instance of the knowledge graph
+	 */
+	public static KnowledgeGraph getInstance() {
+		return knowledgeGraph;
 	}
 
 	private void createGraph() {

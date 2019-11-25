@@ -110,15 +110,11 @@ public class GraphMouseListener implements PreviewMouseListener {
      * 
      */
     private void createLink() {
-    	KnowledgeGraph graph = new KnowledgeGraphImpl();
+    	KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
     	
     	if ((targetNode != null) && (sourceNode != null)) {
     		if (graph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)) == false) {
     			graph.createLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
-    			System.out.println("Link created!");
-    		}
-    		else {
-    			System.out.println("Link already exists!");
     		}
 		}
 
