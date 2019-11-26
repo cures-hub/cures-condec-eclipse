@@ -46,6 +46,8 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
  * Class to create a view for the knowledge graph model class.
  */
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
+	private static KnowledgeGraphView knowledgeGraphView;
+	
 	private String searchString;
 	private JTextField searchTextField;
 
@@ -62,6 +64,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	public KnowledgeGraphViewImpl(KnowledgeGraph graph) {
 		this(graph, "Knowledge Graph");
+		
+		knowledgeGraphView = this;
 	}
 
 	/**
@@ -104,6 +108,29 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.decreaseFactor = ConfigPersistenceManager.getDecreaseFactor();
 		this.searchString = "";
 		createView(frameTitle);
+		
+		knowledgeGraphView = this;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraphView.
+	 * 
+	 * @return the instance of the knowledge graph view
+	 */
+	public static KnowledgeGraphView getInstance() {
+		return knowledgeGraphView;
+	}
+	
+	@Override
+	public void update(KnowledgeGraph graph) {
+		this.gephiGraph = new GephiGraphImpl(graph);
+
+		GraphSettings.initPreviewModel(previewController);
+		
+		updateNodeSizes();
+		refresh();
+		
+		knowledgeGraphView = this;
 	}
 
 	private void createView(String frameTitle) {

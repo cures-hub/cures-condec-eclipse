@@ -31,12 +31,15 @@ import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
  */
 public class GephiGraphImpl implements GephiGraph {
 
+	private static GephiGraph gephiGraph;
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
 	private LayoutType layoutType;
 
 	public GephiGraphImpl(KnowledgeGraph graph) {
 		this(graph, LayoutType.YIFAN_HU);
+		
+		gephiGraph = this;
 	}
 
 	public GephiGraphImpl(KnowledgeGraph graph, LayoutType layoutType) {
@@ -51,6 +54,17 @@ public class GephiGraphImpl implements GephiGraph {
 		this.graphModel.setVisibleView(graphView);
 		this.layoutType = layoutType;
 		this.createGephiGraph(graph);
+		
+		gephiGraph = this;
+	}
+	
+	/**
+	 * Returns the instance of GephiGraph.
+	 * 
+	 * @return the instance of the gephi graph
+	 */
+	public static GephiGraph getInstance() {
+		return gephiGraph;
 	}
 
 	@Override
@@ -85,6 +99,15 @@ public class GephiGraphImpl implements GephiGraph {
 			}
 		}
 		this.layoutType.generateLayout(graphModel, nodes.size());
+		
+		gephiGraph = this;
+	}
+	
+	@Override
+	public void update(KnowledgeGraph graph) {
+		createGephiGraph(graph);
+		
+		gephiGraph = this;
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {
@@ -142,7 +165,7 @@ public class GephiGraphImpl implements GephiGraph {
 	@Override
 	public void setSizeOfAllNodes(float size) {
 		for (org.gephi.graph.api.Node gephiNode : getNodes()) {
-			gephiNode.setSize(0f);
+			gephiNode.setSize(size);
 		}
 	}
 

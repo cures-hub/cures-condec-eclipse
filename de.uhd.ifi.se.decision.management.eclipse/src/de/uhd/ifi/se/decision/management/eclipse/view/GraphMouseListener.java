@@ -13,8 +13,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
-import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 
 /**
  * Implementation of the Gephi-PreviewMouseListener
@@ -41,7 +40,7 @@ public class GraphMouseListener implements PreviewMouseListener {
 		else if (createLink == true) {
 			targetNode = getClickedNode(event, workspace);
 			
-			createLink();
+			KnowledgePersistenceManager.createLink(sourceNode, targetNode);
 			
 			createLink = false;
 			sourceNode = null;
@@ -102,21 +101,6 @@ public class GraphMouseListener implements PreviewMouseListener {
         }
     	
     	return false;
-
-    }
-    
-    /**
-     * Creates a link between the source node and the target node, if sourceNode and targetNode exist.
-     * 
-     */
-    private void createLink() {
-    	KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
-    	
-    	if ((targetNode != null) && (sourceNode != null)) {
-    		if (graph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)) == false) {
-    			graph.createLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
-    		}
-		}
 
     }
 

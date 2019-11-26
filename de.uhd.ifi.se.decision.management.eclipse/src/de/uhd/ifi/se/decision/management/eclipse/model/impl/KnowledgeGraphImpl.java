@@ -56,6 +56,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		createGraph();
+		
 		knowledgeGraph = this;
 	}
 
@@ -70,6 +71,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 */
 	public KnowledgeGraphImpl() {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate());
+		
 		knowledgeGraph = this;
 	}
 
@@ -89,6 +91,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 */
 	public KnowledgeGraphImpl(Node startNode, int distance) {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate(), startNode, distance);
+		
 		knowledgeGraph = this;
 	}
 
@@ -118,6 +121,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		this.startNodes = new HashSet<Node>();
 		this.startNodes.add(startNode);
 		createGraph(startNode, distance);
+		
 		knowledgeGraph = this;
 	}
 	
