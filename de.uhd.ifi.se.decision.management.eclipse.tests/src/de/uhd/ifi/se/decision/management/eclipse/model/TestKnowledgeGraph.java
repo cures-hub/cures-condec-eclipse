@@ -84,7 +84,7 @@ public class TestKnowledgeGraph {
         
         graph.addVertex(node1);
         graph.addVertex(node2);
-        graph.createLink(node1, node2);
+        graph.insertLink(node1, node2);
         
         assertTrue(graph.containsEdge(node1, node2));
 	}

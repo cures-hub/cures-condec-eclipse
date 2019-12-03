@@ -68,7 +68,7 @@ public interface KnowledgeGraph extends Graph<Node, Link> {
 	 * @param node2
 	 * 		target node
 	 */
-	void createLink(Node node1, Node node2);
+	void insertLink(Node node1, Node node2);
 	
 	/**
 	 * Checks whether a link between node1 and node2 exists

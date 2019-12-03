@@ -265,7 +265,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 	}
 	
-	public void createLink(Node node1, Node node2) {
+	public void insertLink(Node node1, Node node2) {
 		this.addEdge(node1, node2);
 	}
 	

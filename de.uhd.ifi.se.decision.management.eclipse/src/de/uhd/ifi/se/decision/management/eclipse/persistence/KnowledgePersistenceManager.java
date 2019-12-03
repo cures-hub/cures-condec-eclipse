@@ -21,12 +21,12 @@ public class KnowledgePersistenceManager {
 	 * @param targetNode
 	 * 		the target node
      */
-    static public void createLink(Node sourceNode, Node targetNode) {
+    static public void insertLink(Node sourceNode, Node targetNode) {
     	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
     	
     	if ((targetNode != null) && (sourceNode != null)) {
     		if (knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)) == false) {
-    			knowledgeGraph.createLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
+    			knowledgeGraph.insertLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
     		}
 		}
     	

@@ -40,7 +40,7 @@ public class GraphMouseListener implements PreviewMouseListener {
 		else if (createLink == true) {
 			targetNode = getClickedNode(event, workspace);
 			
-			KnowledgePersistenceManager.createLink(sourceNode, targetNode);
+			KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
 			
 			createLink = false;
 			sourceNode = null;
