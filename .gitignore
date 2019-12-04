@@ -9,3 +9,4 @@ lib/
 # Files
 *.iml
 *.class
+*.json
