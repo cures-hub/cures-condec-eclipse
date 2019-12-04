@@ -2,7 +2,6 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -16,6 +15,5 @@ public class TestLink {
 		assertNotNull(link);
 		assertNull(link.getSource());
 		assertNull(link.getTarget());
-		assertTrue(link.getWeight() == 1);
 	}
 }

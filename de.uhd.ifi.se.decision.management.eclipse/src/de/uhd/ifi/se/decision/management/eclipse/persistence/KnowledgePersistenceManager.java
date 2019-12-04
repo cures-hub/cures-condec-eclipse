@@ -1,10 +1,20 @@
 package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
@@ -21,18 +31,74 @@ public class KnowledgePersistenceManager {
 	 * @param targetNode
 	 * 		the target node
      */
-    static public void insertLink(Node sourceNode, Node targetNode) {
+    public static void insertLink(Node sourceNode, Node targetNode) {
     	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
     	
     	if ((targetNode != null) && (sourceNode != null)) {
     		if (knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)) == false) {
     			knowledgeGraph.insertLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
+    			insertLinkJSON(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
     		}
 		}
     	
     	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
     	
     	knowledgeGraphView.update(knowledgeGraph);
+    }
+    
+    /**
+     * Creates a link between the source node and the target node and inserts it into the json file
+     * storing the knowledge persistence data.
+     * 
+     * @param sourceNode
+     * 		the source node
+     * @param targetNode
+     * 		the target node
+     */
+    private static void insertLinkJSON(de.uhd.ifi.se.decision.management.eclipse.model.Node sourceNode, 
+    		de.uhd.ifi.se.decision.management.eclipse.model.Node targetNode) {
+    	ObjectMapper mapper = new ObjectMapper();
+    	
+    	Link link = new LinkImpl(sourceNode, targetNode);
+    	
+    	try {
+			String jsonString = mapper.writeValueAsString(link);
+			mapper.writeValue(new FileOutputStream("knowledge.json"), link);
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    private static Link openJSONFile() {
+    	
+    	File file = new File("knowledge.json");
+    	
+    	if (!file.isFile()) {
+    		try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+    	ObjectMapper mapper = new ObjectMapper();
+        
+		try {
+			Link link = mapper.readValue(file, LinkImpl.class);
+			return link;
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+		return null;
     }
 	
 }
