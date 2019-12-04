@@ -61,6 +61,8 @@ public class KnowledgePersistenceManager {
     	
     	Link link = new LinkImpl(sourceNode, targetNode);
     	
+    	openJSONFile();
+    	
     	try {
 			String jsonString = mapper.writeValueAsString(link);
 			mapper.writeValue(new FileOutputStream("knowledge.json"), link);
@@ -73,7 +75,7 @@ public class KnowledgePersistenceManager {
 		}
     }
     
-    private static Link openJSONFile() {
+    private static void openJSONFile() {
     	
     	File file = new File("knowledge.json");
     	
@@ -85,20 +87,18 @@ public class KnowledgePersistenceManager {
 			}
     	}
     	
-    	ObjectMapper mapper = new ObjectMapper();
-        
-		try {
-			Link link = mapper.readValue(file, LinkImpl.class);
-			return link;
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	
-		return null;
+//		ObjectMapper mapper = new ObjectMapper();
+//
+//		try {
+//			Link link = mapper.readValue(file, LinkImpl.class);
+//			return link;
+//		} catch (JsonParseException e) {
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
     }
 	
 }
