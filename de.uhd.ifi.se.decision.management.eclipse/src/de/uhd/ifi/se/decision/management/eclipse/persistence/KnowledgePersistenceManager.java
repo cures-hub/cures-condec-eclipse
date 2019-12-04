@@ -23,6 +23,8 @@ import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImp
  */
 public class KnowledgePersistenceManager {
 	
+	final private static String KNOWLEDGE_LOCATION = "knowledge.json";
+	
 	/**
      * Creates a link between the source node and the target node, if sourceNode and targetNode exist.
      *
@@ -65,7 +67,7 @@ public class KnowledgePersistenceManager {
     	
     	try {
 			String jsonString = mapper.writeValueAsString(link);
-			mapper.writeValue(new FileOutputStream("knowledge.json"), link);
+			mapper.writeValue(new FileOutputStream(KNOWLEDGE_LOCATION), link);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -77,7 +79,7 @@ public class KnowledgePersistenceManager {
     
     private static void openJSONFile() {
     	
-    	File file = new File("knowledge.json");
+    	File file = new File(KNOWLEDGE_LOCATION);
     	
     	if (!file.isFile()) {
     		try {
