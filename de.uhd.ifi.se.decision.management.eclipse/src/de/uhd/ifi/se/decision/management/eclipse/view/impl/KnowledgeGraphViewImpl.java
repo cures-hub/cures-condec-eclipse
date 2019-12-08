@@ -85,7 +85,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
 		G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
-		this.previewSketch = new PreviewSketch(target);
+		this.previewSketch = new PreviewSketch(target, this.gephiGraph.getWorkspace());
 
 		GraphSettings.initPreviewModel(previewController);
 		this.graphFiltering = new GraphFiltering();
@@ -324,6 +324,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private void refresh() {
 		this.previewController.refreshPreview();
 		this.previewSketch.refresh();
+		this.previewSketch.refreshWorkspace(this.gephiGraph.getWorkspace());
 	}
 
 	private void resetFilters() {

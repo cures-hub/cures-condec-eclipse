@@ -1,6 +1,8 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
+import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -13,12 +15,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JPanel;
 
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Node;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewMouseEvent;
 import org.gephi.preview.api.Vector;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
+import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
+
+/**
+ * @author markus
+ *
+ */
 public class PreviewSketch extends JPanel implements MouseListener, MouseWheelListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -26,6 +38,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	// Data
 	private final PreviewController previewController;
 	private final G2DTarget target;
+	private Workspace workspace;
 	// Geometry
 	private final Vector ref = new Vector();
 	private final Vector lastMove = new Vector();
@@ -34,9 +47,14 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	private Timer wheelTimer;
 	private boolean inited;
 	private final boolean isRetina;
+	// MouseListener
+	public static boolean createLink = false;
+	private static Node sourceNode = null;
+	private static Node targetNode = null;
 
-	public PreviewSketch(G2DTarget target) {
+	public PreviewSketch(G2DTarget target, Workspace workspace) {
 		this.target = target;
+		this.workspace = workspace;
 		previewController = Lookup.getDefault().lookup(PreviewController.class);
 		isRetina = false;
 	}
@@ -70,85 +88,6 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	public void refresh() {
 		this.target.refresh();
 		refreshLoop.refreshSketch();
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.CLICKED))) {
-			refreshLoop.refreshSketch();
-		}
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.PRESSED));
-		ref.set(e.getX(), e.getY());
-		lastMove.set(target.getTranslate());
-
-		refreshLoop.refreshSketch();
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (!previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.RELEASED))) {
-			setMoving(false);
-		}
-
-		refreshLoop.refreshSketch();
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (e.getUnitsToScroll() == 0) {
-			return;
-		}
-		float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
-		target.setScaling(target.getScaling() * (way > 0 ? 2f : 0.5f));
-		setMoving(true);
-		if (wheelTimer != null) {
-			wheelTimer.cancel();
-			wheelTimer = null;
-		}
-		wheelTimer = new Timer();
-		wheelTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				setMoving(false);
-				refreshLoop.refreshSketch();
-				wheelTimer = null;
-			}
-		}, WHEEL_TIMER);
-		refreshLoop.refreshSketch();
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (!previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.DRAGGED))) {
-			setMoving(true);
-			Vector trans = target.getTranslate();
-			trans.set(e.getX(), e.getY());
-			trans.sub(ref);
-			trans.mult(isRetina ? 2f : 1f);
-			trans.div(target.getScaling()); // ensure const. moving speed whatever the zoom is
-			trans.add(lastMove);
-
-			refreshLoop.refreshSketch();
-		}
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-
 	}
 
 	public void zoomPlus() {
@@ -232,5 +171,164 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 			running.set(false);
 		}
 	}
+	
+	public void refreshWorkspace(Workspace workspace) {
+		this.workspace = workspace;
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		PreviewMouseEvent previewEvent = buildPreviewMouseEvent(e, PreviewMouseEvent.Type.CLICKED);
+		
+		mouseEvent(previewEvent, e.isPopupTrigger());
+		
+		if (previewController.sendMouseEvent(previewEvent)) {
+			refreshLoop.refreshSketch();
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		PreviewMouseEvent previewEvent = buildPreviewMouseEvent(e, PreviewMouseEvent.Type.PRESSED);
+		
+		previewController.sendMouseEvent(previewEvent);
+		ref.set(e.getX(), e.getY());
+		lastMove.set(target.getTranslate());
+		
+		mouseEvent(previewEvent, e.isPopupTrigger());
+
+		refreshLoop.refreshSketch();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		PreviewMouseEvent previewEvent = buildPreviewMouseEvent(e, PreviewMouseEvent.Type.RELEASED);
+		
+		mouseEvent(previewEvent, e.isPopupTrigger());
+		
+		if (!previewController.sendMouseEvent(previewEvent)) {
+			setMoving(false);
+		}
+
+		refreshLoop.refreshSketch();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		if (e.getUnitsToScroll() == 0) {
+			return;
+		}
+		float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
+		target.setScaling(target.getScaling() * (way > 0 ? 2f : 0.5f));
+		setMoving(true);
+		if (wheelTimer != null) {
+			wheelTimer.cancel();
+			wheelTimer = null;
+		}
+		wheelTimer = new Timer();
+		wheelTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				setMoving(false);
+				refreshLoop.refreshSketch();
+				wheelTimer = null;
+			}
+		}, WHEEL_TIMER);
+		refreshLoop.refreshSketch();
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (!previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.DRAGGED))) {
+			setMoving(true);
+			Vector trans = target.getTranslate();
+			trans.set(e.getX(), e.getY());
+			trans.sub(ref);
+			trans.mult(isRetina ? 2f : 1f);
+			trans.div(target.getScaling()); // ensure const. moving speed whatever the zoom is
+			trans.add(lastMove);
+
+			refreshLoop.refreshSketch();
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+	}
+	
+	/**
+     * Handles the interaction with the graph with mouse clicks
+     * @param event
+     * 		the mouse event containing the mouse click
+     * @param popupTrigger
+     * 		true if the event is a popup-trigger, false if not
+     * @return
+     * 		true, if the graph was interacted with
+     */
+	private boolean mouseEvent(PreviewMouseEvent event, boolean popupTrigger) {
+		
+		if (createLink == false) {
+			if (popupTrigger) {
+				createPopupMenu(event);
+				sourceNode = getClickedNode(event);
+			}
+		}
+		else if (createLink == true) {
+			targetNode = getClickedNode(event);
+			
+			KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
+			
+			createLink = false;
+			sourceNode = null;
+			targetNode = null;
+		}
+		
+		return true;
+	}
+	
+	/**
+     * Checks if a node was clicked and returns it
+     * @param event
+     * 		the mouse event containing the mouse click
+     * @return
+     * 		if a node was clicked, the node that was clicked; else null
+     */
+    private Node getClickedNode(PreviewMouseEvent event) {
+    	for (Node node : Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace).getGraph().getNodes()) {
+			if (NodeUtils.clickInNode(node, event.x, event.y)) {
+    			return node;
+    		};
+        }
+
+    	return null;
+    }
+    
+    /**
+     * Creates a popup menu if a node was right clicked
+     * @param event
+     * 		the mouse event containing the mouse click
+     * @return
+     * 		true, if a popup-menu was created
+     */
+    private boolean createPopupMenu(PreviewMouseEvent event) {
+    	Node selectedNode = getClickedNode(event);
+		PopupMenu popup = new PopupMenu(selectedNode);
+		Component component = event.keyEvent.getComponent();
+		Point point = component.getMousePosition();
+		popup.show(component, point.x, point.y);
+		
+        return true;
+    }
 	
 }

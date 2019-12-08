@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.project.api.Workspace;
 import org.jgrapht.Graph;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
@@ -88,4 +89,6 @@ public interface GephiGraph {
 	void setSizeOfNode(long selectedNodeId, float size);
 
 	void setSizeOfNode(Node node, float size);
+	
+	Workspace getWorkspace();
 }

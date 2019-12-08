@@ -32,6 +32,7 @@ import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 public class GephiGraphImpl implements GephiGraph {
 
 	private static GephiGraph gephiGraph;
+	private Workspace workspace;
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
 	private LayoutType layoutType;
@@ -45,7 +46,7 @@ public class GephiGraphImpl implements GephiGraph {
 	public GephiGraphImpl(KnowledgeGraph graph, LayoutType layoutType) {
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
-		Workspace workspace = projectController.getCurrentWorkspace();
+		workspace = projectController.getCurrentWorkspace();
 
 		this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
 		this.directedGraph = graphModel.getDirectedGraph();
@@ -186,5 +187,10 @@ public class GephiGraphImpl implements GephiGraph {
 	public void setSizeOfNode(Node node, float size) {
 		org.gephi.graph.api.Node gephiNode = getGephiNode(node);
 		setSizeOfNode(gephiNode, size);
+	}
+
+	@Override
+	public Workspace getWorkspace() {
+		return workspace;
 	}
 }

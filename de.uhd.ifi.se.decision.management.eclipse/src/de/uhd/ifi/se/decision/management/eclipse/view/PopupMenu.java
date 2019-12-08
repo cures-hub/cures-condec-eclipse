@@ -49,12 +49,11 @@ public class PopupMenu extends JPopupMenu {
     		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
-        			GraphMouseListener.createLink = true;
+        			PreviewSketch.createLink = true;
         		}
         	});
     		
     		add(createLink);
-    		
     	}
     }
     
