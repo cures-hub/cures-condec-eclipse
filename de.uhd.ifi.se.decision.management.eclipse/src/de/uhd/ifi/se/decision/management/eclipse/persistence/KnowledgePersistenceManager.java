@@ -35,17 +35,16 @@ public class KnowledgePersistenceManager {
      */
     public static void insertLink(Node sourceNode, Node targetNode) {
     	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+    	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
     	
     	if ((targetNode != null) && (sourceNode != null)) {
     		if (knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)) == false) {
     			knowledgeGraph.insertLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
     			insertLinkJSON(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
+    	    	
+    	    	knowledgeGraphView.update(knowledgeGraph);
     		}
 		}
-    	
-    	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
-    	
-    	knowledgeGraphView.update(knowledgeGraph);
     }
     
     /**
