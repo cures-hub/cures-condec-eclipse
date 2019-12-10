@@ -34,6 +34,15 @@ public class TestLink {
 	}
 	
 	@Test
+	public void testConstructorNull() {
+        Link link = new LinkImpl(null, null);
+        
+        assertNotNull(link);
+        assertNull(link.getSourceNode());
+        assertNull(link.getTargetNode());
+	}
+	
+	@Test
 	public void testGetSetNode() {
 		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is a decision!");
@@ -47,6 +56,17 @@ public class TestLink {
         
         assertTrue(link.getSourceNode() == node1);
         assertTrue(link.getTargetNode() == node2);
+	}
+	
+	@Test
+	public void testGetSetNodeNull() {
+        Link link = new LinkImpl();
+        
+        link.setSourceNode(null);
+        link.setTargetNode(null);
+        
+        assertNull(link.getSourceNode());
+        assertNull(link.getTargetNode());
 	}
 	
 	@Test

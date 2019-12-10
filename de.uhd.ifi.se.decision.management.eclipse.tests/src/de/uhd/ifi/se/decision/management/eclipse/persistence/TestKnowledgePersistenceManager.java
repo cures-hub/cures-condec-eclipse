@@ -1,6 +1,8 @@
 package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.gephi.graph.api.GraphController;
@@ -61,7 +63,48 @@ public class TestKnowledgePersistenceManager {
         
         KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
         
+        assertTrue(KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2));
+        
+        assertNotNull(knowledgeGraphView);
+        assertTrue(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testInsertLinkNull() {
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+        
+        KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.insertLink(null, null));
+        
+        assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
+	public void testInsertLinkAlreadyExists() {
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+		
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is also a decision!");
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+        
+        KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
+        
         KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2);
+        
+        assertFalse(KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2));
         
         assertNotNull(knowledgeGraphView);
         assertTrue(knowledgeGraph.linkExists(node1, node2));
