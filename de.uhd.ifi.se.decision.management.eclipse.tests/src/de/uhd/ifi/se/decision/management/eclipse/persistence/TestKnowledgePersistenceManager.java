@@ -2,7 +2,6 @@ package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.gephi.graph.api.GraphController;
