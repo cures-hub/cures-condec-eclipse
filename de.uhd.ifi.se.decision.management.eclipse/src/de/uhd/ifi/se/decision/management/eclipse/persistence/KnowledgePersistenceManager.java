@@ -23,7 +23,7 @@ import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImp
  */
 public class KnowledgePersistenceManager {
 	
-	final private static String KNOWLEDGE_LOCATION = "knowledge.json";
+	final private static String KNOWLEDGE_LOCATION = "target/knowledge.json";
 	
 	/**
      * Creates a link between the source node and the target node, if sourceNode and targetNode exist.
@@ -33,18 +33,21 @@ public class KnowledgePersistenceManager {
 	 * @param targetNode
 	 * 		the target node
      */
-    public static void insertLink(Node sourceNode, Node targetNode) {
+    public static boolean insertLink(Node sourceNode, Node targetNode) {
     	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
     	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
     	
-    	if ((targetNode != null) && (sourceNode != null)) {
-    		if (knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)) == false) {
-    			knowledgeGraph.insertLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
-    			insertLinkJSON(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
+    	if ((targetNode != null) && (sourceNode != null) &&
+    			(!knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)))) {
+    		knowledgeGraph.insertLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
+    		insertLinkJSON(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
     	    	
-    	    	knowledgeGraphView.update(knowledgeGraph);
-    		}
+    	    knowledgeGraphView.update(knowledgeGraph);
+    	    
+    	    return true;
 		}
+    	
+    	return false;
     }
     
     /**

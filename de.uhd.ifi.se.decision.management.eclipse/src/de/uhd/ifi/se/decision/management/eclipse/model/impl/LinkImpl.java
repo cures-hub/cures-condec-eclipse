@@ -25,14 +25,6 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	private String targetID;
 
 	public LinkImpl() {
-		this.sourceNode = (Node) super.getSource();
-		if (this.sourceNode != null) {
-			this.sourceID = sourceNode.toString();
-		}
-		this.targetNode = (Node) super.getTarget();
-		if (this.targetNode != null) {
-			this.targetID = targetNode.toString();
-		}
 	}
 	
 	public LinkImpl(Node source, Node target) {

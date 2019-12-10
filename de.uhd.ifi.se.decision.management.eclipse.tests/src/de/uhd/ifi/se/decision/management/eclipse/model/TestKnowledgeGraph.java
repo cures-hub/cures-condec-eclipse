@@ -61,6 +61,27 @@ public class TestKnowledgeGraph {
 		assertNotNull(new KnowledgeGraphImpl());
 		assertNotNull(new KnowledgeGraphImpl(null, 0));
 	}
+	
+	@Test
+	public void testGetInstance() {
+		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+		
+		assertNotNull(knowledgeGraph);
+		assertTrue(knowledgeGraph.vertexSet().size() > 0);
+		assertNull(knowledgeGraph.getStartNode());
+
+		assertEquals(gitClient, knowledgeGraph.getGitClient());
+		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
+		
+		KnowledgeGraph knowledgeGraphTest = KnowledgeGraphImpl.getInstance();
+		
+		assertNotNull(knowledgeGraphTest);
+		assertTrue(knowledgeGraphTest.vertexSet().size() > 0);
+		assertNull(knowledgeGraphTest.getStartNode());
+
+		assertEquals(gitClient, knowledgeGraphTest.getGitClient());
+		assertEquals(jiraClient, knowledgeGraphTest.getJiraClient());
+	}
 
 	@Test
 	public void testToString() {

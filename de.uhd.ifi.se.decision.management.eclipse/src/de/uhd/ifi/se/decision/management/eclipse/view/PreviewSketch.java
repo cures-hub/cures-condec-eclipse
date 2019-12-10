@@ -278,13 +278,13 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
      */
 	private boolean mouseEvent(PreviewMouseEvent event, boolean popupTrigger) {
 		
-		if (createLink == false) {
+		if (!createLink) {
 			if (popupTrigger) {
 				createPopupMenu(event);
 				sourceNode = getClickedNode(event);
 			}
 		}
-		else if (createLink == true) {
+		else if (createLink) {
 			targetNode = getClickedNode(event);
 			
 			KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
@@ -308,7 +308,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     	for (Node node : Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace).getGraph().getNodes()) {
 			if (NodeUtils.clickInNode(node, event.x, event.y)) {
     			return node;
-    		};
+    		}
         }
 
     	return null;

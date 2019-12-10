@@ -30,8 +30,6 @@ import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
  *        performance?
  */
 public class GephiGraphImpl implements GephiGraph {
-
-	private static GephiGraph gephiGraph;
 	private Workspace workspace;
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
@@ -39,8 +37,6 @@ public class GephiGraphImpl implements GephiGraph {
 
 	public GephiGraphImpl(KnowledgeGraph graph) {
 		this(graph, LayoutType.YIFAN_HU);
-		
-		gephiGraph = this;
 	}
 
 	public GephiGraphImpl(KnowledgeGraph graph, LayoutType layoutType) {
@@ -55,17 +51,6 @@ public class GephiGraphImpl implements GephiGraph {
 		this.graphModel.setVisibleView(graphView);
 		this.layoutType = layoutType;
 		this.createGephiGraph(graph);
-		
-		gephiGraph = this;
-	}
-	
-	/**
-	 * Returns the instance of GephiGraph.
-	 * 
-	 * @return the instance of the gephi graph
-	 */
-	public static GephiGraph getInstance() {
-		return gephiGraph;
 	}
 
 	@Override
@@ -100,15 +85,11 @@ public class GephiGraphImpl implements GephiGraph {
 			}
 		}
 		this.layoutType.generateLayout(graphModel, nodes.size());
-		
-		gephiGraph = this;
 	}
 	
 	@Override
 	public void update(KnowledgeGraph graph) {
 		createGephiGraph(graph);
-		
-		gephiGraph = this;
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {

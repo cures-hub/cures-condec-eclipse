@@ -270,11 +270,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 	
 	public boolean linkExists(Node node1, Node node2) {
-		if (this.containsEdge(node1, node2)) {
-			return true;
-		}
-		
-		return false;
+		return this.containsEdge(node1, node2);
 	}
 	
 	@Override
