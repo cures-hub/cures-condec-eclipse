@@ -81,7 +81,7 @@ public class TestLink {
         link.setSourceNode(node1);
         link.setTargetNode(node2);
         
-        assertTrue(link.getSourceID().contains("This is a decision!"));
-        assertTrue(link.getTargetID().contains("This is also a decision!"));
+        assertTrue(link.getSourceId().contains("This is a decision!"));
+        assertTrue(link.getTargetId().contains("This is also a decision!"));
 	}
 }

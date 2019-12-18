@@ -37,7 +37,7 @@ public interface Link {
 	 *
 	 * @return source id of this link.
 	 */
-	String getSourceID();
+	String getSourceId();
 
 	/**
 	 * Retrieves the target (= destination) element of this link (= edge).
@@ -68,5 +68,5 @@ public interface Link {
 	 *
 	 * @return target id of this link.
 	 */
-	String getTargetID();
+	String getTargetId();
 }

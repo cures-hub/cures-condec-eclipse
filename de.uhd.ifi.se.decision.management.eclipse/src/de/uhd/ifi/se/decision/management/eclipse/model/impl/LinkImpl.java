@@ -21,20 +21,20 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	private Node sourceNode;
 	private Node targetNode;
 
-	private String sourceID;
-	private String targetID;
+	public String sourceId;
+	public String targetId;
 
 	public LinkImpl() {
 	}
 	
 	public LinkImpl(Node source, Node target) {
 		this.sourceNode = source;
-		if (this.sourceNode != null) {
-			this.sourceID = sourceNode.toString();
+		if (sourceNode != null) {
+			sourceId = sourceNode.toString();
 		}
 		this.targetNode = target;
-		if (this.targetNode != null) {
-			this.targetID = targetNode.toString();
+		if (targetNode != null) {
+			targetId = targetNode.toString();
 		}
 	}
 	
@@ -45,20 +45,20 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	
 	@Override
 	public Node getSourceNode() {
-		return this.sourceNode;
+		return sourceNode;
 	}
 	
 	@Override
 	public void setSourceNode(Node source) {
 		this.sourceNode = source;
-		if (this.sourceNode != null) {
-			this.sourceID = sourceNode.toString();
+		if (sourceNode != null) {
+			sourceId = sourceNode.toString();
 		}
 	}
-	
+
 	@Override
-	public String getSourceID() {
-		return this.sourceID;
+	public String getSourceId() {
+		return sourceId;
 	}
 
 	@Override
@@ -68,20 +68,20 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	
 	@Override
 	public Node getTargetNode() {
-		return this.targetNode;
+		return targetNode;
 		
 	}
 	
 	@Override
 	public void setTargetNode(Node target) {
 		this.targetNode = target;
-		if (this.targetNode != null) {
-			this.targetID = targetNode.toString();
+		if (targetNode != null) {
+			targetId = targetNode.toString();
 		}
 	}
-
+	
 	@Override
-	public String getTargetID() {
-		return this.targetID;
+	public String getTargetId() {
+		return targetId;
 	}
 }

@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
@@ -70,7 +71,7 @@ public class KnowledgePersistenceManager {
     	openJSONFile();
     	
     	try {
-			String jsonString = mapper.writeValueAsString(link);
+			//String jsonString = mapper.writeValueAsString(link);
 			mapper.writeValue(new FileOutputStream(KNOWLEDGE_LOCATION), link);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
@@ -81,7 +82,7 @@ public class KnowledgePersistenceManager {
 		}
     }
     
-    private static void openJSONFile() {
+    private static Link openJSONFile() {
     	
     	File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
     	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -96,18 +97,22 @@ public class KnowledgePersistenceManager {
 			}
     	}
     	
-//		ObjectMapper mapper = new ObjectMapper();
-//
-//		try {
-//			Link link = mapper.readValue(file, LinkImpl.class);
-//			return link;
-//		} catch (JsonParseException e) {
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+		try {
+			Link link = mapper.readValue(file, LinkImpl.class);
+			System.out.println(link.getSourceId() + ", " + link.getTargetId());
+			return link;
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
     }
 	
 }
