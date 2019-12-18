@@ -42,15 +42,15 @@ public class TestKnowledgePersistenceManager {
 	
 	@Test
 	public void testInsertLink() {
-		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-		projectController.newProject();
-		Workspace workspace = projectController.getCurrentWorkspace();
-		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-		
 		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is a decision!");
         DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is also a decision!");
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         
         org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
         org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
