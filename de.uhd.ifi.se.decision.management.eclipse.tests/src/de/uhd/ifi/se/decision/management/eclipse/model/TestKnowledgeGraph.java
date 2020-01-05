@@ -30,7 +30,9 @@ public class TestKnowledgeGraph {
 
 	@Test
 	public void testKnowledgeGraphForEntireProject() {
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+		KnowledgeGraphImpl.clear();
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 		assertNotNull(knowledgeGraph);
 		assertTrue(knowledgeGraph.vertexSet().size() > 0);
 		assertNull(knowledgeGraph.getStartNode());
@@ -41,30 +43,41 @@ public class TestKnowledgeGraph {
 
 	@Test
 	public void testKnowledgeGraphForSubGraphFromWorkItem() {
+		KnowledgeGraphImpl.clear();
+		
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(1, workItem.getLinkedJiraIssues().size());
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, workItem, 1);
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, workItem, 1);
 		assertEquals(7, knowledgeGraph.vertexSet().size());
 	}
 
 	@Test
 	public void testKnowledgeGraphForSubGraphFromFile() {
+		KnowledgeGraphImpl.clear();
+		
 		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
 		ChangedFile file = ChangedFile.getOrCreate(path);
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, file, 1);
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, file, 1);
 
 		assertTrue(knowledgeGraph.vertexSet().size() >= 10);
 	}
 
 	@Test
 	public void testKnowledgeGraphImplicitGitAndJiraClients() {
-		assertNotNull(new KnowledgeGraphImpl());
-		assertNotNull(new KnowledgeGraphImpl(null, 0));
+		KnowledgeGraphImpl.clear();
+		
+		assertNotNull(KnowledgeGraphImpl.getInstance());
+		
+		KnowledgeGraphImpl.clear();
+		
+		assertNotNull(KnowledgeGraphImpl.getInstance(null, 0));
 	}
 	
 	@Test
 	public void testGetInstance() {
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+		KnowledgeGraphImpl.clear();
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);;
 		
 		assertNotNull(knowledgeGraph);
 		assertTrue(knowledgeGraph.vertexSet().size() > 0);
@@ -72,6 +85,8 @@ public class TestKnowledgeGraph {
 
 		assertEquals(gitClient, knowledgeGraph.getGitClient());
 		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
+		
+		KnowledgeGraphImpl.clear();
 		
 		KnowledgeGraph knowledgeGraphTest = KnowledgeGraphImpl.getInstance();
 		
@@ -85,9 +100,11 @@ public class TestKnowledgeGraph {
 
 	@Test
 	public void testToString() {
+		KnowledgeGraphImpl.clear();
+		
 		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
 		ChangedFile file = ChangedFile.getOrCreate(path);
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, file, 0);
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, file, 0);
 		assertEquals(file, knowledgeGraph.getStartNode());
 		assertTrue(
 				knowledgeGraph.toString().startsWith("The start node for knowledge exploration is the File: pom.xml\n\n"
@@ -96,12 +113,14 @@ public class TestKnowledgeGraph {
 	
 	@Test
 	public void testCreateLink() {
-        DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+		KnowledgeGraphImpl.clear();
+		
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is a decision!");
         DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is also a decision!");
         
-        KnowledgeGraph graph = new KnowledgeGraphImpl();
+        KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
         
         graph.addVertex(node1);
         graph.addVertex(node2);
@@ -112,12 +131,14 @@ public class TestKnowledgeGraph {
 	
 	@Test
 	public void testLinkExists() {
-        DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+		KnowledgeGraphImpl.clear();
+		
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is a decision!");
         DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is also a decision!");
         
-        KnowledgeGraph graph = new KnowledgeGraphImpl();
+        KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
         
         graph.addVertex(node1);
         graph.addVertex(node2);
@@ -140,7 +161,7 @@ public class TestKnowledgeGraph {
 		setUp();
 		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
 		ChangedFile file = ChangedFile.getOrCreate(path);
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, file, 3);
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, file, 3);
 		System.out.println(knowledgeGraph.toString());
 	}
 }

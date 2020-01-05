@@ -82,7 +82,7 @@ public class DecisionCompletionProposalComputer implements IJavaCompletionPropos
 				.getViewPart("de.uhd.ifi.se.decision.management.eclipse.view.DecisionExploration");
 
 		ChangedFile selectedFile = ChangedFile.getOrCreate(pathOfFile);
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(selectedFile,
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(selectedFile,
 				ConfigPersistenceManager.getLinkDistance());
 
 		explorationView.setContent(knowledgeGraph.toString());

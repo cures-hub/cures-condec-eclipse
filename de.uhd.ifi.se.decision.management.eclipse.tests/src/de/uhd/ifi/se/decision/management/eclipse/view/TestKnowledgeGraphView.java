@@ -21,13 +21,15 @@ public class TestKnowledgeGraphView {
 	@BeforeClass
 	public static void setUp() {
 		knowledgeGraph = initKnowledgeGraph();
-		knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
+		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 	}
 
 	public static KnowledgeGraph initKnowledgeGraph() {
+		KnowledgeGraphImpl.clear();
+		
 		GitClient gitClient = TestGitClient.initGitClient();
 		JiraClient jiraClient = TestJiraClient.initJiraClient();
-		return new KnowledgeGraphImpl(gitClient, jiraClient);
+		return KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 	}
 
 	@Test
@@ -39,7 +41,7 @@ public class TestKnowledgeGraphView {
 	
 	@Test
 	public void testGetInstance() {
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 		
 		assertNotNull(knowledgeGraphViewTest);
 	}

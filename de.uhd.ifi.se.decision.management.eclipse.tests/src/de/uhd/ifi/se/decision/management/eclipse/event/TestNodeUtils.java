@@ -33,7 +33,7 @@ public class TestNodeUtils {
 	public static void setUp() {
 		gitClient = TestGitClient.initGitClient();
 		jiraClient = TestJiraClient.initJiraClient();
-		new KnowledgeGraphImpl(gitClient, jiraClient);
+		KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 	}
 	
 	@Test

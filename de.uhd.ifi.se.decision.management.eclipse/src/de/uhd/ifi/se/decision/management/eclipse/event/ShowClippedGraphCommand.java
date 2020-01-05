@@ -31,10 +31,10 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 		}
 
 		int distance = ConfigPersistenceManager.getLinkDistance();
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(startNode, distance);
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, distance);
 
 		String title = "Knowledge Graph for \"" + startNode.toString() + "\" with Link Distance " + distance;
-		new KnowledgeGraphViewImpl(knowledgeGraph, title);
+		KnowledgeGraphViewImpl.getInstance(knowledgeGraph, title);
 
 		return null;
 	}

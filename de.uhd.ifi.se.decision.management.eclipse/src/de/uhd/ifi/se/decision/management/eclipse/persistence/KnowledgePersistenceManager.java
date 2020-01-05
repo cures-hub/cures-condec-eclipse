@@ -38,7 +38,7 @@ public class KnowledgePersistenceManager {
      */
     public static boolean insertLink(Node sourceNode, Node targetNode) {
     	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
-    	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+    	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
     	
     	if ((targetNode != null) && (sourceNode != null) &&
     			(!knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)))) {

@@ -215,12 +215,12 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-	
+		// Empty
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-	
+		// Empty
 	}
 
 	@Override
@@ -264,7 +264,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-
+		// Empty
 	}
 	
 	/**

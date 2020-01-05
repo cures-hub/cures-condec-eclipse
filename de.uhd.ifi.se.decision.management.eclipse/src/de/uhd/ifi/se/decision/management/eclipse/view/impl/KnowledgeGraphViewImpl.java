@@ -46,7 +46,7 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
  * Class to create a view for the knowledge graph model class.
  */
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
-	private static KnowledgeGraphView knowledgeGraphView;
+	private static KnowledgeGraphView knowledgeGraphView = null;
 	
 	private String searchString;
 	private JTextField searchTextField;
@@ -62,10 +62,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private int linkDistance;
 	private float decreaseFactor;
 
-	public KnowledgeGraphViewImpl(KnowledgeGraph graph) {
+	private KnowledgeGraphViewImpl(KnowledgeGraph graph) {
 		this(graph, "Knowledge Graph");
-		
-		knowledgeGraphView = this;
 	}
 
 	/**
@@ -80,7 +78,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * @param frameTitle
 	 *            frame title of the view.
 	 */
-	public KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
+	private KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
 		this.gephiGraph = new GephiGraphImpl(graph);
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
@@ -108,8 +106,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.decreaseFactor = ConfigPersistenceManager.getDecreaseFactor();
 		this.searchString = "";
 		createView(frameTitle);
-		
-		knowledgeGraphView = this;
 	}
 	
 	/**
@@ -117,7 +113,22 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * 
 	 * @return the instance of the knowledge graph view
 	 */
-	public static KnowledgeGraphView getInstance() {
+	public static KnowledgeGraphView getInstance(KnowledgeGraph graph, String frameTitle) {
+		if (knowledgeGraphView == null) {
+			knowledgeGraphView = new KnowledgeGraphViewImpl(graph, frameTitle);
+		}
+		return knowledgeGraphView;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraphView.
+	 * 
+	 * @return the instance of the knowledge graph view
+	 */
+	public static KnowledgeGraphView getInstance(KnowledgeGraph graph) {
+		if (knowledgeGraphView == null) {
+			knowledgeGraphView = new KnowledgeGraphViewImpl(graph);
+		}
 		return knowledgeGraphView;
 	}
 	

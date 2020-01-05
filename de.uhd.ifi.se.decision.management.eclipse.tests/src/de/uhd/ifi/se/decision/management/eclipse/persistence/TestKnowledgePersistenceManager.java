@@ -42,6 +42,8 @@ public class TestKnowledgePersistenceManager {
 	
 	@Test
 	public void testInsertLink() {
+		KnowledgeGraphImpl.clear();
+		
 		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
 				"This is a decision!");
         DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
@@ -55,12 +57,12 @@ public class TestKnowledgePersistenceManager {
         org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
         org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
         
-        KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
         
         knowledgeGraph.addVertex(node1);
         knowledgeGraph.addVertex(node2);
         
-        KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
         
         assertTrue(KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2));
         
@@ -70,9 +72,11 @@ public class TestKnowledgePersistenceManager {
 	
 	@Test
 	public void testInsertLinkNull() {
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+		KnowledgeGraphImpl.clear();
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
         
-        KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
         
         assertFalse(KnowledgePersistenceManager.insertLink(null, null));
         
@@ -81,6 +85,8 @@ public class TestKnowledgePersistenceManager {
 	
 	@Test
 	public void testInsertLinkAlreadyExists() {
+		KnowledgeGraphImpl.clear();
+		
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		Workspace workspace = projectController.getCurrentWorkspace();
@@ -94,12 +100,12 @@ public class TestKnowledgePersistenceManager {
         org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
         org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
         
-        KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
         
         knowledgeGraph.addVertex(node1);
         knowledgeGraph.addVertex(node2);
         
-        KnowledgeGraphView knowledgeGraphView = new KnowledgeGraphViewImpl(knowledgeGraph);
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
         
         KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2);
         
