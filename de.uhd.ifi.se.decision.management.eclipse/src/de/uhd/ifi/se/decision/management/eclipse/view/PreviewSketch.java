@@ -272,7 +272,9 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
      * 		true, if the graph was interacted with
      */
 	private boolean mouseEvent(PreviewMouseEvent event, boolean popupTrigger) {
-		createPopupMenu(event);
+		if (popupTrigger) {
+			createPopupMenu(event);
+		}
 		
 		return true;
 	}
