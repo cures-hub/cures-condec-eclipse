@@ -40,7 +40,7 @@ public class TestGephiGraph {
 	public void testUpdate() {
 		GephiGraph gephiGraph = new GephiGraphImpl(null);
 		
-		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);;
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 		
 		gephiGraph.update(knowledgeGraph);
 		

@@ -77,7 +77,7 @@ public class TestKnowledgeGraph {
 	public void testGetInstance() {
 		KnowledgeGraphImpl.clear();
 		
-		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);;
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 		
 		assertNotNull(knowledgeGraph);
 		assertTrue(knowledgeGraph.vertexSet().size() > 0);
