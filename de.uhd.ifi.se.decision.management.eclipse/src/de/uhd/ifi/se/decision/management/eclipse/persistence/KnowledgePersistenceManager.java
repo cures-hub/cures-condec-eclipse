@@ -1,14 +1,16 @@
 package de.uhd.ifi.se.decision.management.eclipse.persistence;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.type.TypeReference;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
@@ -26,7 +28,6 @@ public class KnowledgePersistenceManager {
 	
 	final private static String KNOWLEDGE_LOCATION_FOLDER = "target";
 	final private static String KNOWLEDGE_LOCATION_FILE = "knowledge.json";
-	final private static String KNOWLEDGE_LOCATION = KNOWLEDGE_LOCATION_FOLDER + "/" + KNOWLEDGE_LOCATION_FILE;
 	
 	/**
      * Creates a link between the source node and the target node, if sourceNode and targetNode exist.
@@ -64,15 +65,21 @@ public class KnowledgePersistenceManager {
      */
     private static void insertLinkJSON(de.uhd.ifi.se.decision.management.eclipse.model.Node sourceNode, 
     		de.uhd.ifi.se.decision.management.eclipse.model.Node targetNode) {
-    	ObjectMapper mapper = new ObjectMapper();
     	
-    	Link link = new LinkImpl(sourceNode, targetNode);
+    	Link newLink = new LinkImpl(sourceNode, targetNode);
     	
-    	openJSONFile();
+    	List<Link> links = openJSONFile();
     	
     	try {
-			//String jsonString = mapper.writeValueAsString(link);
-			mapper.writeValue(new FileOutputStream(KNOWLEDGE_LOCATION), link);
+			if (!links.contains(newLink)) {
+				File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+		    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+		    	
+		    	ObjectMapper mapper = new ObjectMapper();
+				
+				links.add(newLink);
+				mapper.writeValue(file, links);
+			}
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -82,7 +89,14 @@ public class KnowledgePersistenceManager {
 		}
     }
     
-    private static Link openJSONFile() {
+    /**
+     * Reads the list of JSON-objects and converts them to a list of links.
+     * If no JSON-file exists, one is created.
+     * 
+     * @return 
+     * 		a list of links in the JSON-file
+     */
+    private static List<Link> openJSONFile() {
     	
     	File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
     	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -98,12 +112,12 @@ public class KnowledgePersistenceManager {
     	}
     	
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		try {
-			Link link = mapper.readValue(file, LinkImpl.class);
-			System.out.println(link.getSourceId() + ", " + link.getTargetId());
-			return link;
+			if (!FileUtils.readFileToString(file).trim().isEmpty()) {
+				List<Link> links = mapper.readValue(file, new TypeReference<List<LinkImpl>>(){});
+				return links;
+			}
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -112,7 +126,7 @@ public class KnowledgePersistenceManager {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return new ArrayList<Link>();
     }
 	
 }
