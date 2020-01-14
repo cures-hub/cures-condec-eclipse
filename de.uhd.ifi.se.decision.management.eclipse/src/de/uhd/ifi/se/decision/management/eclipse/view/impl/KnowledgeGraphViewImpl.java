@@ -33,6 +33,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
@@ -62,6 +63,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private int linkDistance;
 	private float decreaseFactor;
 
+	private KnowledgeGraphViewImpl() {
+		this(KnowledgeGraphImpl.getInstance(), "Knowledge Graph");
+	}
+	
 	private KnowledgeGraphViewImpl(KnowledgeGraph graph) {
 		this(graph, "Knowledge Graph");
 	}
@@ -122,6 +127,21 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	
 	/**
 	 * Returns the instance of KnowledgeGraphView.
+	 * If no KnowledgeGraphView exists, return a new one.
+	 * 
+	 * 
+	 * @return the instance of the knowledge graph view
+	 */
+	public static KnowledgeGraphView getInstance() {
+		if (knowledgeGraphView == null) {
+			knowledgeGraphView = new KnowledgeGraphViewImpl();
+		}
+		return knowledgeGraphView;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraphView.
+	 * If no KnowledgeGraphView exists, create a new one.
 	 * 
 	 * @return the instance of the knowledge graph view
 	 */
@@ -132,6 +152,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return knowledgeGraphView;
 	}
 	
+	public static void clear() {
+		knowledgeGraphView = null;
+	}
+	
 	@Override
 	public void update(KnowledgeGraph graph) {
 		this.gephiGraph = new GephiGraphImpl(graph);
@@ -140,8 +164,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		
 		updateNodeSizes();
 		refresh();
-		
-		knowledgeGraphView = this;
 	}
 
 	private void createView(String frameTitle) {
@@ -430,5 +452,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				highlightNode(n, currentDepth + 1, maxDepth, size / decreaseFactor, visitedNodes);
 			}
 		}
+	}
+
+	@Override
+	public GephiGraph getGephiGraph() {
+		return gephiGraph;
 	}
 }

@@ -17,6 +17,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 
 /**
  * Class to create a knowledge graph for the entire project or a sub-graph from
@@ -119,6 +120,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	
 	/**
 	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
 	 * 
 	 * @return the instance of the knowledge graph
 	 */
@@ -132,6 +134,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	
 	/**
 	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
 	 * 
 	 * @return the instance of the knowledge graph
 	 */
@@ -145,6 +148,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	
 	/**
 	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
 	 * 
 	 * @return the instance of the knowledge graph
 	 */
@@ -158,6 +162,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	
 	/**
 	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
 	 * 
 	 * @return the instance of the knowledge graph
 	 */
@@ -185,6 +190,8 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		addMethods();
 
 		addJiraIssues();
+		
+		KnowledgePersistenceManager.readLinksFromJSON();
 	}
 
 	private void addCommitsAndFiles() {
@@ -240,6 +247,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		if (node == null) {
 			return;
 		}
+		
 		this.addVertex(node);
 		createLinks(node, 0, distance);
 
@@ -247,6 +255,8 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 			this.addVertex(linkedNode);
 			this.addEdge(node, linkedNode);
 		}
+		
+		KnowledgePersistenceManager.readLinksFromJSON();
 	}
 
 	private void createLinks(Node node, int currentDepth, int maxDepth) {
@@ -308,12 +318,24 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 	}
 	
+	@Override
 	public void insertLink(Node node1, Node node2) {
 		this.addEdge(node1, node2);
 	}
 	
+	@Override
+	public void insertLink(Link link) {
+		this.addEdge(link.getSourceNode(), link.getTargetNode());
+	}
+	
+	@Override
 	public boolean linkExists(Node node1, Node node2) {
 		return this.containsEdge(node1, node2);
+	}
+	
+	@Override
+	public boolean linkExists(Link link) {
+		return this.containsEdge(link.getSourceNode(), link.getTargetNode());
 	}
 	
 	@Override
@@ -357,5 +379,10 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 
 		return graphAsString;
+	}
+
+	@Override
+	public void updateWithPersistanceData() {
+		//KnowledgePersistenceManager.readLinksFromJSON();
 	}
 }

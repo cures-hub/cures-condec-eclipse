@@ -30,6 +30,19 @@ public class KnowledgePersistenceManager {
 	final private static String KNOWLEDGE_LOCATION_FILE = "knowledge.json";
 	
 	/**
+     * Reads all links contained in the JSON knowledge file and adds them to the knowledge graph.
+     */
+	public static void readLinksFromJSON() {
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+		
+		List<Link> links = readJSONFile();
+		
+		for (Link link: links) {
+			knowledgeGraph.insertLink(link);
+		}
+	}
+	
+	/**
      * Creates a link between the source node and the target node, if sourceNode and targetNode exist.
      *
      * @param sourceNode
@@ -39,6 +52,7 @@ public class KnowledgePersistenceManager {
      */
     public static boolean insertLink(Node sourceNode, Node targetNode) {
     	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+    	knowledgeGraph.updateWithPersistanceData();
     	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
     	
     	if ((targetNode != null) && (sourceNode != null) &&
@@ -55,7 +69,7 @@ public class KnowledgePersistenceManager {
     }
     
     /**
-     * Creates a link between the source node and the target node and inserts it into the json file
+     * Creates a link between the source node and the target node and inserts it into the JSON file
      * storing the knowledge persistence data.
      * 
      * @param sourceNode
@@ -65,10 +79,9 @@ public class KnowledgePersistenceManager {
      */
     private static void insertLinkJSON(de.uhd.ifi.se.decision.management.eclipse.model.Node sourceNode, 
     		de.uhd.ifi.se.decision.management.eclipse.model.Node targetNode) {
-    	
     	Link newLink = new LinkImpl(sourceNode, targetNode);
     	
-    	List<Link> links = openJSONFile();
+    	List<Link> links = readJSONFile();
     	
     	try {
 			if (!links.contains(newLink)) {
@@ -96,26 +109,18 @@ public class KnowledgePersistenceManager {
      * @return 
      * 		a list of links in the JSON-file
      */
-    private static List<Link> openJSONFile() {
-    	
+    private static List<Link> readJSONFile() {
     	File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
     	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
     	
-    	folder.mkdirs();
-    		
-		if (!file.isFile()) {
-    		try {
-    			file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-    	}
+    	openJSONFile(folder, file);
     	
 		ObjectMapper mapper = new ObjectMapper();
 
 		try {
 			if (!FileUtils.readFileToString(file).trim().isEmpty()) {
 				List<Link> links = mapper.readValue(file, new TypeReference<List<LinkImpl>>(){});
+				links = convertLinks(links);
 				return links;
 			}
 		} catch (JsonParseException e) {
@@ -127,6 +132,57 @@ public class KnowledgePersistenceManager {
 		}
 		
 		return new ArrayList<Link>();
+    }
+    
+    /**
+     * Converts all the links in the list to fully working links by expanding the node ids to full nodes.
+     * 
+     * @param links
+     * 		the list containing the links
+     * @return
+     * 		the list containing the links with the links expanded
+     */
+    private static List<Link> convertLinks(List<Link> links) {
+    	for (Link link: links) {
+    		for (de.uhd.ifi.se.decision.management.eclipse.model.Node node: 
+    			de.uhd.ifi.se.decision.management.eclipse.model.Node.nodes.values()) {
+    			if (node.toString().contains(link.getSourceId())) {
+    				link.setSourceNode(node);
+    			}
+    			if (node.toString().contains(link.getTargetId())) {
+    				link.setTargetNode(node);
+    			}
+    		}
+    		if (link.getSourceNode() != null && link.getTargetNode() != null && link.getSourceNode() == link.getTargetNode()) {
+    			System.out.println("Error");
+    			System.out.println(link.getSourceNode());
+    			System.out.println(link.getTargetNode());
+    		}
+		}
+    	
+    	return links;
+    	
+    }
+    
+    /**
+     * Checks, if a JSON knowledge file exists.
+     * If not, one is created.
+     * 
+     * @param folder
+     * 		the path to the folder containing the file
+     * @param file
+     * 		the path to the file
+     */
+    private static void openJSONFile(File folder, File file) {
+    	folder.mkdirs();
+		
+		if (!file.isFile()) {
+    		try {
+    			file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 	
 }

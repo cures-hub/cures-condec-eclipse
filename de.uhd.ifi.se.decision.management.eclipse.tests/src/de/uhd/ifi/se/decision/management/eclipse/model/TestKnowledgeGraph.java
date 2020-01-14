@@ -16,6 +16,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
 public class TestKnowledgeGraph {
 
@@ -112,7 +113,7 @@ public class TestKnowledgeGraph {
 	}
 	
 	@Test
-	public void testCreateLink() {
+	public void testCreateLinkNodes() {
 		KnowledgeGraphImpl.clear();
 		
 		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
@@ -130,7 +131,27 @@ public class TestKnowledgeGraph {
 	}
 	
 	@Test
-	public void testLinkExists() {
+	public void testCreateLinkLink() {
+		KnowledgeGraphImpl.clear();
+		
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is also a decision!");
+        
+        KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
+        
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        Link link = new LinkImpl(node1, node2);
+        
+        graph.insertLink(link);
+        
+        assertTrue(graph.containsEdge(link.getSourceNode(), link.getTargetNode()));
+	}
+	
+	@Test
+	public void testLinkExistsNodes() {
 		KnowledgeGraphImpl.clear();
 		
 		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
@@ -146,9 +167,30 @@ public class TestKnowledgeGraph {
         
         assertTrue(graph.linkExists(node1, node2));
 	}
+	
+	@Test
+	public void testLinkExistsLink() {
+		KnowledgeGraphImpl.clear();
+		
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is also a decision!");
+        
+        Link link = new LinkImpl(node1, node2);
+        
+        KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
+        
+        graph.addVertex(link.getSourceNode());
+        graph.addVertex(link.getTargetNode());
+        graph.addEdge(link.getSourceNode(), link.getTargetNode());
+        
+        assertTrue(graph.linkExists(link));
+	}
 
 	@AfterClass
 	public static void tearDown() {
+		KnowledgeGraphImpl.clear();
 		Node.nodes.clear();
 		GitClient.instances.clear();
 		GitCommit.instances.clear();

@@ -16,8 +16,12 @@ public class ShowFullGraphCommand extends AbstractHandler {
 		if (!CommandHelper.isValidSelection(event)) {
 			return null;
 		}
+		
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraphViewImpl.clear();
 
 		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+		knowledgeGraph.updateWithPersistanceData();
 		String title = "Knowledge Graph for Repository \"" + ConfigPersistenceManager.getPathToGit() + "\"";
 		KnowledgeGraphViewImpl.getInstance(knowledgeGraph, title);
 

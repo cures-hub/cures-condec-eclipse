@@ -84,6 +84,7 @@ public class DecisionCompletionProposalComputer implements IJavaCompletionPropos
 		ChangedFile selectedFile = ChangedFile.getOrCreate(pathOfFile);
 		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(selectedFile,
 				ConfigPersistenceManager.getLinkDistance());
+		knowledgeGraph.updateWithPersistanceData();
 
 		explorationView.setContent(knowledgeGraph.toString());
 

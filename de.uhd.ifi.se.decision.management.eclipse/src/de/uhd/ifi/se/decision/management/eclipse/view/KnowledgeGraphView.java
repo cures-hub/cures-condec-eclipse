@@ -44,4 +44,13 @@ public interface KnowledgeGraphView {
 	 *            in the knowledge graph as a {@link Node} object.
 	 */
 	void highlightSelectedNode();
+	
+	/**
+	 * Returns the gephi graph created from the knowledgeGraphView.
+	 * 
+	 * @see GephiGraph
+	 * 
+	 * @return gephi graph
+	 */
+	GephiGraph getGephiGraph();
 }

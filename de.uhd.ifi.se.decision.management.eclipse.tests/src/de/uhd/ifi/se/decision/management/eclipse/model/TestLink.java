@@ -1,5 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -83,5 +84,49 @@ public class TestLink {
         
         assertTrue(link.getSourceId().contains("This is a decision!"));
         assertTrue(link.getTargetId().contains("This is also a decision!"));
+	}
+	
+	@Test
+	public void testEqualsTrue() {
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node1");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node2");
+        DecisionKnowledgeElement node3 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node1");
+        DecisionKnowledgeElement node4 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node2");
+        
+        Link link1 = new LinkImpl();
+        Link link2 = new LinkImpl();
+        
+        link1.setSourceNode(node1);
+        link1.setTargetNode(node2);
+        link2.setSourceNode(node3);
+        link2.setTargetNode(node4);
+        
+        assertTrue(link1.equals(link2));
+	}
+	
+	@Test
+	public void testEqualsFalse() {
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node1");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node2");
+        DecisionKnowledgeElement node3 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node3");
+        DecisionKnowledgeElement node4 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node4");
+        
+        Link link1 = new LinkImpl();
+        Link link2 = new LinkImpl();
+        
+        link1.setSourceNode(node1);
+        link1.setTargetNode(node2);
+        link2.setSourceNode(node3);
+        link2.setTargetNode(node4);
+        
+        assertFalse(link1.equals(link2));
 	}
 }
