@@ -31,6 +31,7 @@ public class KnowledgePersistenceManager {
 	
 	/**
      * Reads all links contained in the JSON knowledge file and adds them to the knowledge graph.
+     * If the source or target node are not contained in the knowledge graph, the link is not added.
      */
 	public static void readLinksFromJSON() {
 		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
@@ -38,7 +39,10 @@ public class KnowledgePersistenceManager {
 		List<Link> links = readJSONFile();
 		
 		for (Link link: links) {
-			knowledgeGraph.insertLink(link);
+			if (knowledgeGraph.containsVertex(link.getSourceNode()) 
+					&& knowledgeGraph.containsVertex(link.getTargetNode())) {
+				knowledgeGraph.insertLink(link);
+			}
 		}
 	}
 	
@@ -152,11 +156,6 @@ public class KnowledgePersistenceManager {
     			if (node.toString().contains(link.getTargetId())) {
     				link.setTargetNode(node);
     			}
-    		}
-    		if (link.getSourceNode() != null && link.getTargetNode() != null && link.getSourceNode() == link.getTargetNode()) {
-    			System.out.println("Error");
-    			System.out.println(link.getSourceNode());
-    			System.out.println(link.getTargetNode());
     		}
 		}
     	

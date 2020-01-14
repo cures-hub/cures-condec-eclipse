@@ -190,8 +190,6 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		addMethods();
 
 		addJiraIssues();
-		
-		KnowledgePersistenceManager.readLinksFromJSON();
 	}
 
 	private void addCommitsAndFiles() {
@@ -255,8 +253,6 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 			this.addVertex(linkedNode);
 			this.addEdge(node, linkedNode);
 		}
-		
-		KnowledgePersistenceManager.readLinksFromJSON();
 	}
 
 	private void createLinks(Node node, int currentDepth, int maxDepth) {
@@ -383,6 +379,6 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 
 	@Override
 	public void updateWithPersistanceData() {
-		//KnowledgePersistenceManager.readLinksFromJSON();
+		KnowledgePersistenceManager.readLinksFromJSON();
 	}
 }
