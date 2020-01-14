@@ -56,17 +56,17 @@ public interface Link {
 	Node getTargetNode();
 	
 	/**
+	 * Retrieves the target id of this link (= edge).
+	 *
+	 * @return target id of this link.
+	 */
+	String getTargetId();
+	
+	/**
 	 * Sets the target (= destination) node of this link (= edge).
 	 * 
 	 * @param target
 	 * 		the target node
 	 */
 	void setTargetNode(Node target);
-	
-	/**
-	 * Retrieves the target id of this link (= edge).
-	 *
-	 * @return target id of this link.
-	 */
-	String getTargetId();
 }

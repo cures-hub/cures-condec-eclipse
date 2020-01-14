@@ -124,4 +124,9 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		linkedNodes.addAll(this.getCommits());
 		return linkedNodes;
 	}
+	
+	@Override
+	public String getNodeId() {
+		return getFileName();
+	}
 }

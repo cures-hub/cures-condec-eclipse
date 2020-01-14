@@ -116,4 +116,9 @@ public class JiraIssueImpl extends NodeImpl implements JiraIssue {
 		linkedNodes.addAll(this.getLinkedJiraIssues());
 		return linkedNodes;
 	}
+	
+	@Override
+	public String getNodeId() {
+		return jiraIssueKey;
+	}
 }

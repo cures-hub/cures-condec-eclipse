@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
@@ -134,10 +136,8 @@ public class TestKnowledgeGraph {
 	public void testCreateLinkLink() {
 		KnowledgeGraphImpl.clear();
 		
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is a decision!");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is also a decision!");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
         
         KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
         
@@ -172,10 +172,8 @@ public class TestKnowledgeGraph {
 	public void testLinkExistsLink() {
 		KnowledgeGraphImpl.clear();
 		
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is a decision!");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is also a decision!");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
         
         Link link = new LinkImpl(node1, node2);
         

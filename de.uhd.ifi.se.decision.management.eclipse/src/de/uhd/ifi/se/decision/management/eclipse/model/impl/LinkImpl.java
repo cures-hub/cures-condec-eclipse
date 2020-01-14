@@ -30,11 +30,12 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	public LinkImpl(Node source, Node target) {
 		this.sourceNode = source;
 		if (sourceNode != null) {
-			sourceId = sourceNode.toString();
+			sourceId = sourceNode.getNodeId();
 		}
+		
 		this.targetNode = target;
 		if (targetNode != null) {
-			targetId = targetNode.toString();
+			targetId = targetNode.getNodeId();
 		}
 	}
 	
@@ -73,7 +74,6 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	@Override
 	public Node getTargetNode() {
 		return targetNode;
-		
 	}
 	
 	@Override

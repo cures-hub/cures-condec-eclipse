@@ -150,10 +150,10 @@ public class KnowledgePersistenceManager {
     	for (Link link: links) {
     		for (de.uhd.ifi.se.decision.management.eclipse.model.Node node: 
     			de.uhd.ifi.se.decision.management.eclipse.model.Node.nodes.values()) {
-    			if (node.toString().contains(link.getSourceId())) {
+    			if (link.getSourceId().equals(node.getNodeId())) {
     				link.setSourceNode(node);
     			}
-    			if (node.toString().contains(link.getTargetId())) {
+    			if (link.getTargetId().equals(node.getNodeId())) {
     				link.setTargetNode(node);
     			}
     		}
