@@ -2,6 +2,7 @@ package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,6 +22,7 @@ public class TestKnowledgeGraphView {
 	@BeforeClass
 	public static void setUp() {
 		knowledgeGraph = initKnowledgeGraph();
+		KnowledgeGraphViewImpl.clear();
 		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 	}
 
@@ -40,6 +42,13 @@ public class TestKnowledgeGraphView {
 	}
 	
 	@Test
+	public void testUpdate() {
+		knowledgeGraphView.update(knowledgeGraph);
+		
+		assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
 	public void testGetInstance() {
 		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 		
@@ -47,11 +56,34 @@ public class TestKnowledgeGraphView {
 	}
 	
 	@Test
-	public void testUpdate() {
-		knowledgeGraphView.update(knowledgeGraph);
+	public void testGetInstanceNull() {
+		KnowledgeGraphViewImpl.clear();
 		
-		assertNotNull(knowledgeGraphView);
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 		
+		assertNotNull(knowledgeGraphViewTest);
+	}
+	
+	@Test
+	public void testGetInstanceFrameTitle() {
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertNotNull(knowledgeGraphViewTest);
+	}
+	
+	@Test
+	public void testGetInstanceFrameTitleNull() {
+		KnowledgeGraphViewImpl.clear();
+		
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertNotNull(knowledgeGraphViewTest);
+	}
+	
+	@AfterClass
+	public static void tearDown() {
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraphViewImpl.clear();
 	}
 	
 	public static void main(String[] args) {

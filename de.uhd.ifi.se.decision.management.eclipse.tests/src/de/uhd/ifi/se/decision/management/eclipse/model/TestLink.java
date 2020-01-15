@@ -129,4 +129,22 @@ public class TestLink {
         
         assertFalse(link1.equals(link2));
 	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	@Test
+	public void testEqualsNolink() {
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node1");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node2");
+        DecisionKnowledgeElement node3 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"Node3");
+        
+        Link link1 = new LinkImpl();
+        
+        link1.setSourceNode(node1);
+        link1.setTargetNode(node2);
+        
+        assertFalse(link1.equals(node3));
+	}
 }

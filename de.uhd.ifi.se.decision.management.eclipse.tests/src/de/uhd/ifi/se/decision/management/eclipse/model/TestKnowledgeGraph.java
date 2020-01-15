@@ -50,6 +50,9 @@ public class TestKnowledgeGraph {
 		
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(1, workItem.getLinkedJiraIssues().size());
+		
+		KnowledgeGraphImpl.clear();
+		
 		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, workItem, 1);
 		assertEquals(7, knowledgeGraph.vertexSet().size());
 	}
@@ -99,6 +102,32 @@ public class TestKnowledgeGraph {
 
 		assertEquals(gitClient, knowledgeGraphTest.getGitClient());
 		assertEquals(jiraClient, knowledgeGraphTest.getJiraClient());
+	}
+	
+	@Test
+	public void testGetInstanceStartNode() {
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+		
+		KnowledgeGraphImpl.clear();
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, node1, 1);
+		
+		assertNotNull(knowledgeGraph);
+		assertEquals(gitClient, knowledgeGraph.getGitClient());
+		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
+		assertTrue(knowledgeGraph.vertexSet().size() > 0);
+		assertTrue(knowledgeGraph.getStartNode().equals(node1));
+		
+		KnowledgeGraphImpl.clear();
+		
+		KnowledgeGraph knowledgeGraphTest = KnowledgeGraphImpl.getInstance(node1, 1);
+		
+		assertNotNull(knowledgeGraphTest);
+		assertEquals(gitClient, knowledgeGraphTest.getGitClient());
+		assertEquals(jiraClient, knowledgeGraphTest.getJiraClient());
+		assertTrue(knowledgeGraphTest.vertexSet().size() > 0);
+		assertTrue(knowledgeGraphTest.getStartNode().equals(node1));
 	}
 
 	@Test

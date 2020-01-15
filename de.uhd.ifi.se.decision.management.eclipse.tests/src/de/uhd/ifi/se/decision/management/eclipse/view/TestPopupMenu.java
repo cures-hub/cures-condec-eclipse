@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -22,6 +23,10 @@ public class TestPopupMenu {
         node.setLabel("[0] Node");
         
         assertNotNull(new PopupMenu(node));
+	}
+	
+	public void testPopupMenuNull() {
+        assertNull(new PopupMenu(null));
 	}
 
 }
