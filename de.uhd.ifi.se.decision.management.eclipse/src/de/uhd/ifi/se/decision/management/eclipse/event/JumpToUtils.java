@@ -23,7 +23,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
  * Contains static methods to jump from a node to the corresponding knowledge element
  *
  */
-public class JumpToCommandHelper {
+public class JumpToUtils {
 	
 	/**
 	 * Opens a JIRA issue in the web browser.

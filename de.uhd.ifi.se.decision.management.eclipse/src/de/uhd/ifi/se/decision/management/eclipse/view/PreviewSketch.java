@@ -25,6 +25,7 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 
 /**
@@ -287,7 +288,10 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 		else if (createLink) {
 			targetNode = getClickedNode(event);
 			
-			KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
+			if (!(NodeUtils.convertNode(sourceNode) instanceof CodeMethod) 
+					&& !(NodeUtils.convertNode(targetNode) instanceof CodeMethod)) {
+				KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
+			}
 			
 			createLink = false;
 			sourceNode = null;

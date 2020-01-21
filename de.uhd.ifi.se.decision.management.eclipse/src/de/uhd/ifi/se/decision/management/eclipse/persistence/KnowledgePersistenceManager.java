@@ -59,10 +59,15 @@ public class KnowledgePersistenceManager {
     	knowledgeGraph.updateWithPersistanceData();
     	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
     	
-    	if ((targetNode != null) && (sourceNode != null) &&
-    			(!knowledgeGraph.linkExists(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode)))) {
-    		knowledgeGraph.insertLink(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
-    		insertLinkJSON(NodeUtils.convertNode(sourceNode), NodeUtils.convertNode(targetNode));
+    	de.uhd.ifi.se.decision.management.eclipse.model.Node sourceKnowledgeNode = NodeUtils.convertNode(sourceNode);
+    	de.uhd.ifi.se.decision.management.eclipse.model.Node targetKnowledgeNode = NodeUtils.convertNode(targetNode);
+    	
+    	
+    	if (((sourceNode != null) && targetNode != null) &&
+    			(!knowledgeGraph.linkExists(sourceKnowledgeNode, targetKnowledgeNode)) &&
+    			!(sourceKnowledgeNode.getNodeId().equals(targetKnowledgeNode.getNodeId()))) {
+    		knowledgeGraph.insertLink(sourceKnowledgeNode, targetKnowledgeNode);
+    		insertLinkJSON(sourceKnowledgeNode, targetKnowledgeNode);
     	    	
     	    knowledgeGraphView.update(knowledgeGraph);
     	    
@@ -159,8 +164,15 @@ public class KnowledgePersistenceManager {
     		}
 		}
     	
-    	return links;
+    	List<Link> convertedLinks = new ArrayList<Link>();
     	
+    	for (Link link: links) {
+    		if (!(link.getSourceId().equals(link.getTargetId()))) {
+    			convertedLinks.add(link);
+    		}
+		}
+    	
+    	return convertedLinks;
     }
     
     /**
