@@ -8,12 +8,8 @@ import javax.swing.JPopupMenu;
 
 import org.gephi.graph.api.Node;
 
-<<<<<<< HEAD
 import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
-=======
-import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommandHelper;
->>>>>>> 200cfce3568b0ac043e5baf229f861f81d0eeabd
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
