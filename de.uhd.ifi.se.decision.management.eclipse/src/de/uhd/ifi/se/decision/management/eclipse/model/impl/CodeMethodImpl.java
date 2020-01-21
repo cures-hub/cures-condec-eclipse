@@ -41,4 +41,9 @@ public class CodeMethodImpl extends NodeImpl implements CodeMethod {
 		linkedNodes.add(this.getJavaClass());
 		return linkedNodes;
 	}
+	
+	@Override
+	public String getNodeId() {
+		return javaClass.getNodeId() + " " + methodName;
+	}
 }

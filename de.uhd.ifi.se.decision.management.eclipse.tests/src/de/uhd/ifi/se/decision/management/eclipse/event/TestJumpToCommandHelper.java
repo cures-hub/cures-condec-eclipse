@@ -42,7 +42,7 @@ public class TestJumpToCommandHelper {
 	public void testJumpToJiraIssue() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		try {
-			boolean webbrowserOpened = JumpToCommandHelper.jumpToJiraIssue(jiraIssue);
+			boolean webbrowserOpened = JumpToUtils.jumpToJiraIssue(jiraIssue);
 			assertTrue(webbrowserOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -53,7 +53,7 @@ public class TestJumpToCommandHelper {
 	public void testJumpToGitCommit() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		try {
-			boolean commitOpened = JumpToCommandHelper.jumpToGitCommit(commits.get(0));
+			boolean commitOpened = JumpToUtils.jumpToGitCommit(commits.get(0));
 			assertTrue(commitOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -65,7 +65,7 @@ public class TestJumpToCommandHelper {
 		IPath path = new Path("src/de/uhd/ifi/se/decision/management/eclipse/model/TestJumpToCommand.java");
 		ChangedFile file = new ChangedFileImpl(path);
 		try {
-			boolean editorOpened = JumpToCommandHelper.jumpToChangedFile(file);
+			boolean editorOpened = JumpToUtils.jumpToChangedFile(file);
 			assertTrue(editorOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -78,7 +78,7 @@ public class TestJumpToCommandHelper {
 		ChangedFile file = new ChangedFileImpl(path);
 		CodeMethod codeMethod = new CodeMethodImpl("createGraph()", file);
 		try {
-			boolean methodOpened = JumpToCommandHelper.jumpToMethod(codeMethod);
+			boolean methodOpened = JumpToUtils.jumpToMethod(codeMethod);
 			assertTrue(methodOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -91,7 +91,7 @@ public class TestJumpToCommandHelper {
 				"This is a decision!");
 		element.setType(KnowledgeType.DECISION);
 		try {
-			boolean elementOpened = JumpToCommandHelper.jumpToDecisionKnowledgeElement(element);
+			boolean elementOpened = JumpToUtils.jumpToDecisionKnowledgeElement(element);
 			assertTrue(elementOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());

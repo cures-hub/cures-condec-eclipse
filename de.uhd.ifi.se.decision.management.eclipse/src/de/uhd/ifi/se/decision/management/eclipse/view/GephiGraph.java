@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.project.api.Workspace;
 import org.jgrapht.Graph;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
@@ -14,9 +15,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
  * @see KnowledgeGraphView
  */
 public interface GephiGraph {
-
+	
 	/**
-	 * Creates a gephi graph from a knowledge graph. The knowledge covers decision
+	 * Creates the gephi graph from a knowledge graph. The knowledge covers decision
 	 * knowledge, JIRA issues such as requirements and work items, commits, and
 	 * files (e.g., classes and methods).
 	 * 
@@ -28,6 +29,20 @@ public interface GephiGraph {
 	 *            knowledge graph is a JGraphT graph.
 	 */
 	void createGephiGraph(KnowledgeGraph knowledgeGraph);
+	
+	/**
+	 * Updates the gephi graph from a knowledge graph. The knowledge covers decision
+	 * knowledge, JIRA issues such as requirements and work items, commits, and
+	 * files (e.g., classes and methods).
+	 * 
+	 * @see Graph
+	 * @see KnowledgeGraph
+	 * @param knowledgeGraph
+	 *            graph of decision knowledge, JIRA issues such as requirements and
+	 *            work items, commits, and files (e.g., classes and methods). The
+	 *            knowledge graph is a JGraphT graph.
+	 */
+	void update(KnowledgeGraph knowledgeGraph);
 
 	/**
 	 * Returns a gephi node for a given model node object.
@@ -74,4 +89,6 @@ public interface GephiGraph {
 	void setSizeOfNode(long selectedNodeId, float size);
 
 	void setSizeOfNode(Node node, float size);
+	
+	Workspace getWorkspace();
 }

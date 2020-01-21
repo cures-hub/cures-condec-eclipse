@@ -17,6 +17,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 
 /**
  * Class to create a knowledge graph for the entire project or a sub-graph from
@@ -30,6 +31,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> implements KnowledgeGraph {
 
 	private static final long serialVersionUID = 1L;
+	private static KnowledgeGraph knowledgeGraph = null;
 	private GitClient gitClient;
 	private JiraClient jiraClient;
 	private Set<Node> startNodes;
@@ -49,7 +51,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 *            to connect to a JIRA project associated with this Eclipse project.
 	 *            Retrieves JIRA issues.
 	 */
-	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
+	private KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient) {
 		super(LinkImpl.class);
 		this.startNodes = new HashSet<Node>();
 		this.gitClient = gitClient;
@@ -66,7 +68,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 * @see JiraClient
 	 * @see Graph
 	 */
-	public KnowledgeGraphImpl() {
+	private KnowledgeGraphImpl() {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate());
 	}
 
@@ -84,7 +86,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 * @param distance
 	 *            from the start node that the knowledge graph is traversed.
 	 */
-	public KnowledgeGraphImpl(Node startNode, int distance) {
+	private KnowledgeGraphImpl(Node startNode, int distance) {
 		this(GitClient.getOrCreate(), JiraClient.getOrCreate(), startNode, distance);
 	}
 
@@ -107,13 +109,77 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	 * @param distance
 	 *            from the start node that the knowledge graph is traversed.
 	 */
-	public KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient, Node startNode, int distance) {
+	private KnowledgeGraphImpl(GitClient gitClient, JiraClient jiraClient, Node startNode, int distance) {
 		super(LinkImpl.class);
 		this.gitClient = gitClient;
 		this.jiraClient = jiraClient;
 		this.startNodes = new HashSet<Node>();
 		this.startNodes.add(startNode);
 		createGraph(startNode, distance);
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
+	 * 
+	 * @return the instance of the knowledge graph
+	 */
+	public static KnowledgeGraph getInstance() {
+		if (knowledgeGraph == null) {
+			knowledgeGraph = new KnowledgeGraphImpl();
+		}
+		
+		return knowledgeGraph;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
+	 * 
+	 * @return the instance of the knowledge graph
+	 */
+	public static KnowledgeGraph getInstance(GitClient gitClient, JiraClient jiraClient) {
+		if (knowledgeGraph == null) {
+			knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient);
+		}
+		
+		return knowledgeGraph;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
+	 * 
+	 * @return the instance of the knowledge graph
+	 */
+	public static KnowledgeGraph getInstance(Node startNode, int distance) {
+		if (knowledgeGraph == null) {
+			knowledgeGraph = new KnowledgeGraphImpl(startNode, distance);
+		}
+		
+		return knowledgeGraph;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraph.
+	 * If no knowledge graph exists, create a new one.
+	 * 
+	 * @return the instance of the knowledge graph
+	 */
+	public static KnowledgeGraph getInstance(GitClient gitClient, JiraClient jiraClient, Node startNode, int distance) {
+		if (knowledgeGraph == null) {
+			knowledgeGraph = new KnowledgeGraphImpl(gitClient, jiraClient, startNode, distance);
+		}
+		
+		return knowledgeGraph;
+	}
+	
+	/**
+	 * Clears the current knowledge graph, so that a new knowledge graph will be created
+	 * by the getInstance()-method.
+	 */
+	public static void clear() {
+		knowledgeGraph = null;
 	}
 
 	private void createGraph() {
@@ -179,6 +245,7 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		if (node == null) {
 			return;
 		}
+		
 		this.addVertex(node);
 		createLinks(node, 0, distance);
 
@@ -248,6 +315,26 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 	
 	@Override
+	public void insertLink(Node node1, Node node2) {
+		this.addEdge(node1, node2);
+	}
+	
+	@Override
+	public void insertLink(Link link) {
+		this.addEdge(link.getSourceNode(), link.getTargetNode());
+	}
+	
+	@Override
+	public boolean linkExists(Node node1, Node node2) {
+		return this.containsEdge(node1, node2);
+	}
+	
+	@Override
+	public boolean linkExists(Link link) {
+		return this.containsEdge(link.getSourceNode(), link.getTargetNode());
+	}
+	
+	@Override
 	public Set<Node> getStartNodes() {
 		return this.startNodes;
 	}
@@ -288,5 +375,10 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 
 		return graphAsString;
+	}
+
+	@Override
+	public void updateWithPersistanceData() {
+		KnowledgePersistenceManager.readLinksFromJSON();
 	}
 }

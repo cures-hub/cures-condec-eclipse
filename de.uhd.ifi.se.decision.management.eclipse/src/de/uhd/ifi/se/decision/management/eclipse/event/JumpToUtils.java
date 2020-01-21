@@ -19,7 +19,11 @@ import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 
-public class JumpToCommandHelper {
+/**
+ * Contains static methods to jump from a node to the corresponding knowledge element
+ *
+ */
+public class JumpToUtils {
 	
 	/**
 	 * Opens a JIRA issue in the web browser.

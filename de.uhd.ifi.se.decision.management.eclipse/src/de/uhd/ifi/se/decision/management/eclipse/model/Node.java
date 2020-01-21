@@ -44,4 +44,16 @@ public interface Node {
 	 * @return set of all linked nodes. The set is never null.
 	 */
 	Set<Node> getLinkedNodes();
+	
+	/**
+	 * Get the node id.
+	 * For files the id is the class name.
+	 * For methods the id is the class name + method name.
+	 * For git commits the id is the commit id.
+	 * For jira issues the id is the issue id.
+	 * For decision knowledge elements the id is the commit id.
+	 *
+	 * @return id of the node.
+	 */
+	String getNodeId();
 }

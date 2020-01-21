@@ -19,7 +19,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
  * @see Graph
  */
 public interface KnowledgeGraph extends Graph<Node, Link> {
-
+	
 	/**
 	 * Returns the start node that the graph is created from. The start node can be
 	 * an object of the class {@link ChangedFile} (e.g. a selected Java class),
@@ -60,4 +60,49 @@ public interface KnowledgeGraph extends Graph<Node, Link> {
 	 * @return JIRA client to connect to a JIRA project.
 	 */
 	JiraClient getJiraClient();
+	
+	/**
+	 * Creates an edge from node node1 to node node2
+	 * 
+	 * @param node1
+	 * 		source node
+	 * @param node2
+	 * 		target node
+	 */
+	void insertLink(Node node1, Node node2);
+	
+	/**
+	 * Inserts the link into the knowledge graph.
+	 * 
+	 * @param link
+	 * 		the link to be inserted
+	 */
+	void insertLink(Link link);
+	
+	/**
+	 * Checks whether a link between node1 and node2 exists.
+	 * 
+	 * @param node1
+	 * 		source node
+	 * @param node2
+	 * 		target node
+	 * @return
+	 * 		true, if a link exists; false, if no link exists
+	 */
+	boolean linkExists(Node node1, Node node2);
+	
+	/**
+	 * Checks whether the link exists in the knowledge graph.
+	 * 
+	 * @param link
+	 * 		the link to be checked
+	 * @return
+	 * 		true, if the link exists; false, if the link doesn't exist
+	 */
+	boolean linkExists(Link link);
+	
+	/**
+	 * Reads persistence data from JSON file and updates the knowledge graph with it
+	 */
+	void updateWithPersistanceData();
 }

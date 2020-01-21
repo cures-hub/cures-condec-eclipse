@@ -30,7 +30,7 @@ import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
  *        performance?
  */
 public class GephiGraphImpl implements GephiGraph {
-
+	private Workspace workspace;
 	private GraphModel graphModel;
 	private DirectedGraph directedGraph;
 	private LayoutType layoutType;
@@ -42,7 +42,7 @@ public class GephiGraphImpl implements GephiGraph {
 	public GephiGraphImpl(KnowledgeGraph graph, LayoutType layoutType) {
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
-		Workspace workspace = projectController.getCurrentWorkspace();
+		workspace = projectController.getCurrentWorkspace();
 
 		this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
 		this.directedGraph = graphModel.getDirectedGraph();
@@ -85,6 +85,11 @@ public class GephiGraphImpl implements GephiGraph {
 			}
 		}
 		this.layoutType.generateLayout(graphModel, nodes.size());
+	}
+	
+	@Override
+	public void update(KnowledgeGraph graph) {
+		createGephiGraph(graph);
 	}
 
 	private org.gephi.graph.api.Node createNode(Node node) {
@@ -142,7 +147,7 @@ public class GephiGraphImpl implements GephiGraph {
 	@Override
 	public void setSizeOfAllNodes(float size) {
 		for (org.gephi.graph.api.Node gephiNode : getNodes()) {
-			gephiNode.setSize(0f);
+			gephiNode.setSize(size);
 		}
 	}
 
@@ -163,5 +168,10 @@ public class GephiGraphImpl implements GephiGraph {
 	public void setSizeOfNode(Node node, float size) {
 		org.gephi.graph.api.Node gephiNode = getGephiNode(node);
 		setSizeOfNode(gephiNode, size);
+	}
+
+	@Override
+	public Workspace getWorkspace() {
+		return workspace;
 	}
 }
