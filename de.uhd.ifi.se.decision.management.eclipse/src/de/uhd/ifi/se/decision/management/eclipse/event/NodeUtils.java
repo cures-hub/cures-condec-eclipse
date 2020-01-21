@@ -52,5 +52,5 @@ public class NodeUtils {
 
         return xdiff * xdiff + ydiff * ydiff < radius * radius;
     }
-
+	
 }

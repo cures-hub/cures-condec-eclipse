@@ -8,8 +8,12 @@ import javax.swing.JPopupMenu;
 
 import org.gephi.graph.api.Node;
 
+<<<<<<< HEAD
 import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+=======
+import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommandHelper;
+>>>>>>> 200cfce3568b0ac043e5baf229f861f81d0eeabd
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -35,10 +39,9 @@ public class PopupMenu extends JPopupMenu {
 		JMenuItem jumpTo = new JMenuItem("Jump to");
 		JMenuItem createLink = new JMenuItem("Create link to");
     	
-    	de.uhd.ifi.se.decision.management.eclipse.model.Node node = NodeUtils.convertNode(selectedNode);
+    	de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
     		
     	if (node != null) {
-    		
     		jumpTo.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
     				jumpTo(node);
@@ -57,6 +60,30 @@ public class PopupMenu extends JPopupMenu {
     			add(createLink);
     		}
     	}
+    }
+    
+    /**
+     * converts a gephi-node to a knowledge graph-node
+     * @param selectedNode
+     * 		the gephi-node to be converted
+     * @return
+     * 		the converted knowledge graph-node
+     */
+	private de.uhd.ifi.se.decision.management.eclipse.model.Node convertNode(Node selectedNode) {
+    	
+    	de.uhd.ifi.se.decision.management.eclipse.model.Node node = null;
+    	
+    	if (selectedNode != null) {
+    		
+    		String nodeLabel = selectedNode.getLabel();
+        	int start = nodeLabel.indexOf('[') + 1;
+        	int end = nodeLabel.indexOf(']');
+        	int nodeId = Integer.parseInt(nodeLabel.substring(start, end));
+        	node = de.uhd.ifi.se.decision.management.eclipse.model.Node.getNodeById(nodeId);
+        	
+    	}
+    	
+    	return node;
     }
     
     /**
