@@ -9,7 +9,6 @@ import javax.swing.JPopupMenu;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
-import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
