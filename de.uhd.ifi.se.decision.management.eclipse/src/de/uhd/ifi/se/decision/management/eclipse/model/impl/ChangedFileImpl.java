@@ -124,4 +124,16 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		linkedNodes.addAll(this.getCommits());
 		return linkedNodes;
 	}
+	
+	@Override
+	public String getNodeId() {
+		IPath ipath = path;
+		for(int i = 0; i < ipath.segmentCount(); ++i) {
+			if(ipath.segment(i).matches("src")) {
+				ipath = ipath.removeFirstSegments(i-1);
+				break;
+			}
+		}
+		return ipath.makeRelative().toString();
+	}
 }

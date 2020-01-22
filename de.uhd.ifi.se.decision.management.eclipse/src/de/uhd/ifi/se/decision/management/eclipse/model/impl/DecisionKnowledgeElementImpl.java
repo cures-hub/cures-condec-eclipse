@@ -84,4 +84,9 @@ public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKn
 	public void setCommit(GitCommit commit) {
 		this.commit = commit;
 	}
+	
+	@Override
+	public String getNodeId() {
+		return commit.getNodeId();
+	}
 }

@@ -15,9 +15,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
  * @see KnowledgeGraphView
  */
 public interface GephiGraph {
-
+	
 	/**
-	 * Creates a gephi graph from a knowledge graph. The knowledge covers decision
+	 * Creates the gephi graph from a knowledge graph. The knowledge covers decision
 	 * knowledge, JIRA issues such as requirements and work items, commits, and
 	 * files (e.g., classes and methods).
 	 * 
@@ -29,6 +29,20 @@ public interface GephiGraph {
 	 *            knowledge graph is a JGraphT graph.
 	 */
 	void createGephiGraph(KnowledgeGraph knowledgeGraph);
+	
+	/**
+	 * Updates the gephi graph from a knowledge graph. The knowledge covers decision
+	 * knowledge, JIRA issues such as requirements and work items, commits, and
+	 * files (e.g., classes and methods).
+	 * 
+	 * @see Graph
+	 * @see KnowledgeGraph
+	 * @param knowledgeGraph
+	 *            graph of decision knowledge, JIRA issues such as requirements and
+	 *            work items, commits, and files (e.g., classes and methods). The
+	 *            knowledge graph is a JGraphT graph.
+	 */
+	void update(KnowledgeGraph knowledgeGraph);
 
 	/**
 	 * Returns a gephi node for a given model node object.

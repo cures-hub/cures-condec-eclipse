@@ -6,9 +6,15 @@ Bundle-Version: 0.0.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
+ org.eclipse.jface,
+ org.eclipse.jgit,
+ org.eclipse.ui,
  de.uhd.ifi.se.decision.management.eclipse
 Bundle-Vendor: Software Engineering Research Group, Heidelberg University
 Automatic-Module-Name: de.uhd.ifi.se.decision.management.eclipse.tests
-Export-Package: de.uhd.ifi.se.decision.management.eclipse.extraction,
+Export-Package: de.uhd.ifi.se.decision.management.eclipse.event,
+ de.uhd.ifi.se.decision.management.eclipse.extraction,
+ de.uhd.ifi.se.decision.management.eclipse.mock,
  de.uhd.ifi.se.decision.management.eclipse.model,
- de.uhd.ifi.se.decision.management.eclipse.persistence
+ de.uhd.ifi.se.decision.management.eclipse.persistence,
+ de.uhd.ifi.se.decision.management.eclipse.view

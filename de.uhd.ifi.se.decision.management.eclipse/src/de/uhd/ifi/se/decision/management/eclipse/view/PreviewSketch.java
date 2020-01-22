@@ -25,6 +25,8 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 
 /**
  * @author markus
@@ -46,6 +48,10 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	private Timer wheelTimer;
 	private boolean inited;
 	private final boolean isRetina;
+	// MouseListener
+	public static boolean createLink = false;
+	private static Node sourceNode = null;
+	private static Node targetNode = null;
 
 	public PreviewSketch(G2DTarget target, Workspace workspace) {
 		this.target = target;
@@ -272,8 +278,23 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
      * 		true, if the graph was interacted with
      */
 	private boolean mouseEvent(PreviewMouseEvent event, boolean popupTrigger) {
-		if (popupTrigger) {
-			createPopupMenu(event);
+		if (!createLink) {
+			if (popupTrigger) {
+				createPopupMenu(event);
+				sourceNode = getClickedNode(event);
+			}
+		}
+		else if (createLink) {
+			targetNode = getClickedNode(event);
+			
+			if (!(NodeUtils.convertNode(sourceNode) instanceof CodeMethod) 
+					&& !(NodeUtils.convertNode(targetNode) instanceof CodeMethod)) {
+				KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
+			}
+			
+			createLink = false;
+			sourceNode = null;
+			targetNode = null;
 		}
 		
 		return true;

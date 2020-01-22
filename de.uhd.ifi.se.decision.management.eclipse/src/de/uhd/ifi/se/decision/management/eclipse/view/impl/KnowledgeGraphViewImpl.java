@@ -24,7 +24,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
-import de.uhd.ifi.se.decision.management.eclipse.event.JumpToCommandHelper;
+import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
@@ -33,6 +33,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
@@ -46,6 +47,8 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
  * Class to create a view for the knowledge graph model class.
  */
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
+	private static KnowledgeGraphView knowledgeGraphView = null;
+	
 	private String searchString;
 	private JTextField searchTextField;
 
@@ -60,7 +63,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private int linkDistance;
 	private float decreaseFactor;
 
-	public KnowledgeGraphViewImpl(KnowledgeGraph graph) {
+	private KnowledgeGraphViewImpl() {
+		this(KnowledgeGraphImpl.getInstance(), "Knowledge Graph");
+	}
+	
+	private KnowledgeGraphViewImpl(KnowledgeGraph graph) {
 		this(graph, "Knowledge Graph");
 	}
 
@@ -76,7 +83,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * @param frameTitle
 	 *            frame title of the view.
 	 */
-	public KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
+	private KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
 		this.gephiGraph = new GephiGraphImpl(graph);
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
@@ -104,6 +111,59 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.decreaseFactor = ConfigPersistenceManager.getDecreaseFactor();
 		this.searchString = "";
 		createView(frameTitle);
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraphView.
+	 * 
+	 * @return the instance of the knowledge graph view
+	 */
+	public static KnowledgeGraphView getInstance(KnowledgeGraph graph, String frameTitle) {
+		if (knowledgeGraphView == null) {
+			knowledgeGraphView = new KnowledgeGraphViewImpl(graph, frameTitle);
+		}
+		return knowledgeGraphView;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraphView.
+	 * If no KnowledgeGraphView exists, return a new one.
+	 * 
+	 * 
+	 * @return the instance of the knowledge graph view
+	 */
+	public static KnowledgeGraphView getInstance() {
+		if (knowledgeGraphView == null) {
+			knowledgeGraphView = new KnowledgeGraphViewImpl();
+		}
+		return knowledgeGraphView;
+	}
+	
+	/**
+	 * Returns the instance of KnowledgeGraphView.
+	 * If no KnowledgeGraphView exists, create a new one.
+	 * 
+	 * @return the instance of the knowledge graph view
+	 */
+	public static KnowledgeGraphView getInstance(KnowledgeGraph graph) {
+		if (knowledgeGraphView == null) {
+			knowledgeGraphView = new KnowledgeGraphViewImpl(graph);
+		}
+		return knowledgeGraphView;
+	}
+	
+	public static void clear() {
+		knowledgeGraphView = null;
+	}
+	
+	@Override
+	public void update(KnowledgeGraph graph) {
+		this.gephiGraph = new GephiGraphImpl(graph);
+
+		GraphSettings.initPreviewModel(previewController);
+		
+		updateNodeSizes();
+		refresh();
 	}
 
 	private void createView(String frameTitle) {
@@ -206,19 +266,19 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 					return;
 				}
 				else if (node instanceof JiraIssueImpl) {
-					JumpToCommandHelper.jumpToJiraIssue((JiraIssue) node);
+					JumpToUtils.jumpToJiraIssue((JiraIssue) node);
 				}
 				else if (node instanceof GitCommit) {
-					JumpToCommandHelper.jumpToGitCommit((GitCommit) node);
+					JumpToUtils.jumpToGitCommit((GitCommit) node);
 				}
 				else if (node instanceof ChangedFile) {
-					JumpToCommandHelper.jumpToChangedFile((ChangedFile) node);
+					JumpToUtils.jumpToChangedFile((ChangedFile) node);
 				}
 				else if (node instanceof CodeMethod) {
-					JumpToCommandHelper.jumpToMethod((CodeMethod) node);
+					JumpToUtils.jumpToMethod((CodeMethod) node);
 				}
 				else if (node instanceof DecisionKnowledgeElement) {
-					JumpToCommandHelper.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
+					JumpToUtils.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
 				}
 			}
 		});
@@ -297,6 +357,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private void refresh() {
 		this.previewController.refreshPreview();
 		this.previewSketch.refresh();
+		this.previewSketch.refreshWorkspace(this.gephiGraph.getWorkspace());
 	}
 
 	private void resetFilters() {
@@ -391,5 +452,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				highlightNode(n, currentDepth + 1, maxDepth, size / decreaseFactor, visitedNodes);
 			}
 		}
+	}
+
+	@Override
+	public GephiGraph getGephiGraph() {
+		return gephiGraph;
 	}
 }

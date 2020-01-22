@@ -29,8 +29,9 @@ public class KnowledgeExtractionCommand extends AbstractHandler {
 				.getViewPart("de.uhd.ifi.se.decision.management.eclipse.view.DecisionExploration");
 
 		ChangedFile selectedFile = ChangedFile.getOrCreate(pathOfFile);
-		KnowledgeGraph knowledgeGraph = new KnowledgeGraphImpl(selectedFile,
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(selectedFile,
 				ConfigPersistenceManager.getLinkDistance());
+		knowledgeGraph.updateWithPersistanceData();
 
 		explorationView.setContent(knowledgeGraph.toString());
 	}
