@@ -6,8 +6,8 @@ Bundle-Version: 0.0.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
- org.eclipse.jgit,
  org.eclipse.jface,
+ org.eclipse.jgit,
  org.eclipse.ui,
  de.uhd.ifi.se.decision.management.eclipse
 Bundle-Vendor: Software Engineering Research Group, Heidelberg University
