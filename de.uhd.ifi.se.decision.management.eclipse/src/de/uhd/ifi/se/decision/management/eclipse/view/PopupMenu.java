@@ -33,6 +33,7 @@ public class PopupMenu extends JPopupMenu {
     	
 		JMenuItem jumpTo = new JMenuItem("Jump to");
 		JMenuItem createLink = new JMenuItem("Create link to");
+		JMenuItem removeLink = new JMenuItem("Remove link to");
     	
     	de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
     		
@@ -51,9 +52,23 @@ public class PopupMenu extends JPopupMenu {
         		}
         	});
     		
-    		if (!(node instanceof CodeMethod)) {
-    			add(createLink);
-    		}
+    		//if (!(node instanceof CodeMethod)) {
+    		//	add(createLink);
+    		//}
+    		
+    		add(createLink);
+    		
+    		removeLink.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			PreviewSketch.removeLink = true;
+        		}
+        	});
+    		
+    		//if (!(node instanceof CodeMethod)) {
+    		//	add(removeLink);
+    		//}
+    		
+    		add(removeLink);
     	}
     }
     

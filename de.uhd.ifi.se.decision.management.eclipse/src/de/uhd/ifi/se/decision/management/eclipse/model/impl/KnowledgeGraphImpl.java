@@ -320,8 +320,18 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 	}
 	
 	@Override
+	public void removeLink(Node node1, Node node2) {
+		this.removeEdge(node1, node2);
+	}
+	
+	@Override
 	public void insertLink(Link link) {
 		this.addEdge(link.getSourceNode(), link.getTargetNode());
+	}
+	
+	@Override
+	public void removeLink(Link link) {
+		this.removeEdge(link.getSourceNode(), link.getTargetNode());
 	}
 	
 	@Override

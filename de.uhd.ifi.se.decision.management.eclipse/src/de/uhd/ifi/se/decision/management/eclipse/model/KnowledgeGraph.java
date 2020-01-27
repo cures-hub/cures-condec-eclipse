@@ -72,12 +72,30 @@ public interface KnowledgeGraph extends Graph<Node, Link> {
 	void insertLink(Node node1, Node node2);
 	
 	/**
+	 * Removes an edge from node node1 to node node2
+	 * 
+	 * @param node1
+	 * 		source node
+	 * @param node2
+	 * 		target node
+	 */
+	void removeLink(Node node1, Node node2);
+	
+	/**
 	 * Inserts the link into the knowledge graph.
 	 * 
 	 * @param link
 	 * 		the link to be inserted
 	 */
 	void insertLink(Link link);
+	
+	/**
+	 * Removes the link from the knowledge graph.
+	 * 
+	 * @param link
+	 * 		the link to be deleted
+	 */
+	void removeLink(Link link);
 	
 	/**
 	 * Checks whether a link between node1 and node2 exists.
