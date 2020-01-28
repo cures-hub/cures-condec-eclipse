@@ -215,8 +215,6 @@ public class KnowledgePersistenceManager {
      */
     private static List<Link> convertLinks(List<Link> links) {
     	for (Link link: links) {
-    		System.out.println(link.getSourceId());
-			System.out.println(link.getTargetId());
     		for (de.uhd.ifi.se.decision.management.eclipse.model.Node node: 
     			de.uhd.ifi.se.decision.management.eclipse.model.Node.nodes.values()) {
     			if (link.getSourceId().equals(node.getNodeId())) {
