@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.LinkImpl;
 
 public class TestLink {
@@ -45,10 +44,8 @@ public class TestLink {
 	
 	@Test
 	public void testGetSetNode() {
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is a decision!");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is also a decision!");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
         
         Link link = new LinkImpl();
         
@@ -72,30 +69,24 @@ public class TestLink {
 	
 	@Test
 	public void testGetNodeID() {
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is a decision!");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is also a decision!");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
         
         Link link = new LinkImpl();
         
         link.setSourceNode(node1);
         link.setTargetNode(node2);
         
-        assertTrue(link.getSourceId().contains("This is a decision!"));
-        assertTrue(link.getTargetId().contains("This is also a decision!"));
+        assertTrue(link.getSourceId().contains("file1"));
+        assertTrue(link.getTargetId().contains("file2"));
 	}
 	
 	@Test
 	public void testEqualsTrue() {
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node1");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node2");
-        DecisionKnowledgeElement node3 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node1");
-        DecisionKnowledgeElement node4 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node2");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node4 = new ChangedFileImpl(new Path("./file2"));
         
         Link link1 = new LinkImpl();
         Link link2 = new LinkImpl();
@@ -110,14 +101,10 @@ public class TestLink {
 	
 	@Test
 	public void testEqualsFalse() {
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node1");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node2");
-        DecisionKnowledgeElement node3 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node3");
-        DecisionKnowledgeElement node4 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node4");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file3"));
+		ChangedFile node4 = new ChangedFileImpl(new Path("./file4"));
         
         Link link1 = new LinkImpl();
         Link link2 = new LinkImpl();
@@ -133,12 +120,9 @@ public class TestLink {
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public void testEqualsNolink() {
-		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node1");
-        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node2");
-        DecisionKnowledgeElement node3 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"Node3");
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file3"));
         
         Link link1 = new LinkImpl();
         

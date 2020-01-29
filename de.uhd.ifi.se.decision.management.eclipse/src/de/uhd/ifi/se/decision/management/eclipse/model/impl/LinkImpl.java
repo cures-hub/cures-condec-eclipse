@@ -95,13 +95,20 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 	
 	@Override
 	public boolean equals(Object other) {
-	    if (!(other instanceof Link)) {
-	        return false;
+		if (!(other instanceof Link)) {
+			return false;
 	    }
 
 	    Link that = (Link) other;
 
-	    return this.getSourceId().equals(that.getSourceId())
-	        && this.getTargetId().equals(that.getTargetId());
+	    if (this.getSourceId() != null && this.getTargetId() != null &&
+	    		that.getSourceId() != null && that.getTargetId() != null) {
+	    	return this.getSourceId().equals(that.getSourceId())
+	    	        && this.getTargetId().equals(that.getTargetId());
+	    }
+	    else {
+	    	return this.getSource().equals(that.getSource())
+	    	        && this.getTarget().equals(that.getTarget());
+	    }
 	}
 }
