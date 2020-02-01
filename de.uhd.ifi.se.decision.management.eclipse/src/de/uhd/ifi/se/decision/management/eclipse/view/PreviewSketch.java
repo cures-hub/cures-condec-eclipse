@@ -286,10 +286,10 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 		else if (createLink) {
 			targetNode = getClickedNode(event);
 			
-			//if (!(NodeUtils.convertNode(sourceNode) instanceof CodeMethod) 
-			//		&& !(NodeUtils.convertNode(targetNode) instanceof CodeMethod)) {
-			//	KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
-			//}
+			if (!(NodeUtils.convertNode(sourceNode) instanceof CodeMethod) 
+					&& !(NodeUtils.convertNode(targetNode) instanceof CodeMethod)) {
+				KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
+			}
 			
 			KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
 			

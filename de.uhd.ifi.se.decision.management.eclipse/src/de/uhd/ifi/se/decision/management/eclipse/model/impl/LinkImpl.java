@@ -62,6 +62,7 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 		return sourceId;
 	}
 	
+	@Override
 	public void setSourceId(String sourceId) {
 		this.sourceId = sourceId;
 	}
@@ -89,6 +90,7 @@ public class LinkImpl extends DefaultWeightedEdge implements Link {
 		return targetId;
 	}
 	
+	@Override
 	public void setTargetId(String targetId) {
 		this.targetId = targetId;
 	}

@@ -130,7 +130,7 @@ public class KnowledgePersistenceManager {
     }
     
     /**
-     * Removes tue link between the source node and the target node and removes it from the JSON file
+     * Removes the link between the source node and the target node and removes it from the JSON file
      * storing the knowledge persistence data.
      * 
      * @param sourceNode

@@ -82,6 +82,23 @@ public class TestLink {
 	}
 	
 	@Test
+	public void testSetNodeID() {
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+        
+        Link link = new LinkImpl();
+        
+        link.setSourceNode(node1);
+        link.setTargetNode(node2);
+        
+        link.setSourceId("file1-test");
+        link.setTargetId("file2-test");
+        
+        assertTrue(link.getSourceId().contains("file1-test"));
+        assertTrue(link.getTargetId().contains("file2-test"));
+	}
+	
+	@Test
 	public void testEqualsTrue() {
 		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
 		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
@@ -105,6 +122,42 @@ public class TestLink {
 		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
 		ChangedFile node3 = new ChangedFileImpl(new Path("./file3"));
 		ChangedFile node4 = new ChangedFileImpl(new Path("./file4"));
+        
+        Link link1 = new LinkImpl();
+        Link link2 = new LinkImpl();
+        
+        link1.setSourceNode(node1);
+        link1.setTargetNode(node2);
+        link2.setSourceNode(node3);
+        link2.setTargetNode(node4);
+        
+        assertFalse(link1.equals(link2));
+	}
+	
+	@Test
+	public void testEqualsTargetFalse() {
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node4 = new ChangedFileImpl(new Path("./file4"));
+        
+        Link link1 = new LinkImpl();
+        Link link2 = new LinkImpl();
+        
+        link1.setSourceNode(node1);
+        link1.setTargetNode(node2);
+        link2.setSourceNode(node3);
+        link2.setTargetNode(node4);
+        
+        assertFalse(link1.equals(link2));
+	}
+	
+	@Test
+	public void testEqualsSourceFalse() {
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file3"));
+		ChangedFile node4 = new ChangedFileImpl(new Path("./file2"));
         
         Link link1 = new LinkImpl();
         Link link2 = new LinkImpl();

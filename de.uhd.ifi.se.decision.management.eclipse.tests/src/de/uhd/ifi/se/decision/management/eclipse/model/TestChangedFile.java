@@ -42,7 +42,15 @@ public class TestChangedFile {
 		ChangedFile file = new ChangedFileImpl(path);
 		assertTrue(file.isExistingJavaClass());
 
-		assertTrue(file.getCodeMethods().size() == 4);
+		assertTrue(file.getCodeMethods().size() == 5);
+	}
+	
+	@Test
+	public void testGetNodeId() {
+		IPath path = new Path("src/de/uhd/ifi/se/decision/management/eclipse/model/TestChangedFile.java");
+		ChangedFile file = new ChangedFileImpl(path);
+		
+		assertTrue(file.getNodeId().equals("src/de/uhd/ifi/se/decision/management/eclipse/model/TestChangedFile.java"));
 	}
 
 	@AfterClass

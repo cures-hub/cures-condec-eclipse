@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -51,6 +52,18 @@ public class TestDecisionKnowledgeElement {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		element.setCommit(commits.get(0));
 		assertEquals(commits.get(0), element.getCommit());
+	}
+	
+	@Test
+	public void testGetNodeId() {
+		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
+				"This is a decision!");
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		element.setCommit(commits.get(0));
+		
+		System.out.println(element.getNodeId());
+		
+		assertTrue(element.getNodeId().equals("DKE: Decision commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 -----p"));
 	}
 	
 	@AfterClass

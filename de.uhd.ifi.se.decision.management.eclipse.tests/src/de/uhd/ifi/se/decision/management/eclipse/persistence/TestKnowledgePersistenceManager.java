@@ -45,6 +45,144 @@ public class TestKnowledgePersistenceManager {
 	}
 	
 	@Test
+	public void testReadLinksFromJSON() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2);
+        
+        KnowledgeGraphImpl.clear();
+        
+        knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgePersistenceManager.readLinksFromJSON();
+        
+        assertNotNull(knowledgeGraphView);
+        assertTrue(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testReadLinksFromJSONNoSourceNode() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2);
+        
+        KnowledgeGraphImpl.clear();
+        
+        knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgePersistenceManager.readLinksFromJSON();
+        
+        assertNotNull(knowledgeGraphView);
+        assertFalse(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testReadLinksFromJSONNoTargetNode() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2);
+        
+        KnowledgeGraphImpl.clear();
+        
+        knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgePersistenceManager.readLinksFromJSON();
+        
+        assertNotNull(knowledgeGraphView);
+        assertFalse(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testReadLinksFromJSONEmpty() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        KnowledgePersistenceManager.readLinksFromJSON();
+        
+        assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
 	public void testInsertLink() {
 		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
     	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -183,6 +321,203 @@ public class TestKnowledgePersistenceManager {
         
         assertNotNull(knowledgeGraphView);
         assertTrue(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testInsertLinkLoop() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode1));
+        
+        assertNotNull(knowledgeGraphView);
+        assertFalse(knowledgeGraph.linkExists(node1, node1));
+	}
+	
+	@Test
+	public void testRemoveLink() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        KnowledgePersistenceManager.insertLink(gephiNode1, gephiNode2);
+        
+        assertTrue(KnowledgePersistenceManager.removeLink(gephiNode1, gephiNode2));
+        
+        assertNotNull(knowledgeGraphView);
+        assertFalse(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testRemoveLinkNull() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.removeLink(null, null));
+        
+        assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
+	public void testRemoveLinkNull1() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+		
+		knowledgeGraph.addVertex(node1);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.removeLink(gephiNode1, null));
+        
+        assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
+	public void testRemoveLinkNull2() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file1"));
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+		
+		knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.removeLink(null, gephiNode2));
+        
+        assertNotNull(knowledgeGraphView);
+	}
+	
+	@Test
+	public void testRemoveLinkDoesntExists() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        org.gephi.graph.api.Node gephiNode2 = graphModel.factory().newNode(String.valueOf(node2.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        knowledgeGraph.addVertex(node2);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.removeLink(gephiNode1, gephiNode2));
+        
+        assertNotNull(knowledgeGraphView);
+        assertFalse(knowledgeGraph.linkExists(node1, node2));
+	}
+	
+	@Test
+	public void testRemoveLinkLoop() {
+		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	file.delete();
+		
+		KnowledgeGraphImpl.clear();
+		
+		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+		projectController.newProject();
+		Workspace workspace = projectController.getCurrentWorkspace();
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+        
+        org.gephi.graph.api.Node gephiNode1 = graphModel.factory().newNode(String.valueOf(node1.getId()));
+        
+        KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+        
+        knowledgeGraph.addVertex(node1);
+        
+        KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+        
+        assertFalse(KnowledgePersistenceManager.removeLink(gephiNode1, gephiNode1));
+        
+        assertNotNull(knowledgeGraphView);
+        assertFalse(knowledgeGraph.linkExists(node1, node1));
 	}
 	
 	@AfterClass

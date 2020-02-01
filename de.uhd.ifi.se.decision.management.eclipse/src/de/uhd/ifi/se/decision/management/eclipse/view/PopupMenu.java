@@ -52,9 +52,9 @@ public class PopupMenu extends JPopupMenu {
         		}
         	});
     		
-    		//if (!(node instanceof CodeMethod)) {
-    		//	add(createLink);
-    		//}
+    		if (!(node instanceof CodeMethod)) {
+    			add(createLink);
+    		}
     		
     		add(createLink);
     		
@@ -64,9 +64,9 @@ public class PopupMenu extends JPopupMenu {
         		}
         	});
     		
-    		//if (!(node instanceof CodeMethod)) {
-    		//	add(removeLink);
-    		//}
+    		if (!(node instanceof CodeMethod)) {
+    			add(removeLink);
+    		}
     		
     		add(removeLink);
     	}
