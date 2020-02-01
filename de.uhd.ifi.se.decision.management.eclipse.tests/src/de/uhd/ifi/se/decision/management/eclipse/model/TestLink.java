@@ -135,11 +135,11 @@ public class TestLink {
 	}
 	
 	@Test
-	public void testEqualsTargetFalse() {
+	public void testEqualsSourceFalse() {
 		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
 		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
-		ChangedFile node3 = new ChangedFileImpl(new Path("./file1"));
-		ChangedFile node4 = new ChangedFileImpl(new Path("./file4"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file3"));
+		ChangedFile node4 = new ChangedFileImpl(new Path("./file2"));
         
         Link link1 = new LinkImpl();
         Link link2 = new LinkImpl();
@@ -153,11 +153,11 @@ public class TestLink {
 	}
 	
 	@Test
-	public void testEqualsSourceFalse() {
+	public void testEqualsTargetFalse() {
 		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
 		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
-		ChangedFile node3 = new ChangedFileImpl(new Path("./file3"));
-		ChangedFile node4 = new ChangedFileImpl(new Path("./file2"));
+		ChangedFile node3 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node4 = new ChangedFileImpl(new Path("./file4"));
         
         Link link1 = new LinkImpl();
         Link link2 = new LinkImpl();
