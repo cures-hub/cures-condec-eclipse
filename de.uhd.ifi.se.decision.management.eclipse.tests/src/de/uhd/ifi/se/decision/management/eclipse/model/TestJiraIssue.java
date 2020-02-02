@@ -119,8 +119,6 @@ public class TestJiraIssue {
 	public void testGetNodeId() {
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		
-		System.out.println(workItem.getNodeId());
-		
 		assertTrue(workItem.getNodeId().equals("ECONDEC-1"));
 	}
 
