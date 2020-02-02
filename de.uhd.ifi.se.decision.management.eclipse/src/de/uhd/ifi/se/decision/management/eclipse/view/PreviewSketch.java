@@ -50,6 +50,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 	private final boolean isRetina;
 	// MouseListener
 	public static boolean createLink = false;
+	public static boolean removeLink = false;
 	private static Node sourceNode = null;
 	private static Node targetNode = null;
 
@@ -274,11 +275,9 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
      * 		the mouse event containing the mouse click
      * @param popupTrigger
      * 		true if the event is a popup-trigger, false if not
-     * @return
-     * 		true, if the graph was interacted with
      */
-	private boolean mouseEvent(PreviewMouseEvent event, boolean popupTrigger) {
-		if (!createLink) {
+	private void mouseEvent(PreviewMouseEvent event, boolean popupTrigger) {
+		if (!createLink && !removeLink) {
 			if (popupTrigger) {
 				createPopupMenu(event);
 				sourceNode = getClickedNode(event);
@@ -292,12 +291,23 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 				KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
 			}
 			
+			KnowledgePersistenceManager.insertLink(sourceNode, targetNode);
+			
 			createLink = false;
+			removeLink = false;
 			sourceNode = null;
 			targetNode = null;
 		}
-		
-		return true;
+		else if (removeLink) {
+			targetNode = getClickedNode(event);
+			
+			KnowledgePersistenceManager.removeLink(sourceNode, targetNode);
+			
+			createLink = false;
+			removeLink = false;
+			sourceNode = null;
+			targetNode = null;
+		}
 	}
 	
 	/**
@@ -321,17 +331,13 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
      * Creates a popup menu if a node was right clicked
      * @param event
      * 		the mouse event containing the mouse click
-     * @return
-     * 		true, if a popup-menu was created
      */
-    private boolean createPopupMenu(PreviewMouseEvent event) {
+    private void createPopupMenu(PreviewMouseEvent event) {
     	Node selectedNode = getClickedNode(event);
 		PopupMenu popup = new PopupMenu(selectedNode);
 		Component component = event.keyEvent.getComponent();
 		Point point = component.getMousePosition();
 		popup.show(component, point.x, point.y);
-		
-        return true;
     }
 	
 }

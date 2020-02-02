@@ -130,7 +130,9 @@ public class ChangedFileImpl extends NodeImpl implements ChangedFile {
 		IPath ipath = path;
 		for(int i = 0; i < ipath.segmentCount(); ++i) {
 			if(ipath.segment(i).matches("src")) {
-				ipath = ipath.removeFirstSegments(i-1);
+				if (i > 0) {
+					ipath = ipath.removeFirstSegments(i-1);
+				}
 				break;
 			}
 		}

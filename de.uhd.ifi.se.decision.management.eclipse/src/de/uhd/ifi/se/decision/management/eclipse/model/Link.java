@@ -38,6 +38,14 @@ public interface Link {
 	 * @return source id of this link.
 	 */
 	String getSourceId();
+	
+	/**
+	 * Sets the source id of this link (= edge).
+	 * 
+	 * @param sourceId
+	 * 		the source id
+	 */
+	void setSourceId(String sourceId);
 
 	/**
 	 * Retrieves the target (= destination) element of this link (= edge).
@@ -61,6 +69,14 @@ public interface Link {
 	 * @return target id of this link.
 	 */
 	String getTargetId();
+	
+	/**
+	 * Sets the target id of this link (= edge).
+	 * 
+	 * @param targetId
+	 * 		the target id
+	 */
+	void setTargetId(String targetId);
 	
 	/**
 	 * Sets the target (= destination) node of this link (= edge).

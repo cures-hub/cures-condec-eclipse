@@ -87,6 +87,6 @@ public class DecisionKnowledgeElementImpl extends NodeImpl implements DecisionKn
 	
 	@Override
 	public String getNodeId() {
-		return commit.getNodeId();
+		return "DKE: " + type.getName() + " " + commit.getNodeId();
 	}
 }

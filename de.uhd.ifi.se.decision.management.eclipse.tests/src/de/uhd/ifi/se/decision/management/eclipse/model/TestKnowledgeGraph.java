@@ -1,6 +1,7 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +40,6 @@ public class TestKnowledgeGraph {
 		assertNotNull(knowledgeGraph);
 		assertTrue(knowledgeGraph.vertexSet().size() > 0);
 		assertNull(knowledgeGraph.getStartNode());
-
 		assertEquals(gitClient, knowledgeGraph.getGitClient());
 		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
 	}
@@ -88,7 +88,6 @@ public class TestKnowledgeGraph {
 		assertNotNull(knowledgeGraph);
 		assertTrue(knowledgeGraph.vertexSet().size() > 0);
 		assertNull(knowledgeGraph.getStartNode());
-
 		assertEquals(gitClient, knowledgeGraph.getGitClient());
 		assertEquals(jiraClient, knowledgeGraph.getJiraClient());
 		
@@ -99,9 +98,23 @@ public class TestKnowledgeGraph {
 		assertNotNull(knowledgeGraphTest);
 		assertTrue(knowledgeGraphTest.vertexSet().size() > 0);
 		assertNull(knowledgeGraphTest.getStartNode());
-
 		assertEquals(gitClient, knowledgeGraphTest.getGitClient());
 		assertEquals(jiraClient, knowledgeGraphTest.getJiraClient());
+	}
+	
+	@Test
+	public void testGetInstanceExists() {
+		KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+		
+		assertNotNull(knowledgeGraphOld);
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+		
+		assertNotNull(knowledgeGraph);
+		
+		KnowledgeGraph knowledgeGraphTest = KnowledgeGraphImpl.getInstance();
+		
+		assertNotNull(knowledgeGraphTest);
 	}
 	
 	@Test
@@ -128,6 +141,24 @@ public class TestKnowledgeGraph {
 		assertEquals(jiraClient, knowledgeGraphTest.getJiraClient());
 		assertTrue(knowledgeGraphTest.vertexSet().size() > 0);
 		assertTrue(knowledgeGraphTest.getStartNode().equals(node1));
+	}
+	
+	@Test
+	public void testGetInstanceStartNodeExists() {
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+		
+		KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, node1, 1);
+		
+		assertNotNull(knowledgeGraphOld);
+		
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, node1, 1);
+		
+		assertNotNull(knowledgeGraph);
+		
+		KnowledgeGraph knowledgeGraphTest = KnowledgeGraphImpl.getInstance(node1, 1);
+		
+		assertNotNull(knowledgeGraphTest);
 	}
 
 	@Test
@@ -177,6 +208,50 @@ public class TestKnowledgeGraph {
         graph.insertLink(link);
         
         assertTrue(graph.containsEdge(link.getSourceNode(), link.getTargetNode()));
+	}
+	
+	@Test
+	public void testDeleteLinkNodes() {
+		KnowledgeGraphImpl.clear();
+		
+		DecisionKnowledgeElement node1 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is a decision!");
+        DecisionKnowledgeElement node2 = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
+				"This is also a decision!");
+        
+        KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
+        
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        graph.insertLink(node1, node2);
+        
+        assertTrue(graph.containsEdge(node1, node2));
+        
+        graph.removeLink(node1, node2);
+        
+        assertFalse(graph.containsEdge(node1, node2));
+	}
+	
+	@Test
+	public void testDeleteLinkLink() {
+		KnowledgeGraphImpl.clear();
+		
+		ChangedFile node1 = new ChangedFileImpl(new Path("./file1"));
+		ChangedFile node2 = new ChangedFileImpl(new Path("./file2"));
+        
+        KnowledgeGraph graph = KnowledgeGraphImpl.getInstance();
+        
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        Link link = new LinkImpl(node1, node2);
+        
+        graph.insertLink(link);
+        
+        assertTrue(graph.containsEdge(link.getSourceNode(), link.getTargetNode()));
+        
+        graph.removeLink(link);
+        
+        assertFalse(graph.containsEdge(node1, node2));
 	}
 	
 	@Test

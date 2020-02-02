@@ -63,6 +63,14 @@ public class TestGitCommit {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		assertEquals("Commit: EConDec-1: Add classpath and project files", commits.get(0).toString());
 	}
+	
+	@Test
+	public void testGetNodeId() {
+		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
+		GitCommit commit = commits.get(0);
+		
+		assertTrue(commit.getNodeId().equals("commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 -----p"));
+	}
 
 	@AfterClass
 	public static void tearDown() {

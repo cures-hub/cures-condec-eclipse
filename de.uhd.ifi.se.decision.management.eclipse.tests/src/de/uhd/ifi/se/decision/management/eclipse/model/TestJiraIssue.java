@@ -3,6 +3,7 @@ package de.uhd.ifi.se.decision.management.eclipse.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -112,6 +113,13 @@ public class TestJiraIssue {
 
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(6, workItem.getLinkedNodes().size());
+	}
+	
+	@Test
+	public void testGetNodeId() {
+		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
+		
+		assertTrue(workItem.getNodeId().equals("ECONDEC-1"));
 	}
 
 	@AfterClass

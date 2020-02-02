@@ -33,7 +33,7 @@ public class TestKnowledgeGraphView {
 		JiraClient jiraClient = TestJiraClient.initJiraClient();
 		return KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 	}
-
+	
 	@Test
 	public void testConstructor() {
 		assertNotNull(knowledgeGraphView);
@@ -78,6 +78,28 @@ public class TestKnowledgeGraphView {
 		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
 		
 		assertNotNull(knowledgeGraphViewTest);
+	}
+	
+	@Test
+	public void testConstructorNoGraph() {
+		KnowledgeGraphViewImpl.clear();
+		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		
+		assertNotNull(knowledgeGraphView);
+		knowledgeGraphView.highlightNode(null);
+		knowledgeGraphView.highlightSelectedNode();
+	}
+	
+	@Test
+	public void testConstructorGraph() {
+		KnowledgeGraphViewImpl.clear();
+		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		
+		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		
+		assertNotNull(knowledgeGraphView);
+		knowledgeGraphView.highlightNode(null);
+		knowledgeGraphView.highlightSelectedNode();
 	}
 	
 	@AfterClass

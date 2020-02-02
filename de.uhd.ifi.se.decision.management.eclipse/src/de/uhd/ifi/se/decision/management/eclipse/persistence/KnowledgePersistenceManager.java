@@ -92,22 +92,61 @@ public class KnowledgePersistenceManager {
     	
     	List<Link> links = readJSONFile();
     	
-    	try {
-			if (!links.contains(newLink)) {
-				File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
-		    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
-		    	
-		    	ObjectMapper mapper = new ObjectMapper();
-				
-				links.add(newLink);
-				mapper.writeValue(file, links);
-			}
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (!links.contains(newLink)) {
+			links.add(newLink);
+			writeJSONFile(links);
+		}
+    }
+    
+    /**
+     * Removes the link between the source node and the target node, if sourceNode and targetNode exist.
+     *
+     * @param sourceNode
+	 * 		the source node
+	 * @param targetNode
+	 * 		the target node
+     */
+    public static boolean removeLink(Node sourceNode, Node targetNode) {
+    	KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+    	knowledgeGraph.updateWithPersistanceData();
+    	KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
+    	
+    	de.uhd.ifi.se.decision.management.eclipse.model.Node sourceKnowledgeNode = NodeUtils.convertNode(sourceNode);
+    	de.uhd.ifi.se.decision.management.eclipse.model.Node targetKnowledgeNode = NodeUtils.convertNode(targetNode);
+    	
+    	
+    	if (((sourceNode != null) && targetNode != null) &&
+    			(knowledgeGraph.linkExists(sourceKnowledgeNode, targetKnowledgeNode)) &&
+    			!(sourceKnowledgeNode.getNodeId().equals(targetKnowledgeNode.getNodeId()))) {
+    		knowledgeGraph.removeLink(sourceKnowledgeNode, targetKnowledgeNode);
+    		removeLinkJSON(sourceKnowledgeNode, targetKnowledgeNode);
+    	    	
+    	    knowledgeGraphView.update(knowledgeGraph);
+    	    
+    	    return true;
+		}
+    	
+    	return false;
+    }
+    
+    /**
+     * Removes the link between the source node and the target node and removes it from the JSON file
+     * storing the knowledge persistence data.
+     * 
+     * @param sourceNode
+     * 		the source node
+     * @param targetNode
+     * 		the target node
+     */
+    private static void removeLinkJSON(de.uhd.ifi.se.decision.management.eclipse.model.Node sourceNode, 
+    		de.uhd.ifi.se.decision.management.eclipse.model.Node targetNode) {
+    	Link newLink = new LinkImpl(sourceNode, targetNode);
+    	
+    	List<Link> links = readJSONFile();
+    	
+		if (links.contains(newLink)) {
+			links.remove(newLink);
+			writeJSONFile(links);
 		}
     }
     
@@ -141,6 +180,29 @@ public class KnowledgePersistenceManager {
 		}
 		
 		return new ArrayList<Link>();
+    }
+    
+    /**
+     * Writes a list of JSON-objects to a JSON-file.
+     * If no JSON-file exists, one is created.
+     */
+    private static void writeJSONFile(List<Link> links) {
+    	File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
+    	File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
+    	
+    	openJSONFile(folder, file);
+    	
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			mapper.writeValue(file, links);
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     /**
