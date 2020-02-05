@@ -1,7 +1,10 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.eclipse.core.runtime.Path;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,7 +13,9 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
+import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
@@ -31,6 +36,7 @@ public class TestKnowledgeGraphView {
 		
 		GitClient gitClient = TestGitClient.initGitClient();
 		JiraClient jiraClient = TestJiraClient.initJiraClient();
+        
 		return KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 	}
 	
@@ -100,6 +106,60 @@ public class TestKnowledgeGraphView {
 		assertNotNull(knowledgeGraphView);
 		knowledgeGraphView.highlightNode(null);
 		knowledgeGraphView.highlightSelectedNode();
+	}
+	
+	@Test
+	public void testHighlightSelectedNode() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
+		
+		knowledgeGraph.addVertex(node);
+		
+		knowledgeGraphViewTest.highlightSelectedNodeAndUpdate(node);
+		
+		assertTrue(knowledgeGraphViewTest.highlightSelectedNode());
+	}
+	
+	@Test
+	public void testHighlightSelectedNodeNull() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertFalse(knowledgeGraphViewTest.highlightSelectedNode());
+	}
+	
+	@Test
+	public void testHighlightNode() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
+		
+		knowledgeGraph.addVertex(node);
+		
+		assertTrue(knowledgeGraphViewTest.highlightNode(node));
+	}
+	
+	@Test
+	public void testHighlightNodeNull() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertFalse(knowledgeGraphViewTest.highlightNode(null));
+	}
+	
+	@Test
+	public void testHighlightSelectedNodeAndUpdate() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
+		
+		knowledgeGraph.addVertex(node);
+		
+		assertTrue(knowledgeGraphViewTest.highlightSelectedNodeAndUpdate(node));
 	}
 	
 	@AfterClass

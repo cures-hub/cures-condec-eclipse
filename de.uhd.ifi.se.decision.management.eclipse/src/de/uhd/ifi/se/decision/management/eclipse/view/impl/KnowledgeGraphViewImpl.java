@@ -420,15 +420,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void highlightSelectedNode() {
+	public boolean highlightSelectedNode() {
 		Node node = Node.getNodeById(selectedNodeId);
-		highlightNode(node);
+		return highlightNode(node);
 	}
 
 	@Override
-	public void highlightNode(Node node) {
+	public boolean highlightNode(Node node) {
 		if (node == null) {
-			return;
+			return false;
 		}
 
 		Set<Node> visitedNodes = new HashSet<Node>();
@@ -438,6 +438,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		gephiGraph.setSizeOfNode(selectedNodeId, 5f);
 
 		highlightNode(node, 1, linkDistance, 5f / decreaseFactor, visitedNodes);
+		
+		return true;
 	}
 
 	private void highlightNode(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
@@ -452,6 +454,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				highlightNode(n, currentDepth + 1, maxDepth, size / decreaseFactor, visitedNodes);
 			}
 		}
+	}
+	
+	@Override
+	public boolean highlightSelectedNodeAndUpdate(Node selectedNode) {
+		selectedNodeId = selectedNode.getId();
+		highlightSelectedNode();
+		refresh();
+		
+		return true;
 	}
 
 	@Override
