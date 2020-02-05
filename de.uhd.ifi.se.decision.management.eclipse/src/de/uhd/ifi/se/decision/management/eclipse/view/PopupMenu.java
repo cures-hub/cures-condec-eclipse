@@ -15,6 +15,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
+import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 /**
  * Implementation of a popup-menu for clicking on a node
@@ -32,6 +33,7 @@ public class PopupMenu extends JPopupMenu {
 	public PopupMenu(Node selectedNode) {
     	
 		JMenuItem jumpTo = new JMenuItem("Jump to");
+		JMenuItem highlightNode = new JMenuItem("Highlight node");
 		JMenuItem createLink = new JMenuItem("Create link to");
 		JMenuItem removeLink = new JMenuItem("Remove link to");
     	
@@ -45,6 +47,15 @@ public class PopupMenu extends JPopupMenu {
         	});
     		
     		add(jumpTo);
+    		
+    		highlightNode.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+    				KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+    				knowledgeGraphView.highlightSelectedNodeAndUpdate(node);
+        		}
+        	});
+    		
+    		add(highlightNode);
     		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {

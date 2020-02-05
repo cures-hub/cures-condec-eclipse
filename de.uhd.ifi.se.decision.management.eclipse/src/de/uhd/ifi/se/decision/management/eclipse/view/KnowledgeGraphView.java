@@ -30,20 +30,42 @@ public interface KnowledgeGraphView {
 	void update(KnowledgeGraph graph);
 	
 	/**
+	 * Resets the filter text field and the selected node.
+	 * 
+	 * @return
+	 * 			  true, if the filters were correctly reset.
+	 */
+	boolean resetFilters();
+	
+	/**
 	 * Highlights the node by increasing its size.
 	 * 
 	 * @param node
 	 *            in the knowledge graph as a {@link Node} object.
+	 * @return
+	 * 			  true, if the node was correctly highlighted.
 	 */
-	void highlightNode(Node node);
+	boolean highlightNode(Node node);
 
 	/**
 	 * Highlights the currently selected node by increasing its size.
 	 * 
 	 * @param node
 	 *            in the knowledge graph as a {@link Node} object.
+	 * @return
+	 * 			  true, if the node was correctly highlighted.
 	 */
-	void highlightSelectedNode();
+	boolean highlightSelectedNode();
+	
+	/**
+	 * Highlights the selected node and updates the knowledge graph view.
+	 * 
+	 * @param selectedNode
+	 *            in the knowledge graph as a {@link Node} object.
+	 * @return
+	 * 			  true, if the node was correctly highlighted.
+	 */
+	boolean highlightSelectedNodeAndUpdate(Node node);
 	
 	/**
 	 * Returns the gephi graph created from the knowledgeGraphView.

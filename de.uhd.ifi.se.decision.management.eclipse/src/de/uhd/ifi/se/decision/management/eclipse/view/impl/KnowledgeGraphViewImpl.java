@@ -360,7 +360,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.previewSketch.refreshWorkspace(this.gephiGraph.getWorkspace());
 	}
 
-	private void resetFilters() {
+	public boolean resetFilters() {
 		searchString = "";
 		searchTextField.setText("Search...");
 
@@ -368,6 +368,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		selectedNodeTextField.setText("ID");
 
 		resetFilterCheckboxes();
+		
+		return true;
 	}
 
 	private void resetFilterCheckboxes() {
@@ -379,7 +381,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	/**
 	 * Resets the sizes of all nodes depending on their amount of links.
 	 */
-	public void updateNodeSizes() {
+	private void updateNodeSizes() {
 		if (selectedNodeId < 0) {
 			for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
 				updateNodeSize(gephiNode);
@@ -396,7 +398,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * @param gephiNode
 	 *            node which size should be set.
 	 */
-	public void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
+	private void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
 		Node node = Node.getNodeById(Long.valueOf(gephiNode.getId().toString()));
 
 		if (!graphFiltering.shouldBeVisible(node)) {
@@ -420,15 +422,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	@Override
-	public void highlightSelectedNode() {
+	public boolean highlightSelectedNode() {
 		Node node = Node.getNodeById(selectedNodeId);
-		highlightNode(node);
+		return highlightNode(node);
 	}
 
 	@Override
-	public void highlightNode(Node node) {
+	public boolean highlightNode(Node node) {
 		if (node == null) {
-			return;
+			return false;
 		}
 
 		Set<Node> visitedNodes = new HashSet<Node>();
@@ -438,6 +440,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		gephiGraph.setSizeOfNode(selectedNodeId, 5f);
 
 		highlightNode(node, 1, linkDistance, 5f / decreaseFactor, visitedNodes);
+		
+		return true;
 	}
 
 	private void highlightNode(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
@@ -452,6 +456,15 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				highlightNode(n, currentDepth + 1, maxDepth, size / decreaseFactor, visitedNodes);
 			}
 		}
+	}
+	
+	@Override
+	public boolean highlightSelectedNodeAndUpdate(Node selectedNode) {
+		selectedNodeId = selectedNode.getId();
+		highlightSelectedNode();
+		refresh();
+		
+		return true;
 	}
 
 	@Override
