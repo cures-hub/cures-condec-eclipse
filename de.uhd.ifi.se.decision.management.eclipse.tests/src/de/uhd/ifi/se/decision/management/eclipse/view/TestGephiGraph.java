@@ -1,7 +1,6 @@
 package de.uhd.ifi.se.decision.management.eclipse.view;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.runtime.Path;
 import org.gephi.graph.api.GraphController;
