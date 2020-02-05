@@ -107,7 +107,7 @@ public class TestKnowledgeGraphView {
 		knowledgeGraphView.highlightNode(null);
 		knowledgeGraphView.highlightSelectedNode();
 	}
-	
+  
 	@Test
 	public void testResetFilters() {
 		KnowledgeGraphViewImpl.clear();
