@@ -30,6 +30,14 @@ public interface KnowledgeGraphView {
 	void update(KnowledgeGraph graph);
 	
 	/**
+	 * Resets the filter text field and the selected node.
+	 * 
+	 * @return
+	 * 			  true, if the filters were correctly reset.
+	 */
+	boolean resetFilters();
+	
+	/**
 	 * Highlights the node by increasing its size.
 	 * 
 	 * @param node

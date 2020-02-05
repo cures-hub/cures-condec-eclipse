@@ -109,6 +109,14 @@ public class TestKnowledgeGraphView {
 	}
 	
 	@Test
+	public void testResetFilters() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertTrue(knowledgeGraphViewTest.resetFilters());
+	}
+	
+	@Test
 	public void testHighlightSelectedNode() {
 		KnowledgeGraphViewImpl.clear();
 		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
@@ -160,6 +168,14 @@ public class TestKnowledgeGraphView {
 		knowledgeGraph.addVertex(node);
 		
 		assertTrue(knowledgeGraphViewTest.highlightSelectedNodeAndUpdate(node));
+	}
+	
+	@Test
+	public void testGetGephiGraph() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertNotNull(knowledgeGraphViewTest.getGephiGraph());
 	}
 	
 	@AfterClass

@@ -360,7 +360,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.previewSketch.refreshWorkspace(this.gephiGraph.getWorkspace());
 	}
 
-	private void resetFilters() {
+	public boolean resetFilters() {
 		searchString = "";
 		searchTextField.setText("Search...");
 
@@ -368,6 +368,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		selectedNodeTextField.setText("ID");
 
 		resetFilterCheckboxes();
+		
+		return true;
 	}
 
 	private void resetFilterCheckboxes() {
@@ -379,7 +381,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	/**
 	 * Resets the sizes of all nodes depending on their amount of links.
 	 */
-	public void updateNodeSizes() {
+	private void updateNodeSizes() {
 		if (selectedNodeId < 0) {
 			for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
 				updateNodeSize(gephiNode);
@@ -396,7 +398,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 * @param gephiNode
 	 *            node which size should be set.
 	 */
-	public void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
+	private void updateNodeSize(org.gephi.graph.api.Node gephiNode) {
 		Node node = Node.getNodeById(Long.valueOf(gephiNode.getId().toString()));
 
 		if (!graphFiltering.shouldBeVisible(node)) {
