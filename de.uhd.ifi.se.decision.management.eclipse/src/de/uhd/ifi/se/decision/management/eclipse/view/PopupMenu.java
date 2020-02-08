@@ -14,7 +14,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
+import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 /**
@@ -32,14 +35,39 @@ public class PopupMenu extends JPopupMenu {
      */
 	public PopupMenu(Node selectedNode) {
     	
+		de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
+		
+		JMenuItem fullGraph = new JMenuItem("Show full graph");
+		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
 		JMenuItem jumpTo = new JMenuItem("Jump to");
 		JMenuItem highlightNode = new JMenuItem("Highlight node");
 		JMenuItem createLink = new JMenuItem("Create link to");
 		JMenuItem removeLink = new JMenuItem("Remove link to");
-    	
-    	de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
     		
+    	fullGraph.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			KnowledgeGraphImpl.clear();
+    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+    			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+    			knowledgeGraphView.update(knowledgeGraph);
+    		}
+    	});
+		
+		add(fullGraph);
+    	
     	if (node != null) {
+    		
+    		clippedGraph.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			KnowledgeGraphImpl.clear();
+        			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, ConfigPersistenceManager.getLinkDistance());
+        			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+        			knowledgeGraphView.update(knowledgeGraph);
+        		}
+        	});
+    		
+    		add(clippedGraph);
+    		
     		jumpTo.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
     				jumpTo(node);
