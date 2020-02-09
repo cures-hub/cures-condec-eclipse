@@ -54,6 +54,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	private long selectedNodeId = -1;
 	private JTextField selectedNodeTextField;
+	
+	private int distance = -1;
+	private JTextField distanceTextField;
 
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
@@ -84,6 +87,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 *            frame title of the view.
 	 */
 	private KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
+		this.distance = ConfigPersistenceManager.getLinkDistance();
+		
 		this.gephiGraph = new GephiGraphImpl(graph);
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
@@ -98,7 +103,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				public void itemStateChanged(ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.DESELECTED) {
 						filter.setActivated(false);
-					} else if (e.getStateChange() == ItemEvent.SELECTED) {
+					}
+					else if (e.getStateChange() == ItemEvent.SELECTED) {
 						filter.setActivated(true);
 					}
 					updateNodeSizes();
@@ -211,6 +217,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		// JumpTo Button
 		JButton jumpToButton = createJumpToButton();
 		panel.add(jumpToButton);
+		
+		// Select distance
+		distanceTextField = createTextField("Distance");
+		panel.add(distanceTextField);
+				
+		// Select distance Button
+		JButton distanceButton = createDistanceButton();
+		panel.add(distanceButton);
 
 		// Reset Button
 		JButton resetButton = createResetButton();
@@ -239,7 +253,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				}
 				try {
 					selectedNodeId = Long.parseLong(highlight);
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					selectedNodeId = -1;
 				}
 				updateNodeSizes();
@@ -255,7 +270,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					selectedNodeId = Long.parseLong(selectedNodeTextField.getText());
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					selectedNodeId = -1;
 				}
 				if (selectedNodeId < 0) {
@@ -295,6 +311,32 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		});
 		return resetButton;
+	}
+	
+	private JButton createDistanceButton() {
+		JButton distanceButton = createButton("Select Distance");
+		distanceButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					distance = Integer.parseInt(distanceTextField.getText());
+					KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance();
+					Node startNode = knowledgeGraphOld.getStartNode();
+					
+					if (startNode != null) {
+						KnowledgeGraphImpl.clear();
+		    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, distance);
+		    			knowledgeGraph.updateWithPersistanceData();
+		    			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		    			knowledgeGraphView.update(knowledgeGraph);
+					}
+				}
+				catch (Exception ex) {
+					distance = ConfigPersistenceManager.getLinkDistance();
+				}
+			}
+		});
+		return distanceButton;
 	}
 
 	private JPanel createFilterPanel() {
@@ -386,7 +428,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			for (org.gephi.graph.api.Node gephiNode : gephiGraph.getNodes()) {
 				updateNodeSize(gephiNode);
 			}
-		} else {
+		}
+		else {
 			highlightSelectedNode();
 		}
 		refresh();

@@ -248,11 +248,6 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		
 		this.addVertex(node);
 		createLinks(node, 0, distance);
-
-		for (Node linkedNode : node.getLinkedNodes()) {
-			this.addVertex(linkedNode);
-			this.addEdge(node, linkedNode);
-		}
 	}
 
 	private void createLinks(Node node, int currentDepth, int maxDepth) {
@@ -261,42 +256,56 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 
 		if (node instanceof ChangedFile) {
-			for (GitCommit commit : ((ChangedFile) node).getCommits()) {
-				this.addVertex(commit);
-				this.addEdge(node, commit);
-				createLinks(commit, currentDepth + 1, maxDepth);
-			}
+			addMethodsForFile(node, currentDepth, maxDepth);
+			addGitCommitsForFile(node, currentDepth, maxDepth);
 		}
 		if (node instanceof GitCommit) {
-			GitCommit commit = (GitCommit) node;
-			addJiraIssuesForCommit(commit, currentDepth, maxDepth);
-			for (DecisionKnowledgeElement element : commit.getDecisionKnowledgeFromMessage()) {
-				this.addVertex(element);
-				this.addEdge(element, commit);
-			}
+			addJiraIssuesForCommit(node, currentDepth, maxDepth);
+			addDecisionKnowledgeElementsForCommit(node, currentDepth, maxDepth);
 		}
 		if (node instanceof JiraIssue) {
-			JiraIssue jiraIssue = (JiraIssue) node;
-			addCommitsForJiraIssue(jiraIssue, currentDepth, maxDepth);
-			addLinkedJiraIssuesForJiraIssue(jiraIssue, currentDepth, maxDepth);
+			addCommitsForJiraIssue(node, currentDepth, maxDepth);
+			addLinkedJiraIssuesForJiraIssue(node, currentDepth, maxDepth);
+		}
+	}
+	
+	private void addMethodsForFile(Node node, int currentDepth, int maxDepth) {
+		for (Node linkedNode : node.getLinkedNodes()) {
+			this.addVertex(linkedNode);
+			this.addEdge(node, linkedNode);
+		}
+	}
+	
+	private void addGitCommitsForFile(Node node, int currentDepth, int maxDepth) {
+		for (GitCommit commit : ((ChangedFile) node).getCommits()) {
+			this.addVertex(commit);
+			this.addEdge(node, commit);
+			createLinks(commit, currentDepth + 1, maxDepth);
 		}
 	}
 
-	private void addJiraIssuesForCommit(GitCommit gitCommit, int currentDepth, int maxDepth) {
-		Set<String> keys = gitCommit.getJiraIssueKeys();
-		if (keys.size() <= 0) {
-			return;
+	private void addJiraIssuesForCommit(Node node, int currentDepth, int maxDepth) {
+		Set<String> keys = ((GitCommit) node).getJiraIssueKeys();
+		for (String key : keys) {
+			JiraIssue jiraIssue = JiraIssue.getOrCreate(key, jiraClient);
+			if (jiraIssue != null) {
+				this.addVertex(jiraIssue);
+				this.addEdge(node, jiraIssue);
+				createLinks(jiraIssue, currentDepth + 1, maxDepth);
+			}
 		}
-		JiraIssue jiraIssue = JiraIssue.getOrCreate(keys.iterator().next(), jiraClient);
-		if (jiraIssue == null) {
-			return;
+	}
+	
+	private void addDecisionKnowledgeElementsForCommit(Node node, int currentDepth, int maxDepth) {
+		GitCommit commit = (GitCommit) node;
+		for (DecisionKnowledgeElement element : commit.getDecisionKnowledgeFromMessage()) {
+			this.addVertex(element);
+			this.addEdge(element, commit);
 		}
-		this.addVertex(jiraIssue);
-		this.addEdge(gitCommit, jiraIssue);
-		createLinks(jiraIssue, currentDepth + 1, maxDepth);
 	}
 
-	private void addCommitsForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
+	private void addCommitsForJiraIssue(Node node, int currentDepth, int maxDepth) {
+		JiraIssue jiraIssue = (JiraIssue) node;
 		Set<GitCommit> commits = jiraIssue.getCommits();
 		for (GitCommit commit : commits) {
 			this.addVertex(commit);
@@ -305,7 +314,8 @@ public class KnowledgeGraphImpl extends DirectedWeightedMultigraph<Node, Link> i
 		}
 	}
 
-	private void addLinkedJiraIssuesForJiraIssue(JiraIssue jiraIssue, int currentDepth, int maxDepth) {
+	private void addLinkedJiraIssuesForJiraIssue(Node node, int currentDepth, int maxDepth) {
+		JiraIssue jiraIssue = (JiraIssue) node;
 		for (String key : jiraIssue.getKeysOfLinkedJiraIssues()) {
 			JiraIssue linkedJiraIssue = JiraIssue.getOrCreate(key, jiraClient);
 			this.addVertex(linkedJiraIssue);
