@@ -37,7 +37,7 @@ public class ShowClippedGraphCommand extends AbstractHandler {
 		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, distance);
 		knowledgeGraph.updateWithPersistanceData();
 
-		String title = "Knowledge Graph for \"" + startNode.toString();
+		String title = "Knowledge Graph for \"" + startNode.toString() + "\"";
 		KnowledgeGraphViewImpl.getInstance(knowledgeGraph, title);
 		
 		return null;

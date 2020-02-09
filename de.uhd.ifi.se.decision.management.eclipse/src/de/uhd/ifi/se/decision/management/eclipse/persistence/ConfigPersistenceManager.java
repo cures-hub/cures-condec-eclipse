@@ -40,7 +40,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		store.setDefault("JIRA_PASSWORD", "");
 		store.setDefault("JIRA_PROJECT_KEY", "");
 
-		store.setDefault("LINK_DISTANCE", 4);
+		store.setDefault("LINK_DISTANCE", 2);
 		store.setDefault("DECREASE_FACTOR", "1.5");
 	}
 

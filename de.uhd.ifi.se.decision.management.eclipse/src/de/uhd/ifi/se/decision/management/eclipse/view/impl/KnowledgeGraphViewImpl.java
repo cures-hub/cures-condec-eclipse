@@ -219,7 +219,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		panel.add(jumpToButton);
 		
 		// Select distance
-		distanceTextField = createTextField("Distance");
+		distanceTextField = createTextField(String.valueOf(ConfigPersistenceManager.getLinkDistance()));
 		panel.add(distanceTextField);
 				
 		// Select distance Button
