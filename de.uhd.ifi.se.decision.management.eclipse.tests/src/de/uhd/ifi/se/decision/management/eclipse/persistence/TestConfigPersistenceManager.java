@@ -53,6 +53,6 @@ public class TestConfigPersistenceManager {
 
 	@Test
 	public void testLinkDistance() {
-		assertEquals(4, ConfigPersistenceManager.getLinkDistance());
+		assertEquals(2, ConfigPersistenceManager.getLinkDistance());
 	}
 }

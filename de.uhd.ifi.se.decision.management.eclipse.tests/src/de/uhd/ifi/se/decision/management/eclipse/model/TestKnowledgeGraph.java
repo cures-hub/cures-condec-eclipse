@@ -167,7 +167,7 @@ public class TestKnowledgeGraph {
 		
 		IPath path = gitClient.getPath().removeLastSegments(1).append("pom.xml");
 		ChangedFile file = ChangedFile.getOrCreate(path);
-		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, file, 0);
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient, file, 1);
 		assertEquals(file, knowledgeGraph.getStartNode());
 		assertTrue(
 				knowledgeGraph.toString().startsWith("The start node for knowledge exploration is the File: pom.xml\n\n"

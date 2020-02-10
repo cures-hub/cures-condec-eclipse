@@ -7,6 +7,8 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Lookup;
 
@@ -16,19 +18,30 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
+import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
+import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class TestPopupMenu {
+	
+	private static GitClient gitClient;
+	private static JiraClient jiraClient;
+	
+	@BeforeClass
+	public static void setUp() {
+		gitClient = TestGitClient.initGitClient();
+		jiraClient = TestJiraClient.initJiraClient();
+	}
 	
 	@Test
 	public void testPopupMenu() {
 		KnowledgeGraphImpl.clear();
 		
-		GitClient gitClient = TestGitClient.initGitClient();
-		JiraClient jiraClient = TestJiraClient.initJiraClient();
 		KnowledgeGraph knowledgeGraph =  KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 		
 		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
@@ -50,8 +63,6 @@ public class TestPopupMenu {
 	public void testPopupMenuMethod() {
 		KnowledgeGraphImpl.clear();
 		
-		GitClient gitClient = TestGitClient.initGitClient();
-		JiraClient jiraClient = TestJiraClient.initJiraClient();
 		KnowledgeGraph knowledgeGraph =  KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 		
 		ChangedFile file = new ChangedFileImpl(new Path("./file1"));
@@ -73,6 +84,19 @@ public class TestPopupMenu {
 	@Test
 	public void testPopupMenuNull() {
         assertNotNull(new PopupMenu(null));
+	}
+	
+	@AfterClass
+	public static void tearDown() {
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraphViewImpl.clear();
+		Node.nodes.clear();
+		GitClient.instances.clear();
+		GitCommit.instances.clear();
+		JiraClient.instances.clear();
+		JiraIssue.instances.clear();
+		ChangedFile.instances.clear();
+		CodeMethod.instances.clear();
 	}
 
 }

@@ -29,7 +29,7 @@ public class PopupMenu extends JPopupMenu {
 	private static final long serialVersionUID = -4578618714780522965L;
 	
     /**
-     * Creates a popup-menuon a selected node
+     * Creates a popup-menu on a selected node.
      * @param selectedNode
      * 		the node that was clicked on
      */
@@ -37,36 +37,14 @@ public class PopupMenu extends JPopupMenu {
     	
 		de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
 		
-		JMenuItem fullGraph = new JMenuItem("Show full graph");
-		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
 		JMenuItem jumpTo = new JMenuItem("Jump to");
 		JMenuItem highlightNode = new JMenuItem("Highlight node");
+		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
+		JMenuItem fullGraph = new JMenuItem("Show full graph");
 		JMenuItem createLink = new JMenuItem("Create link to");
 		JMenuItem removeLink = new JMenuItem("Remove link to");
-    		
-    	fullGraph.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			KnowledgeGraphImpl.clear();
-    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
-    			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
-    			knowledgeGraphView.update(knowledgeGraph);
-    		}
-    	});
-		
-		add(fullGraph);
     	
     	if (node != null) {
-    		
-    		clippedGraph.addActionListener(new ActionListener() {
-        		public void actionPerformed(ActionEvent e) {
-        			KnowledgeGraphImpl.clear();
-        			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, ConfigPersistenceManager.getLinkDistance());
-        			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
-        			knowledgeGraphView.update(knowledgeGraph);
-        		}
-        	});
-    		
-    		add(clippedGraph);
     		
     		jumpTo.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
@@ -78,12 +56,31 @@ public class PopupMenu extends JPopupMenu {
     		
     		highlightNode.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
-    				KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
-    				knowledgeGraphView.highlightSelectedNodeAndUpdate(node);
+    				highlight(node);
         		}
         	});
     		
     		add(highlightNode);
+    		
+    		clippedGraph.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			createClippedGraph(node);
+        		}
+        	});
+    		
+    		add(clippedGraph);
+    		
+    	}
+    	
+    	fullGraph.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			createFullGraph();
+    		}
+    	});
+    	
+    	add(fullGraph);
+    	
+    	if (node != null) {
     		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
@@ -112,7 +109,7 @@ public class PopupMenu extends JPopupMenu {
     }
     
     /**
-     * converts a gephi-node to a knowledge graph-node
+     * Converts a gephi-node to a knowledge graph-node.
      * @param selectedNode
      * 		the gephi-node to be converted
      * @return
@@ -134,9 +131,33 @@ public class PopupMenu extends JPopupMenu {
     	
     	return node;
     }
+	
+	/**
+     * Creates a full knowledge graph.
+     */
+	private void createFullGraph() {
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+		knowledgeGraph.updateWithPersistanceData();
+		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		knowledgeGraphView.update(knowledgeGraph);
+    }
+	
+	/**
+     * Creates a clipped knowledge graph from a start node.
+     * @param node
+     * 		the start node the knowlegge graph is generated from
+     */
+	private void createClippedGraph(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, ConfigPersistenceManager.getLinkDistance());
+		knowledgeGraph.updateWithPersistanceData();
+		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		knowledgeGraphView.update(knowledgeGraph);
+    }
     
     /**
-     * calls the correct jumpTo-method for the node
+     * Calls the correct jumpTo-method for the node.
      * @param node
      * 		the node to be jumped to
      */
@@ -156,5 +177,15 @@ public class PopupMenu extends JPopupMenu {
 		else if (node instanceof DecisionKnowledgeElement) {
 			JumpToUtils.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
 		}
+    }
+	
+	/**
+     * Highlights a node in the knowledge graph
+     * @param node
+     * 		the node to be highlighted
+     */
+	private void highlight(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
+		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		knowledgeGraphView.highlightSelectedNodeAndUpdate(node);
     }
 }

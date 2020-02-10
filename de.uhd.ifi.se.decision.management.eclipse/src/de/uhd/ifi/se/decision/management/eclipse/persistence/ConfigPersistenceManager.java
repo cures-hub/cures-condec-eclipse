@@ -20,6 +20,9 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PropertyPage;
  */
 public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 
+	private static final int DEFAULT_LINK_DISTANCE = 2;
+	private static final String DEFAULT_DECREASE_FACTOR = "1.5";
+	
 	public static QualifiedName PATH_TO_GIT = new QualifiedName("PATH_TO_GIT", "PATH_TO_GIT");
 	public static QualifiedName BRANCH = new QualifiedName("BRANCH", "BRANCH");
 	public static QualifiedName LINK_DISTANCE = new QualifiedName("LINK_DISTANCE", "LINK_DISTANCE");
@@ -40,8 +43,8 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 		store.setDefault("JIRA_PASSWORD", "");
 		store.setDefault("JIRA_PROJECT_KEY", "");
 
-		store.setDefault("LINK_DISTANCE", 4);
-		store.setDefault("DECREASE_FACTOR", "1.5");
+		store.setDefault("LINK_DISTANCE", DEFAULT_LINK_DISTANCE);
+		store.setDefault("DECREASE_FACTOR", DEFAULT_DECREASE_FACTOR);
 	}
 
 	public static IPath getPathToGit() {
@@ -69,7 +72,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static int getLinkDistance() {
-		int linkDistance = 4;
+		int linkDistance = DEFAULT_LINK_DISTANCE;
 		try {
 			linkDistance = Activator.getDefault().getPreferenceStore().getInt("LINK_DISTANCE");
 		} catch (NullPointerException e) {
@@ -79,7 +82,7 @@ public class ConfigPersistenceManager extends AbstractPreferenceInitializer {
 	}
 
 	public static float getDecreaseFactor() {
-		return Float.parseFloat(getPreference(DECREASE_FACTOR, "1.1"));
+		return Float.parseFloat(getPreference(DECREASE_FACTOR, DEFAULT_DECREASE_FACTOR));
 	}
 
 	public static String getPreference(QualifiedName key, String defaultValue) {
