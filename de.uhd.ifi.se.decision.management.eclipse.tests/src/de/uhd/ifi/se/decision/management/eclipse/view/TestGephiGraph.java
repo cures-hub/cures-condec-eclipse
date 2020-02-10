@@ -17,6 +17,7 @@ import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestGitClient;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.TestJiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
+import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
@@ -24,6 +25,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.Node;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.GephiGraphImpl;
+import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class TestGephiGraph {
 
@@ -206,12 +208,15 @@ public class TestGephiGraph {
 	
 	@AfterClass
 	public static void tearDown() {
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraphViewImpl.clear();
 		Node.nodes.clear();
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
-		ChangedFile.instances.clear();
-		JiraIssue.instances.clear();
 		JiraClient.instances.clear();
+		JiraIssue.instances.clear();
+		ChangedFile.instances.clear();
+		CodeMethod.instances.clear();
 	}
 
 }

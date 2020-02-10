@@ -2,6 +2,9 @@ package de.uhd.ifi.se.decision.management.eclipse.view.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -14,10 +17,13 @@ import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
@@ -39,6 +45,7 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
 import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
+import de.uhd.ifi.se.decision.management.eclipse.view.HintTextField;
 import de.uhd.ifi.se.decision.management.eclipse.view.KnowledgeGraphView;
 import de.uhd.ifi.se.decision.management.eclipse.view.LayoutType;
 import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
@@ -55,8 +62,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private long selectedNodeId = -1;
 	private JTextField selectedNodeTextField;
 	
-	private int distance = -1;
-	private JTextField distanceTextField;
+	private int distance;
+	private JSpinner distanceSpinner;
 
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
@@ -182,9 +189,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JFrame frame = new JFrame(title);
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.add(initJPanel(), BorderLayout.WEST);
 		frame.add(previewSketch, BorderLayout.CENTER);
-		JPanel panel = initJPanel();
-		frame.add(panel, BorderLayout.WEST);
 		frame.setSize(1600, 900);
 		frame.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -193,76 +199,120 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		});
 		frame.setVisible(true);
+		frame.requestFocus();
 	}
 
 	private JPanel initJPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 
 		// Search Field
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.insets = new Insets(10, 10, 0, 10);
 		searchTextField = createTextField("Search...");
-		panel.add(searchTextField);
+		panel.add(searchTextField, c);
 
 		// Search Button
-		panel.add(initSearchButton());
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(0, 10, 5, 10);
+		panel.add(createSearchButton(), c);
 
-		// Interaction
-		selectedNodeTextField = createTextField("ID");
-		panel.add(selectedNodeTextField);
-
+		// Select Node Field
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 2;
+		c.insets = new Insets(5, 10, 0, 10);
+		selectedNodeTextField = createTextField("Enter ID...");
+		panel.add(selectedNodeTextField, c);
+		
 		// Highlight Node Button
-		JButton highlightNodeButton = createHighlightNodeButton();
-		panel.add(highlightNodeButton);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 3;
+		c.insets = new Insets(0, 10, 5, 0);
+		panel.add(createHighlightNodeButton(), c);
 
 		// JumpTo Button
-		JButton jumpToButton = createJumpToButton();
-		panel.add(jumpToButton);
-		
-		// Select distance
-		distanceTextField = createTextField(String.valueOf(ConfigPersistenceManager.getLinkDistance()));
-		panel.add(distanceTextField);
-				
-		// Select distance Button
-		JButton distanceButton = createDistanceButton();
-		panel.add(distanceButton);
-
-		// Reset Button
-		JButton resetButton = createResetButton();
-		panel.add(resetButton);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.gridx = 1;
+		c.gridy = 3;
+		c.insets = new Insets(0, 0, 5, 10);
+		panel.add(createJumpToButton(), c);
 
 		// Filters
-		JPanel filterPanel = createFilterPanel();
-		panel.add(filterPanel);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 4;
+		c.insets = new Insets(5, 10, 0, 10);
+		panel.add(createFilterPanel(), c);
+		
+		// Reset FilterButton
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 5;
+		c.insets = new Insets(0, 10, 5, 10);
+		panel.add(createResetButton(), c);
+		
+		// Select Distance Field
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 6;
+		c.insets = new Insets(5, 10, 5, 0);
+		distanceSpinner = new JSpinner(new SpinnerNumberModel(ConfigPersistenceManager.getLinkDistance(), 0, null, 1));
+		JComponent editor = distanceSpinner.getEditor();
+		JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor) editor;
+		spinnerEditor.getTextField().setHorizontalAlignment(JTextField.CENTER);
+		panel.add(distanceSpinner, c);
+				
+		// Select Distance Button
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 1;
+		c.gridy = 6;
+		c.insets = new Insets(5, 0, 5, 10);
+		panel.add(createDistanceButton(), c);
 
 		// Layout Type Combo Box
-		JPanel layoutPanel = createLayoutPanel();
-		panel.add(layoutPanel);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 7;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.PAGE_END;
+		c.insets = new Insets(5, 10, 10, 10);
+		panel.add(createLayoutPanel(), c);
 
 		return panel;
 	}
-
-	private JButton createHighlightNodeButton() {
-		JButton selectedNodeButton = createButton("Highlight Node");
-		selectedNodeButton.addActionListener(new ActionListener() {
+	
+	private JButton createSearchButton() {
+		JButton searchButton = createButton("Search");
+		searchButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String highlight = selectedNodeTextField.getText();
-				if (highlight == null || highlight.isEmpty()) {
-					selectedNodeId = -1;
-					return;
-				}
-				try {
-					selectedNodeId = Long.parseLong(highlight);
-				}
-				catch (Exception ex) {
-					selectedNodeId = -1;
+				searchString = searchTextField.getText();
+				if (searchString == null || searchString.isEmpty()) {
+					searchTextField.setText(null);
 				}
 				updateNodeSizes();
 			}
 		});
-		return selectedNodeButton;
+		return searchButton;
 	}
-
+	
 	private JButton createJumpToButton() {
 		JButton jumpToButton = createButton("Jump to");
 		jumpToButton.addActionListener(new ActionListener() {
@@ -301,8 +351,30 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return jumpToButton;
 	}
 
+	private JButton createHighlightNodeButton() {
+		JButton selectedNodeButton = createButton("Highlight");
+		selectedNodeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String highlight = selectedNodeTextField.getText();
+				if (highlight == null || highlight.isEmpty()) {
+					selectedNodeId = -1;
+					return;
+				}
+				try {
+					selectedNodeId = Long.parseLong(highlight);
+				}
+				catch (Exception ex) {
+					selectedNodeId = -1;
+				}
+				updateNodeSizes();
+			}
+		});
+		return selectedNodeButton;
+	}
+
 	private JButton createResetButton() {
-		JButton resetButton = createButton("Reset");
+		JButton resetButton = createButton("Reset Filter");
 		resetButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -314,12 +386,12 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 	
 	private JButton createDistanceButton() {
-		JButton distanceButton = createButton("Select Distance");
+		JButton distanceButton = createButton("<html>" + "Change" + "<br>" + "Distance" + "</html>");
 		distanceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					distance = Integer.parseInt(distanceTextField.getText());
+					distance = (Integer) distanceSpinner.getValue();
 					KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance();
 					Node startNode = knowledgeGraphOld.getStartNode();
 					
@@ -351,9 +423,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return filterPanel;
 	}
 
-	private JTextField createTextField(String text) {
-		JTextField textField = new JTextField();
-		textField.setText(text);
+	private JTextField createTextField(String hint) {
+		JTextField textField = new HintTextField(hint);
 		textField.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return textField;
 	}
@@ -363,21 +434,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		button.setText(text);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return button;
-	}
-
-	private JButton initSearchButton() {
-		JButton searchButton = createButton("Search");
-		searchButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchString = searchTextField.getText();
-				if (searchString == null || searchString.isEmpty()) {
-					searchTextField.setText("Search...");
-				}
-				updateNodeSizes();
-			}
-		});
-		return searchButton;
 	}
 
 	private JPanel createLayoutPanel() {
@@ -404,10 +460,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 	public boolean resetFilters() {
 		searchString = "";
-		searchTextField.setText("Search...");
+		searchTextField.setText(null);
 
 		selectedNodeId = -1;
-		selectedNodeTextField.setText("ID");
+		selectedNodeTextField.setText(null);
 
 		resetFilterCheckboxes();
 		
@@ -490,7 +546,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private void highlightNode(Node node, int currentDepth, int maxDepth, float size, Set<Node> visitedNodes) {
 		for (Node linkedNode : node.getLinkedNodes()) {
 			if (!visitedNodes.contains(linkedNode)) {
-				gephiGraph.setSizeOfNode(linkedNode, size);
+				if (graphFiltering.shouldBeVisible(linkedNode)) {
+					gephiGraph.setSizeOfNode(linkedNode, size);
+				}
 				visitedNodes.add(linkedNode);
 			}
 		}
