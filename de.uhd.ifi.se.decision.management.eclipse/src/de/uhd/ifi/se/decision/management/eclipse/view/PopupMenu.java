@@ -37,30 +37,14 @@ public class PopupMenu extends JPopupMenu {
     	
 		de.uhd.ifi.se.decision.management.eclipse.model.Node node = convertNode(selectedNode);
 		
-		JMenuItem fullGraph = new JMenuItem("Show full graph");
-		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
 		JMenuItem jumpTo = new JMenuItem("Jump to");
 		JMenuItem highlightNode = new JMenuItem("Highlight node");
+		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
+		JMenuItem fullGraph = new JMenuItem("Show full graph");
 		JMenuItem createLink = new JMenuItem("Create link to");
 		JMenuItem removeLink = new JMenuItem("Remove link to");
-    		
-    	fullGraph.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			createFullGraph();
-    		}
-    	});
-		
-		add(fullGraph);
     	
     	if (node != null) {
-    		
-    		clippedGraph.addActionListener(new ActionListener() {
-        		public void actionPerformed(ActionEvent e) {
-        			createClippedGraph(node);
-        		}
-        	});
-    		
-    		add(clippedGraph);
     		
     		jumpTo.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
@@ -77,6 +61,26 @@ public class PopupMenu extends JPopupMenu {
         	});
     		
     		add(highlightNode);
+    		
+    		clippedGraph.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			createClippedGraph(node);
+        		}
+        	});
+    		
+    		add(clippedGraph);
+    		
+    	}
+    	
+    	fullGraph.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			createFullGraph();
+    		}
+    	});
+    	
+    	add(fullGraph);
+    	
+    	if (node != null) {
     		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {

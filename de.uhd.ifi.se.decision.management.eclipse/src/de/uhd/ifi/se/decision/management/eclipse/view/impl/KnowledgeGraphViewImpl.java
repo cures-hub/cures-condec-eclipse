@@ -265,11 +265,19 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.insets = new Insets(0, 10, 5, 10);
 		panel.add(createResetButton(), c);
 		
+		// Show Full Graph Button
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.gridx = 0;
+		c.gridy = 6;
+		c.insets = new Insets(5, 10, 5, 10);
+		panel.add(createShowFullGraphButton(), c);
+		
 		// Select Distance Field
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 7;
 		c.insets = new Insets(5, 10, 5, 0);
 		distanceSpinner = new JSpinner(new SpinnerNumberModel(ConfigPersistenceManager.getLinkDistance(), 0, null, 1));
 		JComponent editor = distanceSpinner.getEditor();
@@ -281,7 +289,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.gridx = 1;
-		c.gridy = 6;
+		c.gridy = 7;
 		c.insets = new Insets(5, 0, 5, 10);
 		panel.add(createDistanceButton(), c);
 
@@ -289,7 +297,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 8;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.PAGE_END;
 		c.insets = new Insets(5, 10, 10, 10);
@@ -383,6 +391,21 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		});
 		return resetButton;
+	}
+	
+	private JButton createShowFullGraphButton() {
+		JButton showFullGraphButtonButton = createButton("Show Full Graph");
+		showFullGraphButtonButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				KnowledgeGraphImpl.clear();
+				KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance();
+				knowledgeGraph.updateWithPersistanceData();
+				KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+				knowledgeGraphView.update(knowledgeGraph);
+			}
+		});
+		return showFullGraphButtonButton;
 	}
 	
 	private JButton createDistanceButton() {
