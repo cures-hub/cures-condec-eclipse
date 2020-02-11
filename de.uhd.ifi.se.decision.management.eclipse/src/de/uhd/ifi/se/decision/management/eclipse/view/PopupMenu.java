@@ -86,6 +86,26 @@ public class PopupMenu extends JPopupMenu {
     	
     	if (node != null) {
     		
+    		clippedGraph.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			createClippedGraph(node);
+        		}
+        	});
+    		
+    		add(clippedGraph);
+    		
+    	}
+    	
+    	fullGraph.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			createFullGraph();
+    		}
+    	});
+    	
+    	add(fullGraph);
+    	
+    	if (node != null) {
+    		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
         			PreviewSketch.createLink = true;
@@ -163,6 +183,16 @@ public class PopupMenu extends JPopupMenu {
 	private void createNode() {
 		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
 		knowledgeGraphView.createNode();
+    }
+	
+	/**
+     * Highlights a node in the knowledge graph
+     * @param node
+     * 		the node to be highlighted
+     */
+	private void highlight(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
+		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		knowledgeGraphView.highlightSelectedNodeAndUpdate(node);
     }
 	
 	/**
