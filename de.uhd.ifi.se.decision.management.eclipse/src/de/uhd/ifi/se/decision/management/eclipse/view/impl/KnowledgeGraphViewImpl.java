@@ -393,6 +393,28 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return selectedNodeButton;
 	}
 
+	private JButton createHighlightNodeButton() {
+		JButton selectedNodeButton = createButton("Highlight");
+		selectedNodeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String highlight = selectedNodeTextField.getText();
+				if (highlight == null || highlight.isEmpty()) {
+					selectedNodeId = -1;
+					return;
+				}
+				try {
+					selectedNodeId = Long.parseLong(highlight);
+				}
+				catch (Exception ex) {
+					selectedNodeId = -1;
+				}
+				updateNodeSizes();
+			}
+		});
+		return selectedNodeButton;
+	}
+
 	private JButton createResetButton() {
 		JButton resetButton = createButton("Reset Filter");
 		resetButton.addActionListener(new ActionListener() {
