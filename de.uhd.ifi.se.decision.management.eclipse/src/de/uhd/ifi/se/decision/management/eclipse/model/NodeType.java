@@ -24,7 +24,7 @@ public enum NodeType {
 	 *            node type name as a String.
 	 * @return node type of a node.
 	 */
-	public static NodeType getKnowledgeType(String name) {
+	public static NodeType getNodeType(String name) {
 		for (NodeType knowledgeType : values()) {
 			if (knowledgeType.name.equalsIgnoreCase(name)) {
 				return knowledgeType;
