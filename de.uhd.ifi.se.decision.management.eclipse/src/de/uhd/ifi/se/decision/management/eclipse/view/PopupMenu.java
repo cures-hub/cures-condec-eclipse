@@ -167,7 +167,7 @@ public class PopupMenu extends JPopupMenu {
 	/**
      * Creates a clipped knowledge graph from a start node.
      * @param node
-     * 		the start node the knowlegge graph is generated from
+     * 		the start node the knowledge graph is generated from
      */
 	private void createClippedGraph(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
 		KnowledgeGraphImpl.clear();
@@ -183,16 +183,6 @@ public class PopupMenu extends JPopupMenu {
 	private void createNode() {
 		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
 		knowledgeGraphView.createNode();
-    }
-	
-	/**
-     * Highlights a node in the knowledge graph
-     * @param node
-     * 		the node to be highlighted
-     */
-	private void highlight(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
-		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
-		knowledgeGraphView.highlightSelectedNodeAndUpdate(node);
     }
 	
 	/**
