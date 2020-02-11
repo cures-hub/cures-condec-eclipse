@@ -68,6 +68,14 @@ public interface KnowledgeGraphView {
 	boolean highlightSelectedNodeAndUpdate(Node node);
 	
 	/**
+	 * Creates a dialog-window that allows the user to create a new node in the knowledge graph.
+	 * 
+	 * @return
+	 * 			  true, if the create node dialog-window was correctly created.
+	 */
+	boolean createNode();
+	
+	/**
 	 * Returns the gephi graph created from the knowledgeGraphView.
 	 * 
 	 * @see GephiGraph

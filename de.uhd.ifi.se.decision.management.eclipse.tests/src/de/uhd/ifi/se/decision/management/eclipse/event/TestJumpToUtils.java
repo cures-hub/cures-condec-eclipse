@@ -26,7 +26,7 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.CodeMethodImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeElementImpl;
 
-public class TestJumpToCommandHelper {
+public class TestJumpToUtils {
 	
 	private static JiraClient jiraClient;
 	private static GitClient gitClient;
@@ -42,7 +42,7 @@ public class TestJumpToCommandHelper {
 	public void testJumpToJiraIssue() {
 		JiraIssue jiraIssue = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		try {
-			boolean webbrowserOpened = JumpToUtils.jumpToJiraIssue(jiraIssue);
+			boolean webbrowserOpened = JumpToUtils.jumpTo(jiraIssue);
 			assertTrue(webbrowserOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -53,7 +53,7 @@ public class TestJumpToCommandHelper {
 	public void testJumpToGitCommit() {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		try {
-			boolean commitOpened = JumpToUtils.jumpToGitCommit(commits.get(0));
+			boolean commitOpened = JumpToUtils.jumpTo(commits.get(0));
 			assertTrue(commitOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -65,7 +65,7 @@ public class TestJumpToCommandHelper {
 		IPath path = new Path("src/de/uhd/ifi/se/decision/management/eclipse/model/TestJumpToCommand.java");
 		ChangedFile file = new ChangedFileImpl(path);
 		try {
-			boolean editorOpened = JumpToUtils.jumpToChangedFile(file);
+			boolean editorOpened = JumpToUtils.jumpTo(file);
 			assertTrue(editorOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -78,7 +78,7 @@ public class TestJumpToCommandHelper {
 		ChangedFile file = new ChangedFileImpl(path);
 		CodeMethod codeMethod = new CodeMethodImpl("createGraph()", file);
 		try {
-			boolean methodOpened = JumpToUtils.jumpToMethod(codeMethod);
+			boolean methodOpened = JumpToUtils.jumpTo(codeMethod);
 			assertTrue(methodOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -91,7 +91,7 @@ public class TestJumpToCommandHelper {
 				"This is a decision!");
 		element.setType(KnowledgeType.DECISION);
 		try {
-			boolean elementOpened = JumpToUtils.jumpToDecisionKnowledgeElement(element);
+			boolean elementOpened = JumpToUtils.jumpTo(element);
 			assertTrue(elementOpened);
 		} catch (Exception e) {
 			fail(e.getMessage());
