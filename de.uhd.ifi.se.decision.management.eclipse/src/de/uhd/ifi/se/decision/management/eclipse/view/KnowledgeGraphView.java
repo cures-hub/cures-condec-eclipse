@@ -76,6 +76,14 @@ public interface KnowledgeGraphView {
 	boolean createNode();
 	
 	/**
+	 * Returns the link distance currently set in the link distance spinner.
+	 * 
+	 * @return 
+	 * 			  an integer containing the currently set link distance
+	 */
+	int getLinkDistance();
+	
+	/**
 	 * Returns the gephi graph created from the knowledgeGraphView.
 	 * 
 	 * @see GephiGraph

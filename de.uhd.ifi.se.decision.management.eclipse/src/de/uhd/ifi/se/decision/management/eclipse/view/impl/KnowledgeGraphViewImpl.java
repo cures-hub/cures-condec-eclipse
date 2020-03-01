@@ -63,8 +63,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	// Enter Node ID
 	private long selectedNodeId = -1;
 	private JTextField selectedNodeTextField;
+	
 	// Select Distance
-	private int distance;
+	private int linkDistance;
 	private JSpinner distanceSpinner;
 	
 	// Create Node
@@ -91,7 +92,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private GraphFiltering graphFiltering;
 	private GephiGraph gephiGraph;
 
-	private int linkDistance;
 	private float decreaseFactor;
 
 	private KnowledgeGraphViewImpl() {
@@ -115,7 +115,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 *            frame title of the view.
 	 */
 	private KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
-		this.distance = ConfigPersistenceManager.getLinkDistance();
 		
 		this.gephiGraph = new GephiGraphImpl(graph);
 
@@ -428,20 +427,20 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					distance = (Integer) distanceSpinner.getValue();
+					linkDistance = (Integer) distanceSpinner.getValue();
 					KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance();
 					Node startNode = knowledgeGraphOld.getStartNode();
 					
 					if (startNode != null) {
 						KnowledgeGraphImpl.clear();
-		    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, distance);
+		    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, linkDistance);
 		    			knowledgeGraph.updateWithPersistanceData();
 		    			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
 		    			knowledgeGraphView.update(knowledgeGraph);
 					}
 				}
 				catch (Exception ex) {
-					distance = ConfigPersistenceManager.getLinkDistance();
+					linkDistance = ConfigPersistenceManager.getLinkDistance();
 				}
 			}
 		});
@@ -813,6 +812,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return button;
 	}
 
+	@Override
+	public int getLinkDistance() {
+		return linkDistance;
+	}
+	
 	@Override
 	public GephiGraph getGephiGraph() {
 		return gephiGraph;

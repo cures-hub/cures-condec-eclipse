@@ -12,7 +12,6 @@ import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
-import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 /**
@@ -171,9 +170,9 @@ public class PopupMenu extends JPopupMenu {
      */
 	private void createClippedGraph(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
 		KnowledgeGraphImpl.clear();
-		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, ConfigPersistenceManager.getLinkDistance());
-		knowledgeGraph.updateWithPersistanceData();
 		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, knowledgeGraphView.getLinkDistance());
+		knowledgeGraph.updateWithPersistanceData();
 		knowledgeGraphView.update(knowledgeGraph);
     }
 	
