@@ -257,5 +257,9 @@ public class KnowledgePersistenceManager {
 			}
     	}
     }
+    
+    public static void createDecisionKnowledgeElementInJira(String type, String summary) {
+    	//TODO
+    }
 	
 }

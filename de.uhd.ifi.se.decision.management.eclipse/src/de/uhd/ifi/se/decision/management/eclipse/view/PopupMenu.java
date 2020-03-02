@@ -35,7 +35,7 @@ public class PopupMenu extends JPopupMenu {
 		JMenuItem highlightNode = new JMenuItem("Highlight node");
 		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
 		JMenuItem fullGraph = new JMenuItem("Show full graph");
-		JMenuItem createNode = new JMenuItem("Create node");
+		JMenuItem createNode = new JMenuItem("Create decision knowledge");
 		JMenuItem createLink = new JMenuItem("Create link to");
 		JMenuItem removeLink = new JMenuItem("Remove link to");
     	

@@ -36,10 +36,10 @@ import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.NodeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
@@ -71,17 +71,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	// Create Node
 	private JDialog createNode;
 	private JPanel createNodePanel;
-	private JComboBox<String> nodeTypesComboBox;
-	private JLabel enterPathLabel;
-	private JTextField enterPathTextField;
-	private JLabel enterMethodNameLabel;
-	private JTextField enterMethodNameTextField;
-	private JLabel enterCommitIdLabel;
-	private JTextField enterCommitIdTextField;
-	private JLabel enterProjectKeyLabel;
-	private JTextField enterProjectKeyTextField;
-	private JLabel enterIssueKeyLabel;
-	private JTextField enterIssueKeyTextField;
 	private JLabel enterSummaryLabel;
 	private JTextField enterSummaryTextField;
 	private JLabel enterDecisionTypesLabel;
@@ -612,19 +601,13 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	
 	@Override
 	public boolean createNode() {
-		createNode = new JDialog(frame, "Create Node");
+		createNode = new JDialog(frame, "Create Decision Knowledge");
 		createNode.getContentPane().setLayout(new BoxLayout(createNode.getContentPane(), BoxLayout.PAGE_AXIS));
 
-		JPanel createNodeComboBoxPanel = new JPanel();
-		createNodeComboBoxPanel.setLayout(new GridLayout(2, 1));
-		
-		createNodeComboBoxPanel.add(new JLabel("Select node type:"));
-		
-		nodeTypesComboBox = createCreateNodeComboBox();
-		nodeTypesComboBox.setSelectedIndex(-1);
-		createNodeComboBoxPanel.add(nodeTypesComboBox);
-		
-		createNode.add(createNodeComboBoxPanel);
+		createNodePanel = new JPanel();
+    	createNodePanel.setLayout(new GridLayout(5, 1));
+    	
+    	createCreateNodePanelDecisionKnowledgeElement();
 		
 		createNode.pack();
 		createNode.setLocationRelativeTo(frame);
@@ -633,136 +616,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		return true;
 	}
 	
-	private JComboBox<String> createCreateNodeComboBox() {
-		NodeType[] nodeTypes = NodeType.values();
-		int nodeTypesLength = nodeTypes.length;
-		String[] nodeTypesStrings = new String[nodeTypesLength - 1];
-		int i = 0;
-		int j = 0;
-		for (i = 0; i < nodeTypesLength; i++) {
-			if ((nodeTypes[i].getName() != NodeType.OTHER.getName()) &&
-					(j < nodeTypesLength - 1)) {
-				nodeTypesStrings[j] = nodeTypes[i].getName();
-				j++;
-			}
-		}
-		JComboBox<String> comboBox = new JComboBox<String>(nodeTypesStrings);
-		
-		comboBox.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		        if (comboBox.getSelectedItem() == NodeType.CHANGED_FILE.getName()) {
-		        	createCreateNodePanelFile();
-		        }
-		        else if (comboBox.getSelectedItem() == NodeType.CODE_METHOD.getName()) {
-		        	createCreateNodePanelCodeMethod();
-		        }
-		        else if (comboBox.getSelectedItem() == NodeType.GIT_COMMIT.getName()) {
-		        	createCreateNodePanelGitCommit();
-		        }
-		        else if (comboBox.getSelectedItem() == NodeType.JIRA_ISSUE.getName()) {
-		        	createCreateNodePanelJiraIssue();
-		        }
-		        else if (comboBox.getSelectedItem() == NodeType.DECISION_KNOWLEDGE_ELEMENT.getName()) {
-		        	createCreateNodePanelDecisionKnowledgeElement();
-		        }
-		    }
-		});
-		
-		return comboBox;
-	}
-	
-	private void createCreateNodePanelFile() {
-		if (createNodePanel != null) {
-    		createNode.remove(createNodePanel);
-    	}
-    	
-    	createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(3, 1));
-    	
-		enterPathLabel = new JLabel("Enter the path to the file:");
-		createNodePanel.add(enterPathLabel);
-		enterPathTextField = new JTextField();
-		createNodePanel.add(enterPathTextField);
-		
-		createNodePanel.add(createCreateNodeButton());
-
-		createNode.add(createNodePanel);
-		createNode.pack();
-	}
-	
-	private void createCreateNodePanelCodeMethod() {
-		if (createNodePanel != null) {
-    		createNode.remove(createNodePanel);
-    	}
-    	
-    	createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(5, 1));
-    	
-		enterMethodNameLabel = new JLabel("Enter the method name:");
-		createNodePanel.add(enterMethodNameLabel);
-		enterMethodNameTextField = new JTextField();
-		createNodePanel.add(enterMethodNameTextField);
-		
-		enterPathLabel = new JLabel("Enter the path to the file:");
-		createNodePanel.add(enterPathLabel);
-		enterPathTextField = new JTextField();
-		createNodePanel.add(enterPathTextField);
-		
-		createNodePanel.add(createCreateNodeButton());
-
-		createNode.add(createNodePanel);
-		createNode.pack();
-	}
-	
-	private void createCreateNodePanelGitCommit() {
-		if (createNodePanel != null) {
-    		createNode.remove(createNodePanel);
-    	}
-    	
-    	createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(5, 1));
-    	
-		enterCommitIdLabel = new JLabel("Enter the commit ID:");
-		createNodePanel.add(enterCommitIdLabel);
-		enterCommitIdTextField = new JTextField();
-		createNodePanel.add(enterCommitIdTextField);
-		
-		enterProjectKeyLabel = new JLabel("Enter the project key:");
-		createNodePanel.add(enterProjectKeyLabel);
-		enterProjectKeyTextField = new JTextField();
-		createNodePanel.add(enterProjectKeyTextField);
-		
-		createNodePanel.add(createCreateNodeButton());
-
-		createNode.add(createNodePanel);
-		createNode.pack();
-	}
-	
-	private void createCreateNodePanelJiraIssue() {
-		if (createNodePanel != null) {
-    		createNode.remove(createNodePanel);
-    	}
-    	
-    	createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(3, 1));
-    	
-		enterIssueKeyLabel = new JLabel("Enter the issue key:");
-		createNodePanel.add(enterIssueKeyLabel);
-		enterIssueKeyTextField = new JTextField();
-		createNodePanel.add(enterIssueKeyTextField);
-		
-		createNodePanel.add(createCreateNodeButton());
-
-		createNode.add(createNodePanel);
-		createNode.pack();
-	}
-	
 	private void createCreateNodePanelDecisionKnowledgeElement() {
-		if (createNodePanel != null) {
-    		createNode.remove(createNodePanel);
-    	}
-    	
-    	createNodePanel = new JPanel();
+		createNodePanel = new JPanel();
     	createNodePanel.setLayout(new GridLayout(5, 1));
     	
     	enterDecisionTypesLabel = new JLabel("Select decision type:");
@@ -804,8 +659,9 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	nodeTypesComboBox.getSelectedItem();
-            	//TODO
+            	String type = (String) decisionTypesComboBox.getSelectedItem();
+            	String summary = enterSummaryTextField.getText();
+            	KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary);
             }
         });
 		
