@@ -48,7 +48,7 @@ public interface JiraClient {
 	 * ConfigPersistenceManager for authentication.
 	 * 
 	 * @see ConfigPersistenceManager
-	 * @return true if authentication was successfull, otherwise false.
+	 * @return true if authentication was successful, otherwise false.
 	 */
 	public boolean authenticate();
 
@@ -62,7 +62,7 @@ public interface JiraClient {
 	 * @param password
 	 *            to authenticate with JIRA.
 	 * 
-	 * @return true if authentication was successfull, otherwise false.
+	 * @return true if authentication was successful, otherwise false.
 	 */
 	public boolean authenticate(URI jiraURI, String username, String password);
 
@@ -93,10 +93,10 @@ public interface JiraClient {
 
 	/**
 	 * Determines whether the JIRA REST client is authenticated and the project is
-	 * accessable.
+	 * Accessible.
 	 * 
 	 * @return true if the JIRA REST client is authenticated and the project is
-	 *         accessable
+	 *         accessible
 	 */
 	public boolean isWorking();
 
@@ -125,4 +125,12 @@ public interface JiraClient {
 	 *         objects.
 	 */
 	Set<JiraIssue> getLinkedJiraIssues(JiraIssue jiraIssue);
+	
+	/**
+	 * Creates an issue and adds it to the JIRA instance.
+	 *
+	 * @param payload
+	 *            A json containing all data to create a JIRA issue.
+	 */
+	public void createIssue(String type, String summary, String description);
 }

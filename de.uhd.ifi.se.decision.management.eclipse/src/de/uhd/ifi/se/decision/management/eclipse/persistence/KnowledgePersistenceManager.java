@@ -14,6 +14,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
@@ -258,8 +259,9 @@ public class KnowledgePersistenceManager {
     	}
     }
     
-    public static void createDecisionKnowledgeElementInJira(String type, String summary) {
-    	//TODO
+    public static void createDecisionKnowledgeElementInJira(String type, String summary, String description) {
+		JiraClient jiraClient = JiraClient.getOrCreate();
+		jiraClient.createIssue(type, summary, description);
     }
 	
 }

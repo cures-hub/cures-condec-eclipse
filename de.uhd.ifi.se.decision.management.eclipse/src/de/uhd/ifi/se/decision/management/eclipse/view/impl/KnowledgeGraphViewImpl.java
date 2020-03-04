@@ -73,6 +73,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private JPanel createNodePanel;
 	private JLabel enterSummaryLabel;
 	private JTextField enterSummaryTextField;
+	private JLabel enterDescriptionLabel;
+	private JTextField enterDescriptionTextField;
 	private JLabel enterDecisionTypesLabel;
 	private JComboBox<String> decisionTypesComboBox;
 
@@ -618,7 +620,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	
 	private void createCreateNodePanelDecisionKnowledgeElement() {
 		createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(5, 1));
+    	createNodePanel.setLayout(new GridLayout(7, 1));
     	
     	enterDecisionTypesLabel = new JLabel("Select decision type:");
 		createNodePanel.add(enterDecisionTypesLabel);
@@ -629,6 +631,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		createNodePanel.add(enterSummaryLabel);
 		enterSummaryTextField = new JTextField();
 		createNodePanel.add(enterSummaryTextField);
+		enterDescriptionLabel = new JLabel("Enter a description:");
+		createNodePanel.add(enterDescriptionLabel);
+		enterDescriptionTextField = new JTextField();
+		createNodePanel.add(enterDescriptionTextField);
 		
 		createNodePanel.add(createCreateNodeButton());
 
@@ -661,7 +667,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
             public void actionPerformed(ActionEvent e) {
             	String type = (String) decisionTypesComboBox.getSelectedItem();
             	String summary = enterSummaryTextField.getText();
-            	KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary);
+            	String description = enterDescriptionTextField.getText();
+            	KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description);
             }
         });
 		

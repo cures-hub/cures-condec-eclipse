@@ -9,8 +9,9 @@ import java.util.concurrent.ExecutionException;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
@@ -143,5 +144,24 @@ public class JiraClientImpl implements JiraClient {
 	@Override
 	public void setJiraRestClient(JiraRestClient jiraRestClient) {
 		this.jiraRestClient = jiraRestClient;
+	}
+	
+	@Override
+	public void createIssue(String type, String summary, String description) {
+		try {
+			IssueInputBuilder issueBuilder = new IssueInputBuilder();
+			issueBuilder.setProjectKey(ConfigPersistenceManager.getProjectKey());
+			//IssueTypeManager issueTypeManager = new IssueTypeManager();
+			issueBuilder.setIssueTypeId((long) 10000);
+			issueBuilder.setSummary(summary);
+			issueBuilder.setDescription(description);
+			IssueInput issueInput = issueBuilder.build();
+			
+			this.getJiraRestClient().getIssueClient().createIssue(issueInput).get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
 	}
 }
