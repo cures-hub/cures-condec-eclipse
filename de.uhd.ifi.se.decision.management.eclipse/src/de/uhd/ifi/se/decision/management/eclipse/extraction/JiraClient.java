@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.node.ObjectNode;
+
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
@@ -132,5 +134,5 @@ public interface JiraClient {
 	 * @param payload
 	 *            A json containing all data to create a JIRA issue.
 	 */
-	public void createIssue(String type, String summary, String description);
+	public void createIssue(ObjectNode payload);
 }

@@ -6,15 +6,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import org.codehaus.jackson.node.ObjectNode;
+
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.ObjectMapper;
+import kong.unirest.Unirest;
 
 /**
  * Class to connect to a JIRA project associated with this Eclipse project.
@@ -147,21 +151,94 @@ public class JiraClientImpl implements JiraClient {
 	}
 	
 	@Override
-	public void createIssue(String type, String summary, String description) {
-		try {
-			IssueInputBuilder issueBuilder = new IssueInputBuilder();
-			issueBuilder.setProjectKey(ConfigPersistenceManager.getProjectKey());
-			//IssueTypeManager issueTypeManager = new IssueTypeManager();
-			issueBuilder.setIssueTypeId((long) 10000);
-			issueBuilder.setSummary(summary);
-			issueBuilder.setDescription(description);
-			IssueInput issueInput = issueBuilder.build();
-			
-			this.getJiraRestClient().getIssueClient().createIssue(issueInput).get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+	public void createIssue(ObjectNode payload) {
+		
+		String username = ConfigPersistenceManager.getJiraUser();
+		String password = ConfigPersistenceManager.getJiraPassword();
+
+		String uri = ConfigPersistenceManager.getJiraUri().toString();
+		if(!uri.endsWith("/")) {
+			uri = uri.concat("/");
 		}
+		uri = uri.concat("/rest/condec/latest/knowledge/createDecisionKnowledgeElement.json");
+
+		// Connect Jackson ObjectMapper to Unirest
+		Unirest.config().setObjectMapper(new ObjectMapper() {
+			private org.codehaus.jackson.map.ObjectMapper jacksonObjectMapper = new org.codehaus.jackson.map.ObjectMapper();
+
+			public <T> T readValue(String value, Class<T> valueType) {
+				try {
+					return jacksonObjectMapper.readValue(value, valueType);
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			public String writeValue(Object value) {
+				try {
+					return jacksonObjectMapper.writeValueAsString(value);
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		});
+
+		// This code sample uses the 'Unirest' library HttpResponse<JsonNode>
+		HttpResponse<JsonNode> response;
+		response = Unirest.post(uri).basicAuth(username, password)
+				.header("Accept", "application/json").header("Content-Type", "application/json")
+				.body(payload).asJson();
+
+		System.out.println(payload.toString());
+		System.out.println(response.getBody());
+
+		/*String username = ConfigPersistenceManager.getJiraUser(); String password =
+				ConfigPersistenceManager.getJiraPassword(); String authHeader = username +
+				":" + password;
+
+				String uri = ConfigPersistenceManager.getJiraUri().toString(); if
+				(!uri.endsWith("/")) { uri = uri.concat("/"); } uri =
+				uri.concat("/rest/api/3/issue/");
+
+				try { Client client = Client.create();
+
+				WebResource webResource = client.resource(uri);
+
+				WebResource.Builder builder = webResource.header("Authorization", "Basic " +
+						authHeader) .type("application/json").accept("application/json");
+
+				ClientResponse response = builder.post(ClientResponse.class,
+						payload.toString());
+
+				if (response.getStatus() == 401) { throw new
+					AuthenticationException("HTTP 401 received: Invalid Username or Password.");
+				}
+
+				String jsonResponse = response.getEntity(String.class);
+				JSONObject responseJson = new JSONObject(jsonResponse);
+
+				System.out.println(responseJson);
+
+				return jsonResponse; } catch (AuthenticationException e) {
+					System.err.println("Login failed. " + e.getMessage()); }
+
+				return null;*/
+		 
+		
+		/*
+		 * try { IssueInputBuilder issueBuilder = new IssueInputBuilder();
+		 * issueBuilder.setProjectKey(ConfigPersistenceManager.getProjectKey());
+		 * //IssueTypeManager issueTypeManager = new IssueTypeManager(); //IssueType
+		 * issueType = issueTypeManager.getIssueType(type);
+		 * issueBuilder.setIssueTypeId((long) 10000); issueBuilder.setSummary(summary);
+		 * issueBuilder.setDescription(description); IssueInput issueInput =
+		 * issueBuilder.build();
+		 * 
+		 * this.getJiraRestClient().getIssueClient().createIssue(issueInput).get(); }
+		 * catch (InterruptedException e) { e.printStackTrace(); } catch
+		 * (ExecutionException e) { e.printStackTrace(); }
+		 */
 	}
 }
