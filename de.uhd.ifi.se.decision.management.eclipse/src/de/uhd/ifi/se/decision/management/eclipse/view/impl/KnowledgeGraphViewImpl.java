@@ -666,6 +666,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
             	String summary = enterSummaryTextField.getText();
             	String description = enterDescriptionTextField.getText();
             	KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description);
+            	createNode.dispose();
             }
         });
 		
