@@ -171,6 +171,22 @@ public class TestKnowledgeGraphView {
 	}
 	
 	@Test
+	public void testCreateNode() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertTrue(knowledgeGraphViewTest.createNode());
+	}
+	
+	@Test
+	public void testGetLinkDistance() {
+		KnowledgeGraphViewImpl.clear();
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		
+		assertTrue(knowledgeGraphViewTest.getLinkDistance() == 2);
+	}
+	
+	@Test
 	public void testGetGephiGraph() {
 		KnowledgeGraphViewImpl.clear();
 		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");

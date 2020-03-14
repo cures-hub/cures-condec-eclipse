@@ -6,7 +6,13 @@ import java.util.Locale;
  * Type of decision knowledge element.
  */
 public enum KnowledgeType {
-	DECISION("decision"), ISSUE("issue"), ALTERNATIVE("alternative"), CON("con"), PRO("pro"), GOAL("goal"), OTHER("");
+	DECISION("decision"),
+	ISSUE("issue"),
+	ALTERNATIVE("alternative"),
+	CON("con"),
+	PRO("pro"),
+	GOAL("goal"),
+	OTHER("");
 
 	private final String name;
 

@@ -520,6 +520,15 @@ public class TestKnowledgePersistenceManager {
         assertFalse(knowledgeGraph.linkExists(node1, node1));
 	}
 	
+	@Test
+	public void testCreateDecisionKnowledgeElementInJira() {
+		String type = "DECISION";
+		String summary = "Test";
+		String description = "This is a test issue.";
+		
+		assertTrue(KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description));
+	}
+	
 	@AfterClass
 	public static void tearDown() {
 		KnowledgeGraphImpl.clear();

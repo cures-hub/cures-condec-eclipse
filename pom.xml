@@ -66,7 +66,7 @@
 
 	<repositories>
 		<repository>
-			<id>eclipse-2019-09</id>
+			<id>eclipse-2019-12</id>
 			<layout>p2</layout>
 			<url>https://download.eclipse.org/releases/2019-09</url>
 		</repository>
@@ -92,6 +92,7 @@
 			<artifactId>jira-rest-java-client-core</artifactId>
 			<version>4.0.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.atlassian.fugue</groupId>
 			<artifactId>fugue</artifactId>
@@ -102,19 +103,32 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.10.1</version>
+			<version>2.10.3</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.10.1</version>
+			<version>2.10.3</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.10.1</version>
+			<version>2.10.3</version>
+		</dependency>
+
+		<!-- Unirest -->
+		<dependency>
+			<groupId>com.konghq</groupId>
+			<artifactId>unirest-java</artifactId>
+			<version>3.6.01</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.konghq</groupId>
+			<artifactId>unirest-objectmapper-jackson</artifactId>
+			<version>3.6.01</version>
 		</dependency>
 
 		<!-- Encoding and decoding -->

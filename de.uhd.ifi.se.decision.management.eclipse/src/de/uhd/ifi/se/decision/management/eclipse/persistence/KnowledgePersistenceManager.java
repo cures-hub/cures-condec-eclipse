@@ -10,10 +10,13 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.type.TypeReference;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.NodeUtils;
+import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
 import de.uhd.ifi.se.decision.management.eclipse.model.Link;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
@@ -252,10 +255,28 @@ public class KnowledgePersistenceManager {
 		if (!file.isFile()) {
     		try {
     			file.createNewFile();
-			} catch (IOException e) {
+			}
+    		catch (IOException e) {
 				e.printStackTrace();
 			}
     	}
+    }
+    
+    public static boolean createDecisionKnowledgeElementInJira(String type, String summary, String description) {
+		JsonNodeFactory jnf = JsonNodeFactory.instance;
+		ObjectNode payload = jnf.objectNode();
+		{
+			payload.put("projectKey", ConfigPersistenceManager.getProjectKey());
+			payload.put("type", type);
+			payload.put("summary", summary);
+			payload.put("description", description);
+			payload.put("documentationLocation", "i");
+		}
+		
+		JiraClient jiraClient = JiraClient.getOrCreate();
+		jiraClient.createIssue(payload);
+		
+		return true;
     }
 	
 }

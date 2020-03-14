@@ -9,15 +9,9 @@ import javax.swing.JPopupMenu;
 import org.gephi.graph.api.Node;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
-import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
 import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
-import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
-import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
-import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 /**
@@ -41,14 +35,14 @@ public class PopupMenu extends JPopupMenu {
 		JMenuItem highlightNode = new JMenuItem("Highlight node");
 		JMenuItem clippedGraph = new JMenuItem("Show clipped graph");
 		JMenuItem fullGraph = new JMenuItem("Show full graph");
+		JMenuItem createNode = new JMenuItem("Create decision knowledge");
 		JMenuItem createLink = new JMenuItem("Create link to");
 		JMenuItem removeLink = new JMenuItem("Remove link to");
     	
     	if (node != null) {
-    		
     		jumpTo.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
-    				jumpTo(node);
+    				JumpToUtils.jumpTo(node);
         		}
         	});
     		
@@ -69,7 +63,32 @@ public class PopupMenu extends JPopupMenu {
         	});
     		
     		add(clippedGraph);
+    	}
+    	
+    	fullGraph.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			createFullGraph();
+    		}
+    	});
+    	
+    	add(fullGraph);
+    	
+    	createNode.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			createNode();
+    		}
+    	});
+    	
+    	add(createNode);
+    	
+    	if (node != null) {
+    		clippedGraph.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			createClippedGraph(node);
+        		}
+        	});
     		
+    		add(clippedGraph);
     	}
     	
     	fullGraph.addActionListener(new ActionListener() {
@@ -81,7 +100,6 @@ public class PopupMenu extends JPopupMenu {
     	add(fullGraph);
     	
     	if (node != null) {
-    		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
         			PreviewSketch.createLink = true;
@@ -116,17 +134,14 @@ public class PopupMenu extends JPopupMenu {
      * 		the converted knowledge graph-node
      */
 	private de.uhd.ifi.se.decision.management.eclipse.model.Node convertNode(Node selectedNode) {
-    	
     	de.uhd.ifi.se.decision.management.eclipse.model.Node node = null;
     	
     	if (selectedNode != null) {
-    		
     		String nodeLabel = selectedNode.getLabel();
         	int start = nodeLabel.indexOf('[') + 1;
         	int end = nodeLabel.indexOf(']');
         	int nodeId = Integer.parseInt(nodeLabel.substring(start, end));
         	node = de.uhd.ifi.se.decision.management.eclipse.model.Node.getNodeById(nodeId);
-        	
     	}
     	
     	return node;
@@ -146,37 +161,22 @@ public class PopupMenu extends JPopupMenu {
 	/**
      * Creates a clipped knowledge graph from a start node.
      * @param node
-     * 		the start node the knowlegge graph is generated from
+     * 		the start node the knowledge graph is generated from
      */
 	private void createClippedGraph(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
 		KnowledgeGraphImpl.clear();
-		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, ConfigPersistenceManager.getLinkDistance());
-		knowledgeGraph.updateWithPersistanceData();
 		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(node, knowledgeGraphView.getLinkDistance());
+		knowledgeGraph.updateWithPersistanceData();
 		knowledgeGraphView.update(knowledgeGraph);
     }
-    
-    /**
-     * Calls the correct jumpTo-method for the node.
-     * @param node
-     * 		the node to be jumped to
+	
+	/**
+     * Creates a new knowledge graph node.
      */
-	private void jumpTo(de.uhd.ifi.se.decision.management.eclipse.model.Node node) {
-    	if (node instanceof JiraIssueImpl) {
-			JumpToUtils.jumpToJiraIssue((JiraIssue) node);
-		}
-		else if (node instanceof GitCommit) {
-			JumpToUtils.jumpToGitCommit((GitCommit) node);
-		}
-		else if (node instanceof ChangedFile) {
-			JumpToUtils.jumpToChangedFile((ChangedFile) node);
-		}
-		else if (node instanceof CodeMethod) {
-			JumpToUtils.jumpToMethod((CodeMethod) node);
-		}
-		else if (node instanceof DecisionKnowledgeElement) {
-			JumpToUtils.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
-		}
+	private void createNode() {
+		KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+		knowledgeGraphView.createNode();
     }
 	
 	/**

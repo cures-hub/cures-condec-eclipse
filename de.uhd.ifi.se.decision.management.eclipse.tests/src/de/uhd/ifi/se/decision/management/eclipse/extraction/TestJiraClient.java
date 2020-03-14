@@ -9,6 +9,8 @@ import static org.junit.Assert.assertTrue;
 import java.net.URI;
 import java.util.Set;
 
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -82,6 +84,22 @@ public class TestJiraClient {
 	@Test
 	public void testIsWorking() {
 		assertFalse(jiraClient.isWorking());
+	}
+	
+	@Test
+	public void testCreateIssue() {
+		JsonNodeFactory jnf = JsonNodeFactory.instance;
+		ObjectNode payload = jnf.objectNode();
+		{
+			payload.put("projectKey", ConfigPersistenceManager.getProjectKey());
+			payload.put("type", "DECISION");
+			payload.put("summary", "Test");
+			payload.put("description", "This is a test issue.");
+			payload.put("documentationLocation", "i");
+		}
+		
+		JiraClient jiraClient = JiraClient.getOrCreate();
+		assertFalse(jiraClient.createIssue(payload));
 	}
 
 	@AfterClass

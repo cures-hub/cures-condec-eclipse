@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,17 +33,13 @@ import org.gephi.preview.api.RenderTarget;
 import org.openide.util.Lookup;
 
 import de.uhd.ifi.se.decision.management.eclipse.event.JumpToUtils;
-import de.uhd.ifi.se.decision.management.eclipse.model.ChangedFile;
-import de.uhd.ifi.se.decision.management.eclipse.model.CodeMethod;
-import de.uhd.ifi.se.decision.management.eclipse.model.DecisionKnowledgeElement;
-import de.uhd.ifi.se.decision.management.eclipse.model.GitCommit;
-import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeGraph;
+import de.uhd.ifi.se.decision.management.eclipse.model.KnowledgeType;
 import de.uhd.ifi.se.decision.management.eclipse.model.Node;
-import de.uhd.ifi.se.decision.management.eclipse.model.impl.JiraIssueImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.GraphSettings;
+import de.uhd.ifi.se.decision.management.eclipse.persistence.KnowledgePersistenceManager;
 import de.uhd.ifi.se.decision.management.eclipse.view.Filter;
 import de.uhd.ifi.se.decision.management.eclipse.view.GephiGraph;
 import de.uhd.ifi.se.decision.management.eclipse.view.GraphFiltering;
@@ -56,21 +54,32 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private static KnowledgeGraphView knowledgeGraphView = null;
 	
+	private JFrame frame;
+	
+	// Search Node
 	private String searchString;
 	private JTextField searchTextField;
 
+	// Enter Node ID
 	private long selectedNodeId = -1;
 	private JTextField selectedNodeTextField;
 	
-	private int distance;
+	// Select Distance
+	private int linkDistance;
 	private JSpinner distanceSpinner;
+	
+	// Create Node
+	private JDialog createNode;
+	private JPanel createNodePanel;
+	private JTextField enterSummaryTextField;
+	private JTextField enterDescriptionTextField;
+	private JComboBox<String> decisionTypesComboBox;
 
 	private PreviewController previewController;
 	private PreviewSketch previewSketch;
 	private GraphFiltering graphFiltering;
 	private GephiGraph gephiGraph;
 
-	private int linkDistance;
 	private float decreaseFactor;
 
 	private KnowledgeGraphViewImpl() {
@@ -94,7 +103,6 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 *            frame title of the view.
 	 */
 	private KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
-		this.distance = ConfigPersistenceManager.getLinkDistance();
 		
 		this.gephiGraph = new GephiGraphImpl(graph);
 
@@ -186,7 +194,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	}
 
 	private void initJFrame(String title) {
-		JFrame frame = new JFrame(title);
+		frame = new JFrame(title);
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(initJPanel(), BorderLayout.WEST);
@@ -213,7 +221,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.insets = new Insets(10, 10, 0, 10);
-		searchTextField = createTextField("Search...");
+		searchTextField = createHintTextField("Search...");
 		panel.add(searchTextField, c);
 
 		// Search Button
@@ -230,7 +238,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.gridx = 0;
 		c.gridy = 2;
 		c.insets = new Insets(5, 10, 0, 10);
-		selectedNodeTextField = createTextField("Enter ID...");
+		selectedNodeTextField = createHintTextField("Enter ID...");
 		panel.add(selectedNodeTextField, c);
 		
 		// Highlight Node Button
@@ -318,6 +326,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
+		
 		return searchButton;
 	}
 	
@@ -339,23 +348,12 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				if (node == null) {
 					return;
 				}
-				else if (node instanceof JiraIssueImpl) {
-					JumpToUtils.jumpToJiraIssue((JiraIssue) node);
-				}
-				else if (node instanceof GitCommit) {
-					JumpToUtils.jumpToGitCommit((GitCommit) node);
-				}
-				else if (node instanceof ChangedFile) {
-					JumpToUtils.jumpToChangedFile((ChangedFile) node);
-				}
-				else if (node instanceof CodeMethod) {
-					JumpToUtils.jumpToMethod((CodeMethod) node);
-				}
-				else if (node instanceof DecisionKnowledgeElement) {
-					JumpToUtils.jumpToDecisionKnowledgeElement((DecisionKnowledgeElement) node);
+				else {
+					JumpToUtils.jumpTo(node);
 				}
 			}
 		});
+		
 		return jumpToButton;
 	}
 
@@ -378,6 +376,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
+		
 		return selectedNodeButton;
 	}
 
@@ -390,6 +389,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
+		
 		return resetButton;
 	}
 	
@@ -405,6 +405,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				knowledgeGraphView.update(knowledgeGraph);
 			}
 		});
+		
 		return showFullGraphButtonButton;
 	}
 	
@@ -414,23 +415,24 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					distance = (Integer) distanceSpinner.getValue();
+					linkDistance = (Integer) distanceSpinner.getValue();
 					KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance();
 					Node startNode = knowledgeGraphOld.getStartNode();
 					
 					if (startNode != null) {
 						KnowledgeGraphImpl.clear();
-		    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, distance);
+		    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, linkDistance);
 		    			knowledgeGraph.updateWithPersistanceData();
 		    			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
 		    			knowledgeGraphView.update(knowledgeGraph);
 					}
 				}
 				catch (Exception ex) {
-					distance = ConfigPersistenceManager.getLinkDistance();
+					linkDistance = ConfigPersistenceManager.getLinkDistance();
 				}
 			}
 		});
+		
 		return distanceButton;
 	}
 
@@ -443,12 +445,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		for (Filter filter : graphFiltering.filters.values()) {
 			filterPanel.add(filter.getCheckBox());
 		}
+		
 		return filterPanel;
 	}
 
-	private JTextField createTextField(String hint) {
+	private JTextField createHintTextField(String hint) {
 		JTextField textField = new HintTextField(hint);
 		textField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
 		return textField;
 	}
 
@@ -456,6 +460,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JButton button = new JButton();
 		button.setText(text);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
 		return button;
 	}
 
@@ -466,12 +471,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JLabel label = new JLabel("Layout:");
 		layoutPanel.add(label);
 		layoutPanel.add(createLayoutTypeComboBox());
+		
 		return layoutPanel;
 	}
 
 	private JComboBox<LayoutType> createLayoutTypeComboBox() {
 		JComboBox<LayoutType> layoutTypeComboBox = new JComboBox<LayoutType>(LayoutType.values());
 		layoutTypeComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
 		return layoutTypeComboBox;
 	}
 
@@ -590,7 +597,87 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		
 		return true;
 	}
+	
+	@Override
+	public boolean createNode() {
+		createNode = new JDialog(frame, "Create Decision Knowledge");
+		createNode.getContentPane().setLayout(new BoxLayout(createNode.getContentPane(), BoxLayout.PAGE_AXIS));
 
+		createNodePanel = new JPanel();
+    	createNodePanel.setLayout(new GridLayout(5, 1));
+    	
+    	createCreateNodePanelDecisionKnowledgeElement();
+		
+		createNode.pack();
+		createNode.setLocationRelativeTo(frame);
+		createNode.setVisible(true);
+		
+		return true;
+	}
+	
+	private void createCreateNodePanelDecisionKnowledgeElement() {
+		createNodePanel = new JPanel();
+    	createNodePanel.setLayout(new GridLayout(7, 1));
+    	
+    	JLabel enterDecisionTypesLabel = new JLabel("Select decision type:");
+		createNodePanel.add(enterDecisionTypesLabel);
+		decisionTypesComboBox = createDecisionTypeComboBox();
+		createNodePanel.add(decisionTypesComboBox);
+    	
+		JLabel enterSummaryLabel = new JLabel("Enter a summary:");
+		createNodePanel.add(enterSummaryLabel);
+		enterSummaryTextField = new JTextField();
+		createNodePanel.add(enterSummaryTextField);
+		JLabel enterDescriptionLabel = new JLabel("Enter a description:");
+		createNodePanel.add(enterDescriptionLabel);
+		enterDescriptionTextField = new JTextField();
+		createNodePanel.add(enterDescriptionTextField);
+		
+		createNodePanel.add(createCreateNodeButton());
+
+		createNode.add(createNodePanel);
+		createNode.pack();
+	}
+	
+	private JComboBox<String> createDecisionTypeComboBox() {
+		KnowledgeType[] knowledgeTypes = KnowledgeType.values();
+		int knowledgeTypesLength = knowledgeTypes.length;
+		String[] knowledgeTypesStrings = new String[knowledgeTypesLength - 1];
+		int i = 0;
+		int j = 0;
+		for (i = 0; i < knowledgeTypesLength; i++) {
+			if ((knowledgeTypes[i].getName() != KnowledgeType.OTHER.getName()) &&
+					(j < knowledgeTypesLength - 1)) {
+				knowledgeTypesStrings[j] = knowledgeTypes[i].getName();
+				j++;
+			}
+		}
+		JComboBox<String> comboBox = new JComboBox<String>(knowledgeTypesStrings);
+		
+		return comboBox;
+	}
+	
+	private JButton createCreateNodeButton() {
+		JButton button = new JButton("Create Node");
+		
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String type = (String) decisionTypesComboBox.getSelectedItem();
+            	String summary = enterSummaryTextField.getText();
+            	String description = enterDescriptionTextField.getText();
+            	KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description);
+            	createNode.dispose();
+            }
+        });
+		
+		return button;
+	}
+
+	@Override
+	public int getLinkDistance() {
+		return linkDistance;
+	}
+	
 	@Override
 	public GephiGraph getGephiGraph() {
 		return gephiGraph;
