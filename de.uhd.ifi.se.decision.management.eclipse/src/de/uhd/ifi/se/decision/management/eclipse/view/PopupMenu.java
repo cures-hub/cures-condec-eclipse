@@ -40,7 +40,6 @@ public class PopupMenu extends JPopupMenu {
 		JMenuItem removeLink = new JMenuItem("Remove link to");
     	
     	if (node != null) {
-    		
     		jumpTo.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
     				JumpToUtils.jumpTo(node);
@@ -64,7 +63,6 @@ public class PopupMenu extends JPopupMenu {
         	});
     		
     		add(clippedGraph);
-    		
     	}
     	
     	fullGraph.addActionListener(new ActionListener() {
@@ -84,7 +82,6 @@ public class PopupMenu extends JPopupMenu {
     	add(createNode);
     	
     	if (node != null) {
-    		
     		clippedGraph.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
         			createClippedGraph(node);
@@ -92,7 +89,6 @@ public class PopupMenu extends JPopupMenu {
         	});
     		
     		add(clippedGraph);
-    		
     	}
     	
     	fullGraph.addActionListener(new ActionListener() {
@@ -104,7 +100,6 @@ public class PopupMenu extends JPopupMenu {
     	add(fullGraph);
     	
     	if (node != null) {
-    		
     		createLink.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
         			PreviewSketch.createLink = true;

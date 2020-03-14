@@ -71,11 +71,8 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	// Create Node
 	private JDialog createNode;
 	private JPanel createNodePanel;
-	private JLabel enterSummaryLabel;
 	private JTextField enterSummaryTextField;
-	private JLabel enterDescriptionLabel;
 	private JTextField enterDescriptionTextField;
-	private JLabel enterDecisionTypesLabel;
 	private JComboBox<String> decisionTypesComboBox;
 
 	private PreviewController previewController;
@@ -622,16 +619,16 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		createNodePanel = new JPanel();
     	createNodePanel.setLayout(new GridLayout(7, 1));
     	
-    	enterDecisionTypesLabel = new JLabel("Select decision type:");
+    	JLabel enterDecisionTypesLabel = new JLabel("Select decision type:");
 		createNodePanel.add(enterDecisionTypesLabel);
 		decisionTypesComboBox = createDecisionTypeComboBox();
 		createNodePanel.add(decisionTypesComboBox);
     	
-    	enterSummaryLabel = new JLabel("Enter a summary:");
+		JLabel enterSummaryLabel = new JLabel("Enter a summary:");
 		createNodePanel.add(enterSummaryLabel);
 		enterSummaryTextField = new JTextField();
 		createNodePanel.add(enterSummaryTextField);
-		enterDescriptionLabel = new JLabel("Enter a description:");
+		JLabel enterDescriptionLabel = new JLabel("Enter a description:");
 		createNodePanel.add(enterDescriptionLabel);
 		enterDescriptionTextField = new JTextField();
 		createNodePanel.add(enterDescriptionTextField);
