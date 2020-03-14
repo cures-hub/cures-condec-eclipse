@@ -133,6 +133,8 @@ public interface JiraClient {
 	 *
 	 * @param payload
 	 *            A json containing all data to create a JIRA issue.
+	 * @return payload
+	 *            true, if the issue was created in Jira, false if not.
 	 */
-	public void createIssue(ObjectNode payload);
+	public boolean createIssue(ObjectNode payload);
 }

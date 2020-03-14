@@ -15,6 +15,8 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
 import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
 
@@ -149,7 +151,7 @@ public class JiraClientImpl implements JiraClient {
 	}
 	
 	@Override
-	public void createIssue(ObjectNode payload) {
+	public boolean createIssue(ObjectNode payload) {
 		String username = ConfigPersistenceManager.getJiraUser();
 		String password = ConfigPersistenceManager.getJiraPassword();
 
@@ -183,8 +185,19 @@ public class JiraClientImpl implements JiraClient {
 			}
 		});
 
-		Unirest.post(uri).basicAuth(username, password)
-				.header("Accept", "application/json").header("Content-Type", "application/json")
-				.body(payload).asJson();
+		try {
+			HttpResponse<JsonNode> response = Unirest.post(uri).basicAuth(username, password)
+			.header("Accept", "application/json").header("Content-Type", "application/json")
+			.body(payload).asJson();
+			
+			if (response.getStatus() == 201) {
+				return true;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 }

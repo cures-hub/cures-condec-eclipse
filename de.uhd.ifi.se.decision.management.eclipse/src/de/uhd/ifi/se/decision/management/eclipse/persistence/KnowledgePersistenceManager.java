@@ -261,9 +261,7 @@ public class KnowledgePersistenceManager {
     	}
     }
     
-    public static void createDecisionKnowledgeElementInJira(String type, String summary, String description) {
-		JiraClient jiraClient = JiraClient.getOrCreate();
-		
+    public static boolean createDecisionKnowledgeElementInJira(String type, String summary, String description) {
 		JsonNodeFactory jnf = JsonNodeFactory.instance;
 		ObjectNode payload = jnf.objectNode();
 		{
@@ -274,7 +272,10 @@ public class KnowledgePersistenceManager {
 			payload.put("documentationLocation", "i");
 		}
 		
+		JiraClient jiraClient = JiraClient.getOrCreate();
 		jiraClient.createIssue(payload);
+		
+		return true;
     }
 	
 }
