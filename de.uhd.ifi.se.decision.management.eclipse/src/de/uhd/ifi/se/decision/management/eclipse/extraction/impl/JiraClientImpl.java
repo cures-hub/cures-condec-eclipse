@@ -190,7 +190,9 @@ public class JiraClientImpl implements JiraClient {
 			.header("Accept", "application/json").header("Content-Type", "application/json")
 			.body(payload).asJson();
 			
-			if (response.getStatus() == 201) {
+			System.out.println(response.getStatus());
+			
+			if (response.getStatus() == 200) {
 				return true;
 			}
 		}

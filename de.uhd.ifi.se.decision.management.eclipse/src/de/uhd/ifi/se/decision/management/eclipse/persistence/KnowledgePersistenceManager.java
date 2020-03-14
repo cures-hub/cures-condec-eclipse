@@ -255,7 +255,8 @@ public class KnowledgePersistenceManager {
 		if (!file.isFile()) {
     		try {
     			file.createNewFile();
-			} catch (IOException e) {
+			}
+    		catch (IOException e) {
 				e.printStackTrace();
 			}
     	}
