@@ -67,6 +67,11 @@
                name="Show Clipped Graph">
          </command>
          <command
+               defaultHandler="de.uhd.ifi.se.decision.management.eclipse.event.ShowGraphInJira"
+               id="de.uhd.ifi.se.decision.management.eclipse.command2a"
+               name="Show Graph in Jira">
+         </command>
+         <command
                defaultHandler="de.uhd.ifi.se.decision.management.eclipse.event.KnowledgeExtractionCommand"
                id="de.uhd.ifi.se.decision.management.eclipse.command3"
                name="Extract Knowledge">
@@ -97,6 +102,11 @@
             <command
                   commandId="de.uhd.ifi.se.decision.management.eclipse.command2"
                   label="Show Clipped Graph"
+                  style="push">
+            </command>
+            <command
+                  commandId="de.uhd.ifi.se.decision.management.eclipse.command2a"
+                  label="Show Graph in Jira"
                   style="push">
             </command>
             <command
@@ -135,6 +145,11 @@
     <command
           commandId="de.uhd.ifi.se.decision.management.eclipse.command2"
           label="Show Clipped Graph"
+          style="push">
+    </command>
+    <command
+          commandId="de.uhd.ifi.se.decision.management.eclipse.command2a"
+          label="Show Graph in Jira"
           style="push">
     </command>
     <command
