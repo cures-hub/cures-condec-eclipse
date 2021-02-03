@@ -25,7 +25,7 @@
 
 	<properties>
 		<tycho-version>1.5.1</tycho-version>
-		<jacoco-version>0.8.4</jacoco-version>
+		<jacoco-version>0.8.6</jacoco-version>
 	</properties>
 
 	<profiles>
