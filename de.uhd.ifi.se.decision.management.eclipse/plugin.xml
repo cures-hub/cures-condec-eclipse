@@ -68,15 +68,15 @@
          </command>
          <command
                defaultHandler="de.uhd.ifi.se.decision.management.eclipse.event.ShowGraphInJira"
-               id="de.uhd.ifi.se.decision.management.eclipse.command2a"
+               id="de.uhd.ifi.se.decision.management.eclipse.command3"
                name="Show Graph in Jira">
          </command>
          <command
                defaultHandler="de.uhd.ifi.se.decision.management.eclipse.event.KnowledgeExtractionCommand"
-               id="de.uhd.ifi.se.decision.management.eclipse.command3"
+               id="de.uhd.ifi.se.decision.management.eclipse.command4"
                name="Extract Knowledge">
          </command>
-      </extension>
+       </extension>
       <extension
             point="org.eclipse.ui.menus">
          <menuContribution
@@ -105,12 +105,12 @@
                   style="push">
             </command>
             <command
-                  commandId="de.uhd.ifi.se.decision.management.eclipse.command2a"
+                  commandId="de.uhd.ifi.se.decision.management.eclipse.command3"
                   label="Show Graph in Jira"
                   style="push">
             </command>
-            <command
-                  commandId="de.uhd.ifi.se.decision.management.eclipse.command3"
+             <command
+                  commandId="de.uhd.ifi.se.decision.management.eclipse.command4"
                   label="Extract Knowledge"
                   style="push">
             </command>
@@ -148,16 +148,16 @@
           style="push">
     </command>
     <command
-          commandId="de.uhd.ifi.se.decision.management.eclipse.command2a"
+          commandId="de.uhd.ifi.se.decision.management.eclipse.command3"
           label="Show Graph in Jira"
           style="push">
     </command>
-    <command
-          commandId="de.uhd.ifi.se.decision.management.eclipse.command3"
+     <command
+          commandId="de.uhd.ifi.se.decision.management.eclipse.command4"
           label="Extract Knowledge"
           style="push">
     </command>
- </menu>
+  </menu>
 </menuContribution>
       </extension>
 </plugin>
