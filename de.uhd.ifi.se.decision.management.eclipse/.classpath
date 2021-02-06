@@ -59,7 +59,6 @@
 	<classpathentry kind="lib" path="lib/filters-api-0.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/filters-impl-0.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/filters-plugin-0.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/fugue-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/gephi-toolkit-0.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/graph-api-0.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/graphstore-0.5.9.jar"/>
@@ -225,5 +224,6 @@
 	<classpathentry kind="lib" path="lib/xmlgraphics-commons-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/xz-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.15.jar"/>
+	<classpathentry kind="lib" path="lib/fugue-2.7.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
