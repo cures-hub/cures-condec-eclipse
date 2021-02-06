@@ -5,7 +5,7 @@
 
 	<groupId>de.uhd.ifi.se.decision</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 
 	<packaging>pom</packaging>
 
@@ -165,7 +165,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
+			<version>1.7.30</version>
 			<scope>runtime</scope>
 		</dependency>
 
