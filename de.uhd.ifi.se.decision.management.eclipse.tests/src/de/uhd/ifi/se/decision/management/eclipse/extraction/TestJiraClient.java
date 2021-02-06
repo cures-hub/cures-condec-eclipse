@@ -13,6 +13,7 @@ import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
@@ -85,8 +86,9 @@ public class TestJiraClient {
 	public void testIsWorking() {
 		assertFalse(jiraClient.isWorking());
 	}
-	
+
 	@Test
+	@Ignore
 	public void testCreateIssue() {
 		JsonNodeFactory jnf = JsonNodeFactory.instance;
 		ObjectNode payload = jnf.objectNode();
@@ -97,7 +99,7 @@ public class TestJiraClient {
 			payload.put("description", "This is a test issue.");
 			payload.put("documentationLocation", "i");
 		}
-		
+
 		JiraClient jiraClient = JiraClient.getOrCreate();
 		assertFalse(jiraClient.createIssue(payload));
 	}

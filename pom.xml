@@ -158,7 +158,6 @@
 			<groupId>org.gephi</groupId>
 			<artifactId>gephi-toolkit</artifactId>
 			<version>0.9.2</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Logging -->
