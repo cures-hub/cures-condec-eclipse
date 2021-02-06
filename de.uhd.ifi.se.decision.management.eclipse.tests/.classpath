@@ -6,6 +6,12 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/de.uhd.ifi.se.decision.management.eclipse.parent">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/de.uhd.ifi.se.decision.management.eclipse"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -16,5 +22,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/de.uhd.ifi.se.decision.management.eclipse/target/classes"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
