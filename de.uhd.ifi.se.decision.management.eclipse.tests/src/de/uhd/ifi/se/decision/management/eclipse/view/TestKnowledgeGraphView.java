@@ -26,13 +26,16 @@ public class TestKnowledgeGraphView {
 
 	@Before
 	public void setUp() {
-		KnowledgeGraphImpl.clear();
-		KnowledgeGraphViewImpl.clear();
 		knowledgeGraph = initKnowledgeGraph();
+		KnowledgeGraphViewImpl.clear();
 		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 	}
 
 	public static KnowledgeGraph initKnowledgeGraph() {
+		KnowledgeGraphImpl.clear();
+
+		GitClient.instances.clear();
+		JiraClient.instances.clear();
 		GitClient gitClient = TestGitClient.initGitClient();
 		JiraClient jiraClient = TestJiraClient.initJiraClient();
 
