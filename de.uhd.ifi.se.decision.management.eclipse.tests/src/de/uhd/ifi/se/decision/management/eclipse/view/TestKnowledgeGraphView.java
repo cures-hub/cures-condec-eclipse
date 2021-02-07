@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.Path;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -19,6 +20,9 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.ChangedFileImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
+@Ignore
+// On Travis CI: Cannot read field "drawGlyphListAALoop" because "sg2d.loops" is
+// null
 public class TestKnowledgeGraphView {
 
 	private KnowledgeGraphView knowledgeGraphView;

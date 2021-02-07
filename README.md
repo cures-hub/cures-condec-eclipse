@@ -5,7 +5,7 @@
 [![Codecoverage](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master/graph/badge.svg)](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master)
 [![GitHub contributors](https://img.shields.io/github/contributors/cures-hub/cures-condec-eclipse.svg)](https://github.com/cures-hub/cures-condec-eclipse/graphs/contributors)
 
-The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user can capture decision knowledge in code and commit messages. S/he can explore linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. The knowledge elements extracted from the Jira and git projects associated to the Eclipse project.
+The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user explores linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. The knowledge elements are extracted from the Jira and git projects associated to the Eclipse project. Trace links between code files and Jira issues are created via the Jira issue identifier in commit messages. The user captures decision knowledge in code comments and commit messages. 
 
 ## User Interface and Usage Description
 
@@ -80,9 +80,9 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 
 1. Update the pom.xml in the main/parent folder (add new dependency or update the version of an existing dependency, such as jira-rest-java-client-core from 4.0.0 to 5.2.2). Do not change the nested pom.xml files. (There are four pom.xml files in total.)
 2. Delete the contents of the de.uhd.ifi.se.decision.management.eclipse/lib folder
-3. Run {{maven clean package -DskipTests}} which will refill the lib folder including the new or updated dependencies.
+3. Run `maven clean package -DskipTests` which will refill the lib folder including the new or updated dependencies.
 4. Update the .classpath of the de.uhd.ifi.se.decision.management.eclipse project. Add all .jar-files in the lib folder and export them so that they can be found by the test project.
-5. Update the MANIFEST.MF and the build.properties using the Eclipse GUI. Navigate to "Runtime" and add all libraries as "Exported Packages" and make sure that the "Classpath" contains all .jar files.
+5. Update the `MANIFEST.MF` and the `build.properties` using the Eclipse GUI. Navigate to `Runtime` and add all libraries as `Exported Packages` and make sure that the `Classpath` contains all .jar files.
 
 ![Runtime Tab](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/runtime_tab.png)
 *Runtime Tab*
