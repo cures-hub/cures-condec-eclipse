@@ -5,7 +5,7 @@
 [![Codecoverage](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master/graph/badge.svg)](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master)
 [![GitHub contributors](https://img.shields.io/github/contributors/cures-hub/cures-condec-eclipse.svg)](https://github.com/cures-hub/cures-condec-eclipse/graphs/contributors)
 
-The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user can capture decision knowledge in code and commit messages and explore relevant knowledge for code. Relevant knowledge is also extracted from the Jira project.
+The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user can capture decision knowledge in code and commit messages. S/he can explore linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. The knowledge elements extracted from the Jira and git projects associated to the Eclipse project.
 
 ## User Interface and Usage Description
 
@@ -31,6 +31,9 @@ similar as in the VSCode plug-in
 
 ### Textual Representation of Knowledge Graph in Eclipse
 The plug-in offers two views for textual knowledge presentation. Go to `Window` -> `Show View` -> `Other...` and add the views *KnowledgeExploration* and *ChangeImpactAnalysis*. Then, select a file in the `Project Explorer` and open the context menu. There, you find the  entry `ConDec` with the submenu `Extract Knowledge`.
+
+![Textual Knowledge Exploration](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/knowledge_exploration_text.png)
+*Textual Knowledge Exploration*
 
 ## Installation
 
