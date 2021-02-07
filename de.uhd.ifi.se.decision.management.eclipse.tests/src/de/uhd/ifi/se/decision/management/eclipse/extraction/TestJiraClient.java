@@ -13,7 +13,6 @@ import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
@@ -88,7 +87,6 @@ public class TestJiraClient {
 	}
 
 	@Test
-	@Ignore
 	public void testCreateIssue() {
 		JsonNodeFactory jnf = JsonNodeFactory.instance;
 		ObjectNode payload = jnf.objectNode();

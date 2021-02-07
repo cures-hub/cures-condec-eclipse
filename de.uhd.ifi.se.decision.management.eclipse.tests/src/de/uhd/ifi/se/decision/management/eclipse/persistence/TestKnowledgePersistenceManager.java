@@ -13,7 +13,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openide.util.Lookup;
 
@@ -46,7 +45,6 @@ public class TestKnowledgePersistenceManager {
 	}
 
 	@Test
-	@Ignore
 	public void testReadLinksFromJSON() {
 		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
 		File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -88,7 +86,6 @@ public class TestKnowledgePersistenceManager {
 	}
 
 	@Test
-	@Ignore
 	public void testReadLinksFromJSONNoSourceNode() {
 		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
 		File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -129,7 +126,6 @@ public class TestKnowledgePersistenceManager {
 	}
 
 	@Test
-	@Ignore
 	public void testReadLinksFromJSONNoTargetNode() {
 		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
 		File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -357,7 +353,6 @@ public class TestKnowledgePersistenceManager {
 	}
 
 	@Test
-	@Ignore
 	public void testRemoveLink() {
 		File folder = new File(KNOWLEDGE_LOCATION_FOLDER);
 		File file = new File(folder, KNOWLEDGE_LOCATION_FILE);
@@ -526,7 +521,6 @@ public class TestKnowledgePersistenceManager {
 	}
 
 	@Test
-	@Ignore
 	public void testCreateDecisionKnowledgeElementInJira() {
 		String type = "DECISION";
 		String summary = "Test";
