@@ -6,22 +6,23 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.uhd.ifi.se.decision.management.eclipse.parent">
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/de.uhd.ifi.se.decision.management.eclipse">
+		<attributes>
+			<attribute name="without_test_code" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="limit-modules" value="java.se,jdk.accessibility,jdk.httpserver,jdk.jartool,jdk.jconsole,jdk.jshell,jdk.jsobject,jdk.management.jfr,jdk.naming.ldap,jdk.net,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported.desktop,jdk.xml.dom,jdk.charsets,jdk.pack,jdk.rmic,jdk.jstatd,jdk.jcmd,jdk.zipfs,jdk.editpad,java.smartcardio,jdk.jlink,jdk.scripting.nashorn.shell,jdk.hotspot.agent,jdk.crypto.cryptoki,jdk.naming.rmi,jdk.crypto.mscapi,jdk.internal.vm.compiler.management,jdk.aot,jdk.naming.dns,jdk.localedata"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.uhd.ifi.se.decision.management.eclipse"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/de.uhd.ifi.se.decision.management.eclipse/target/classes"/>
+	<classpathentry exported="true" kind="lib" path="/de.uhd.ifi.se.decision.management.eclipse/target/classes"/>
+	<classpathentry exported="true" kind="lib" path="/de.uhd.ifi.se.decision.management.eclipse/target/cures-condec-eclipse.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
