@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.Path;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,13 +27,10 @@ public class TestKnowledgeGraphView {
 	@Before
 	public void setUp() {
 		knowledgeGraph = initKnowledgeGraph();
-		KnowledgeGraphViewImpl.clear();
 		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 	}
 
 	public static KnowledgeGraph initKnowledgeGraph() {
-		KnowledgeGraphImpl.clear();
-
 		GitClient gitClient = TestGitClient.initGitClient();
 		JiraClient jiraClient = TestJiraClient.initJiraClient();
 
@@ -205,14 +202,13 @@ public class TestKnowledgeGraphView {
 		assertNotNull(knowledgeGraphViewTest.getGephiGraph());
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		KnowledgeGraphImpl.clear();
 		KnowledgeGraphViewImpl.clear();
 	}
 
 	public static void main(String[] args) {
 		new TestKnowledgeGraphView().setUp();
-		;
 	}
 }
