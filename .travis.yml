@@ -5,6 +5,9 @@ jdk:
 - oraclejdk15
 cache:
   directories:
+  - "$HOME/.m2"
+cache:
+  directories:
   - $HOME/.m2
 addons:
   apt:

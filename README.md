@@ -10,7 +10,7 @@ The CURES ConDec Eclipse plug-in enables the user to capture and explore decisio
 
 ### Prerequisites
 The following prerequisites are necessary to compile the plug-in from source code:
-- Java 11 JDK
+- Java 15 JDK
 - [Maven 3](https://maven.apache.org)
 
 ### Compilation via Terminal
