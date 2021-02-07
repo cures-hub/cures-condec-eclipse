@@ -26,6 +26,8 @@ public class TestKnowledgeGraphView {
 
 	@Before
 	public void setUp() {
+		KnowledgeGraphImpl.clear();
+		KnowledgeGraphViewImpl.clear();
 		knowledgeGraph = initKnowledgeGraph();
 		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 	}
