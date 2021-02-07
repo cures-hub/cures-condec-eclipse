@@ -10,7 +10,7 @@ The CURES ConDec Eclipse plug-in enables the user to capture and explore decisio
 ## User Interface and Usage Description
 
 ### Configuration
-Before you can start using the plugin, you need to configure the git repository and Jira project associated to your Eclipse project. Select `Project` -> `Properties` -> `ConDec` and add your configuration there.
+Before you can start using the plug-in, you need to configure the git repository and Jira project associated to your Eclipse project. Select `Project` -> `Properties` -> `ConDec` and add your configuration there.
 
 ![Project Settings](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/configuration.png)
 *Project Settings*
@@ -27,10 +27,10 @@ To explore linked knowledge elements for a specific code file, select a file in 
 *Context Menu on a Code File*
 
 ### Knowledge Graph View in Jira
-similar as in the VSCode plugin
+similar as in the VSCode plug-in
 
 ### Textual Representation of Knowledge Graph in Eclipse
-The plug-in comes with a view for textual knowledge presentation.
+The plug-in offers two views for textual knowledge presentation. Go to `Window` -> `Show View` -> `Other...` and add the views *KnowledgeExploration* and *ChangeImpactAnalysis*. Then, select a file in the `Project Explorer` and open the context menu. There, you find the  entry `ConDec` with the submenu `Extract Knowledge`.
 
 ## Installation
 
@@ -62,9 +62,9 @@ The following subsections are important if you want to contribute as a developer
 ### Prerequisites
 - [Install Eclipse IDE for RCP and RAP Developers](https://www.eclipse.org/downloads/packages/) and open it. (Make sure that the eclipse.ini file points to Java 15 JDK.)
 - [Install the Tycho Maven plug-in.](http://codeandme.blogspot.com/2012/12/tycho-build-1-building-plug-ins.html)
-- [Install the M2E Connector for the Maven Dependency Plugin.](https://marketplace.eclipse.org/content/m2e-connector-maven-dependency-plugin)
+- [Install the M2E Connector for the Maven Dependency Plug-in.](https://marketplace.eclipse.org/content/m2e-connector-maven-dependency-plugin)
 
-### Import the Plugin
+### Import the Plug-in
 To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
 - Import the project as an Existing Maven Project.
 - Run *mvn clean install* in the parent project (cures-condec-eclipse folder) to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
@@ -85,4 +85,4 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 *Runtime Tab*
 
 ### Run as a second Eclipse Application
-You can start a second Eclipse instance containing the plugin  from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 
+You can start a second Eclipse instance containing the plug-in  from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 
