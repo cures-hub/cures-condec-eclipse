@@ -6,6 +6,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
@@ -141,9 +146,89 @@ public class MockIssueRestClient implements IssueRestClient {
 	}
 
 	@Override
-	public Promise<Issue> getIssue(String arg0) {
+	public Promise<Issue> getIssue(String key) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Promise<Issue>() {
+
+			@Override
+			public boolean cancel(boolean mayInterruptIfRunning) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isCancelled() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isDone() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public Issue get() throws InterruptedException, ExecutionException {
+				return getMockIssue(key);
+			}
+
+			@Override
+			public Issue get(long timeout, TimeUnit unit)
+					throws InterruptedException, ExecutionException, TimeoutException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Issue claim() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Promise<Issue> done(Consumer<? super Issue> arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Promise<Issue> fail(Consumer<Throwable> arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public <B> Promise<B> flatMap(Function<? super Issue, ? extends Promise<? extends B>> arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public <B> Promise<B> fold(Function<Throwable, ? extends B> arg0,
+					Function<? super Issue, ? extends B> arg1) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public <B> Promise<B> map(Function<? super Issue, ? extends B> arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Promise<Issue> recover(Function<Throwable, ? extends Issue> arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Promise<Issue> then(TryConsumer<? super Issue> arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
 	}
 
 	@Override
