@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="module" value="true"/>
-			<attribute name="limit-modules" value="java.se,jdk.accessibility,jdk.httpserver,jdk.jartool,jdk.jconsole,jdk.jshell,jdk.jsobject,jdk.management.jfr,jdk.naming.ldap,jdk.net,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported.desktop,jdk.xml.dom,jdk.charsets,jdk.pack,jdk.rmic,jdk.jstatd,jdk.jcmd,jdk.zipfs,jdk.editpad,java.smartcardio,jdk.jlink,jdk.scripting.nashorn.shell,jdk.hotspot.agent,jdk.crypto.cryptoki,jdk.naming.rmi,jdk.crypto.mscapi,jdk.internal.vm.compiler.management,jdk.aot,jdk.naming.dns,jdk.localedata"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
@@ -11,15 +10,9 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src">
+	<classpathentry kind="src" path="src/">
 		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
 			<attribute name="test" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.uhd.ifi.se.decision.management.eclipse">
-		<attributes>
-			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
