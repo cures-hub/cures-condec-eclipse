@@ -3,17 +3,16 @@ package de.uhd.ifi.se.decision.management.eclipse.mock;
 import java.net.URI;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.atlassian.jira.rest.client.api.SearchRestClient;
 import com.atlassian.jira.rest.client.api.domain.Filter;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
-import com.atlassian.util.concurrent.Effect;
-import com.atlassian.util.concurrent.Promise;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.FutureCallback;
+
+import io.atlassian.util.concurrent.Promise;
 
 public class MockSearchRestClient implements SearchRestClient {
 
@@ -38,12 +37,6 @@ public class MockSearchRestClient implements SearchRestClient {
 	@Override
 	public Promise<SearchResult> searchJql(String arg0) {
 		return new Promise<SearchResult>() {
-
-			@Override
-			public void addListener(Runnable arg0, Executor arg1) {
-				// TODO Auto-generated method stub
-
-			}
 
 			@Override
 			public boolean cancel(boolean mayInterruptIfRunning) {
@@ -82,19 +75,19 @@ public class MockSearchRestClient implements SearchRestClient {
 			}
 
 			@Override
-			public Promise<SearchResult> done(Effect<SearchResult> arg0) {
+			public Promise<SearchResult> done(Consumer<? super SearchResult> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public Promise<SearchResult> fail(Effect<Throwable> arg0) {
+			public Promise<SearchResult> fail(Consumer<Throwable> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public <B> Promise<B> flatMap(Function<? super SearchResult, Promise<B>> arg0) {
+			public <B> Promise<B> flatMap(Function<? super SearchResult, ? extends Promise<? extends B>> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -119,11 +112,10 @@ public class MockSearchRestClient implements SearchRestClient {
 			}
 
 			@Override
-			public Promise<SearchResult> then(FutureCallback<SearchResult> arg0) {
+			public Promise<SearchResult> then(TryConsumer<? super SearchResult> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
-
 		};
 	}
 

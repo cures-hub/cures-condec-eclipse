@@ -1,8 +1,9 @@
 # cures-condec-eclipse
 
 [![Build Status](https://travis-ci.org/cures-hub/cures-condec-eclipse.svg?branch=master)](https://travis-ci.org/cures-hub/cures-condec-eclipse)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8e6c96d73a3c4b4aa30d9a2173795233)](https://www.codacy.com/app/UHD/cures-condec-eclipse?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cures-hub/cures-condec-eclipse&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d05c885619e24c5d8fb9113e203d10a4)](https://www.codacy.com/gh/cures-hub/cures-condec-eclipse/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cures-hub/cures-condec-eclipse&amp;utm_campaign=Badge_Grade)
 [![Codecoverage](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master/graph/badge.svg)](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master)
+[![GitHub contributors](https://img.shields.io/github/contributors/cures-hub/cures-condec-eclipse.svg)](https://github.com/cures-hub/cures-condec-eclipse/graphs/contributors)
 
 The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user can capture decision knowledge in code and commit messages and explore relevant knowledge for code. Relevant knowledge is also extracted from the JIRA project.
 
@@ -10,7 +11,7 @@ The CURES ConDec Eclipse plug-in enables the user to capture and explore decisio
 
 ### Prerequisites
 The following prerequisites are necessary to compile the plug-in from source code:
-- Java 8 JDK
+- Java 15 JDK
 - [Maven 3](https://maven.apache.org)
 
 ### Compilation via Terminal
@@ -36,7 +37,7 @@ To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
     - Add Library... / select the *Plug-in Dependencies* (if not already included).
 
 ### Installation in Eclipse
-- Download or compile the cures-condec-eclipse.jar file.
+- [Download](https://github.com/cures-hub/cures-condec-eclipse/releases/latest) or compile the cures-condec-eclipse.jar file.
 - [Install Eclipse](https://www.eclipse.org/downloads/packages/).
 - Navigate to the Eclipse installation folder and copy the cures-condec-eclipse.jar file into the dropins folder (or a similar folder depending on your operation system).
 - Open Eclipse.

@@ -5,7 +5,7 @@
 
 	<groupId>de.uhd.ifi.se.decision</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 
 	<packaging>pom</packaging>
 
@@ -24,7 +24,7 @@
 	<url>https://github.com/cures-hub/cures-condec-eclipse</url>
 
 	<properties>
-		<tycho-version>1.5.1</tycho-version>
+		<tycho-version>2.2.0</tycho-version>
 		<jacoco-version>0.8.6</jacoco-version>
 	</properties>
 
@@ -66,18 +66,52 @@
 
 	<repositories>
 		<repository>
-			<id>eclipse-2019-12</id>
+			<id>eclipse-2020-12</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/releases/2019-09</url>
+			<url>https://download.eclipse.org/releases/2020-12</url>
+		</repository>
+		<repository>
+			<id>atlassian-external</id>
+			<url>https://packages.atlassian.com/mvn/maven-external/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
 		</repository>
 		<repository>
 			<id>atlassian-public</id>
 			<url>https://packages.atlassian.com/maven/repository/public</url>
 		</repository>
+		<repository>
+			<id>maven-atlassian-public</id>
+			<url>http://maven.atlassian.com/public</url>
+		</repository>
+		<repository>
+			<id>atlassian-3party</id>
+			<url>https://packages.atlassian.com/maven-3rdparty/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>Central MVN Repo</name>
+			<url>https://repo1.maven.org/maven2</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -90,20 +124,20 @@
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-rest-java-client-core</artifactId>
-			<version>4.0.0</version>
+			<version>5.2.2</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.atlassian.fugue</groupId>
+			<groupId>io.atlassian.fugue</groupId>
 			<artifactId>fugue</artifactId>
-			<version>2.6.1</version>
+			<version>4.7.2</version>
 		</dependency>
 
 		<!-- JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.10.3</version>
+			<version>2.12.1</version>
 		</dependency>
 
 		<dependency>
@@ -115,27 +149,27 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.10.3</version>
+			<version>2.12.1</version>
 		</dependency>
 
 		<!-- Unirest -->
 		<dependency>
 			<groupId>com.konghq</groupId>
 			<artifactId>unirest-java</artifactId>
-			<version>3.6.01</version>
+			<version>3.11.10</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.konghq</groupId>
 			<artifactId>unirest-objectmapper-jackson</artifactId>
-			<version>3.6.01</version>
+			<version>3.11.10</version>
 		</dependency>
 
 		<!-- Encoding and decoding -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.6</version>
+			<version>1.15</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -143,7 +177,7 @@
 		<dependency>
 			<groupId>com.github.javaparser</groupId>
 			<artifactId>javaparser-core</artifactId>
-			<version>3.14.3</version>
+			<version>3.18.0</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -158,14 +192,13 @@
 			<groupId>org.gephi</groupId>
 			<artifactId>gephi-toolkit</artifactId>
 			<version>0.9.2</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
+			<version>1.7.30</version>
 			<scope>runtime</scope>
 		</dependency>
 

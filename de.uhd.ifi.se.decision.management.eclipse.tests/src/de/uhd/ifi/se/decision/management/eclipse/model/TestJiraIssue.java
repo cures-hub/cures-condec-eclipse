@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
@@ -21,11 +21,11 @@ import de.uhd.ifi.se.decision.management.eclipse.mock.MockIssueRestClient;
 
 public class TestJiraIssue {
 
-	private static JiraClient jiraClient;
-	private static GitClient gitClient;
+	private JiraClient jiraClient;
+	private GitClient gitClient;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		jiraClient = TestJiraClient.initJiraClient();
 		gitClient = TestGitClient.initGitClient();
 	}
@@ -114,16 +114,16 @@ public class TestJiraIssue {
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
 		assertEquals(6, workItem.getLinkedNodes().size());
 	}
-	
+
 	@Test
 	public void testGetNodeId() {
 		JiraIssue workItem = JiraIssue.getOrCreate("ECONDEC-1", jiraClient);
-		
+
 		assertTrue(workItem.getNodeId().equals("ECONDEC-1"));
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		JiraIssue.instances.clear();
 		JiraClient.instances.clear();
 		GitClient.instances.clear();

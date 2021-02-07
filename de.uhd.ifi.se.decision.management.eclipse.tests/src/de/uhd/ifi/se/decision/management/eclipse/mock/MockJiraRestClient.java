@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.atlassian.jira.rest.client.api.AuditRestClient;
 import com.atlassian.jira.rest.client.api.ComponentRestClient;
+import com.atlassian.jira.rest.client.api.GroupRestClient;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.MetadataRestClient;
@@ -83,6 +84,12 @@ public class MockJiraRestClient implements JiraRestClient {
 	@Override
 	public VersionRestClient getVersionRestClient() {
 		// Not used.
+		return null;
+	}
+
+	@Override
+	public GroupRestClient getGroupClient() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -53,9 +53,9 @@ import de.uhd.ifi.se.decision.management.eclipse.view.PreviewSketch;
  */
 public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private static KnowledgeGraphView knowledgeGraphView = null;
-	
+
 	private JFrame frame;
-	
+
 	// Search Node
 	private String searchString;
 	private JTextField searchTextField;
@@ -63,11 +63,11 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	// Enter Node ID
 	private long selectedNodeId = -1;
 	private JTextField selectedNodeTextField;
-	
+
 	// Select Distance
 	private int linkDistance;
 	private JSpinner distanceSpinner;
-	
+
 	// Create Node
 	private JDialog createNode;
 	private JPanel createNodePanel;
@@ -85,7 +85,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	private KnowledgeGraphViewImpl() {
 		this(KnowledgeGraphImpl.getInstance(), "Knowledge Graph");
 	}
-	
+
 	private KnowledgeGraphViewImpl(KnowledgeGraph graph) {
 		this(graph, "Knowledge Graph");
 	}
@@ -103,7 +103,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	 *            frame title of the view.
 	 */
 	private KnowledgeGraphViewImpl(KnowledgeGraph graph, String frameTitle) {
-		
+
 		this.gephiGraph = new GephiGraphImpl(graph);
 
 		this.previewController = Lookup.getDefault().lookup(PreviewController.class);
@@ -133,7 +133,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.searchString = "";
 		createView(frameTitle);
 	}
-	
+
 	/**
 	 * Returns the instance of KnowledgeGraphView.
 	 * 
@@ -145,7 +145,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		}
 		return knowledgeGraphView;
 	}
-	
+
 	/**
 	 * Returns the instance of KnowledgeGraphView.
 	 * If no KnowledgeGraphView exists, return a new one.
@@ -159,7 +159,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		}
 		return knowledgeGraphView;
 	}
-	
+
 	/**
 	 * Returns the instance of KnowledgeGraphView.
 	 * If no KnowledgeGraphView exists, create a new one.
@@ -172,17 +172,17 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		}
 		return knowledgeGraphView;
 	}
-	
+
 	public static void clear() {
 		knowledgeGraphView = null;
 	}
-	
+
 	@Override
 	public void update(KnowledgeGraph graph) {
 		this.gephiGraph = new GephiGraphImpl(graph);
 
 		GraphSettings.initPreviewModel(previewController);
-		
+
 		updateNodeSizes();
 		refresh();
 	}
@@ -240,7 +240,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.insets = new Insets(5, 10, 0, 10);
 		selectedNodeTextField = createHintTextField("Enter ID...");
 		panel.add(selectedNodeTextField, c);
-		
+
 		// Highlight Node Button
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
@@ -264,7 +264,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.gridy = 4;
 		c.insets = new Insets(5, 10, 0, 10);
 		panel.add(createFilterPanel(), c);
-		
+
 		// Reset FilterButton
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -272,7 +272,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.gridy = 5;
 		c.insets = new Insets(0, 10, 5, 10);
 		panel.add(createResetButton(), c);
-		
+
 		// Show Full Graph Button
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -280,7 +280,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		c.gridy = 6;
 		c.insets = new Insets(5, 10, 5, 10);
 		panel.add(createShowFullGraphButton(), c);
-		
+
 		// Select Distance Field
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
@@ -292,7 +292,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor) editor;
 		spinnerEditor.getTextField().setHorizontalAlignment(JTextField.CENTER);
 		panel.add(distanceSpinner, c);
-				
+
 		// Select Distance Button
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -313,7 +313,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 
 		return panel;
 	}
-	
+
 	private JButton createSearchButton() {
 		JButton searchButton = createButton("Search");
 		searchButton.addActionListener(new ActionListener() {
@@ -326,10 +326,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
-		
+
 		return searchButton;
 	}
-	
+
 	private JButton createJumpToButton() {
 		JButton jumpToButton = createButton("Jump to");
 		jumpToButton.addActionListener(new ActionListener() {
@@ -353,7 +353,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				}
 			}
 		});
-		
+
 		return jumpToButton;
 	}
 
@@ -376,7 +376,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
-		
+
 		return selectedNodeButton;
 	}
 
@@ -389,10 +389,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				updateNodeSizes();
 			}
 		});
-		
+
 		return resetButton;
 	}
-	
+
 	private JButton createShowFullGraphButton() {
 		JButton showFullGraphButtonButton = createButton("Show Full Graph");
 		showFullGraphButtonButton.addActionListener(new ActionListener() {
@@ -405,10 +405,10 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				knowledgeGraphView.update(knowledgeGraph);
 			}
 		});
-		
+
 		return showFullGraphButtonButton;
 	}
-	
+
 	private JButton createDistanceButton() {
 		JButton distanceButton = createButton("<html>" + "Change" + "<br>" + "Distance" + "</html>");
 		distanceButton.addActionListener(new ActionListener() {
@@ -418,13 +418,13 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 					linkDistance = (Integer) distanceSpinner.getValue();
 					KnowledgeGraph knowledgeGraphOld = KnowledgeGraphImpl.getInstance();
 					Node startNode = knowledgeGraphOld.getStartNode();
-					
+
 					if (startNode != null) {
 						KnowledgeGraphImpl.clear();
-		    			KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, linkDistance);
-		    			knowledgeGraph.updateWithPersistanceData();
-		    			KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
-		    			knowledgeGraphView.update(knowledgeGraph);
+						KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(startNode, linkDistance);
+						knowledgeGraph.updateWithPersistanceData();
+						KnowledgeGraphView knowledgeGraphView = KnowledgeGraphViewImpl.getInstance();
+						knowledgeGraphView.update(knowledgeGraph);
 					}
 				}
 				catch (Exception ex) {
@@ -432,7 +432,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 				}
 			}
 		});
-		
+
 		return distanceButton;
 	}
 
@@ -445,14 +445,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		for (Filter filter : graphFiltering.filters.values()) {
 			filterPanel.add(filter.getCheckBox());
 		}
-		
+
 		return filterPanel;
 	}
 
 	private JTextField createHintTextField(String hint) {
 		JTextField textField = new HintTextField(hint);
 		textField.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		return textField;
 	}
 
@@ -460,7 +460,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JButton button = new JButton();
 		button.setText(text);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		return button;
 	}
 
@@ -471,14 +471,14 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		JLabel label = new JLabel("Layout:");
 		layoutPanel.add(label);
 		layoutPanel.add(createLayoutTypeComboBox());
-		
+
 		return layoutPanel;
 	}
 
 	private JComboBox<LayoutType> createLayoutTypeComboBox() {
 		JComboBox<LayoutType> layoutTypeComboBox = new JComboBox<LayoutType>(LayoutType.values());
 		layoutTypeComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		return layoutTypeComboBox;
 	}
 
@@ -488,6 +488,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		this.previewSketch.refreshWorkspace(this.gephiGraph.getWorkspace());
 	}
 
+	@Override
 	public boolean resetFilters() {
 		searchString = "";
 		searchTextField.setText(null);
@@ -496,7 +497,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		selectedNodeTextField.setText(null);
 
 		resetFilterCheckboxes();
-		
+
 		return true;
 	}
 
@@ -569,7 +570,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		gephiGraph.setSizeOfNode(selectedNodeId, 5f);
 
 		highlightNode(node, 1, linkDistance, 5f / decreaseFactor, visitedNodes);
-		
+
 		return true;
 	}
 
@@ -588,42 +589,42 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean highlightSelectedNodeAndUpdate(Node selectedNode) {
 		selectedNodeId = selectedNode.getId();
 		highlightSelectedNode();
 		refresh();
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean createNode() {
 		createNode = new JDialog(frame, "Create Decision Knowledge");
 		createNode.getContentPane().setLayout(new BoxLayout(createNode.getContentPane(), BoxLayout.PAGE_AXIS));
 
 		createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(5, 1));
-    	
-    	createCreateNodePanelDecisionKnowledgeElement();
-		
+		createNodePanel.setLayout(new GridLayout(5, 1));
+
+		createCreateNodePanelDecisionKnowledgeElement();
+
 		createNode.pack();
 		createNode.setLocationRelativeTo(frame);
 		createNode.setVisible(true);
-		
+
 		return true;
 	}
-	
+
 	private void createCreateNodePanelDecisionKnowledgeElement() {
 		createNodePanel = new JPanel();
-    	createNodePanel.setLayout(new GridLayout(7, 1));
-    	
-    	JLabel enterDecisionTypesLabel = new JLabel("Select decision type:");
+		createNodePanel.setLayout(new GridLayout(7, 1));
+
+		JLabel enterDecisionTypesLabel = new JLabel("Select decision type:");
 		createNodePanel.add(enterDecisionTypesLabel);
 		decisionTypesComboBox = createDecisionTypeComboBox();
 		createNodePanel.add(decisionTypesComboBox);
-    	
+
 		JLabel enterSummaryLabel = new JLabel("Enter a summary:");
 		createNodePanel.add(enterSummaryLabel);
 		enterSummaryTextField = new JTextField();
@@ -632,13 +633,13 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 		createNodePanel.add(enterDescriptionLabel);
 		enterDescriptionTextField = new JTextField();
 		createNodePanel.add(enterDescriptionTextField);
-		
+
 		createNodePanel.add(createCreateNodeButton());
 
 		createNode.add(createNodePanel);
 		createNode.pack();
 	}
-	
+
 	private JComboBox<String> createDecisionTypeComboBox() {
 		KnowledgeType[] knowledgeTypes = KnowledgeType.values();
 		int knowledgeTypesLength = knowledgeTypes.length;
@@ -653,23 +654,24 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 			}
 		}
 		JComboBox<String> comboBox = new JComboBox<String>(knowledgeTypesStrings);
-		
+
 		return comboBox;
 	}
-	
+
 	private JButton createCreateNodeButton() {
 		JButton button = new JButton("Create Node");
-		
+
 		button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	String type = (String) decisionTypesComboBox.getSelectedItem();
-            	String summary = enterSummaryTextField.getText();
-            	String description = enterDescriptionTextField.getText();
-            	KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description);
-            	createNode.dispose();
-            }
-        });
-		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String type = (String) decisionTypesComboBox.getSelectedItem();
+				String summary = enterSummaryTextField.getText();
+				String description = enterDescriptionTextField.getText();
+				KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description);
+				createNode.dispose();
+			}
+		});
+
 		return button;
 	}
 
@@ -677,7 +679,7 @@ public class KnowledgeGraphViewImpl implements KnowledgeGraphView {
 	public int getLinkDistance() {
 		return linkDistance;
 	}
-	
+
 	@Override
 	public GephiGraph getGephiGraph() {
 		return gephiGraph;

@@ -7,19 +7,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Page;
 import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.Votes;
 import com.atlassian.jira.rest.client.api.domain.Watchers;
@@ -28,10 +32,8 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
-import com.atlassian.util.concurrent.Effect;
-import com.atlassian.util.concurrent.Promise;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.FutureCallback;
+
+import io.atlassian.util.concurrent.Promise;
 
 public class MockIssueRestClient implements IssueRestClient {
 
@@ -50,7 +52,7 @@ public class MockIssueRestClient implements IssueRestClient {
 			return null;
 		}
 	}
-	
+
 	public static List<Issue> getAllIssues() {
 		List<Issue> issues = new ArrayList<Issue>();
 		issues.add(getMockIssue("ECONDEC-1"));
@@ -126,6 +128,18 @@ public class MockIssueRestClient implements IssueRestClient {
 	}
 
 	@Override
+	public Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(String arg0, String arg1, Long arg2, Integer arg3) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(String arg0, Long arg1, Integer arg2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public Promise<Iterable<CimProject>> getCreateIssueMetadata(GetCreateIssueMetadataOptions arg0) {
 		// TODO Auto-generated method stub
 		return null;
@@ -133,12 +147,8 @@ public class MockIssueRestClient implements IssueRestClient {
 
 	@Override
 	public Promise<Issue> getIssue(String key) {
-		Promise<Issue> promise = new Promise<Issue>() {
-
-			@Override
-			public void addListener(Runnable arg0, Executor arg1) {
-				// TODO Auto-generated method stub
-			}
+		// TODO Auto-generated method stub
+		return new Promise<Issue>() {
 
 			@Override
 			public boolean cancel(boolean mayInterruptIfRunning) {
@@ -177,19 +187,19 @@ public class MockIssueRestClient implements IssueRestClient {
 			}
 
 			@Override
-			public Promise<Issue> done(Effect<Issue> arg0) {
+			public Promise<Issue> done(Consumer<? super Issue> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public Promise<Issue> fail(Effect<Throwable> arg0) {
+			public Promise<Issue> fail(Consumer<Throwable> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public <B> Promise<B> flatMap(Function<? super Issue, Promise<B>> arg0) {
+			public <B> Promise<B> flatMap(Function<? super Issue, ? extends Promise<? extends B>> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -214,12 +224,11 @@ public class MockIssueRestClient implements IssueRestClient {
 			}
 
 			@Override
-			public Promise<Issue> then(FutureCallback<Issue> arg0) {
+			public Promise<Issue> then(TryConsumer<? super Issue> arg0) {
 				// TODO Auto-generated method stub
 				return null;
 			}
 		};
-		return promise;
 	}
 
 	@Override
