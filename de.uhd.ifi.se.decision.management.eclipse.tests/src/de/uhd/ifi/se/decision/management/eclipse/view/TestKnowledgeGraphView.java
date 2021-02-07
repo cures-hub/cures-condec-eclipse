@@ -206,6 +206,6 @@ public class TestKnowledgeGraphView {
 	}
 
 	public static void main(String[] args) {
-		setUp();
+		setUpBeforeClass();
 	}
 }
