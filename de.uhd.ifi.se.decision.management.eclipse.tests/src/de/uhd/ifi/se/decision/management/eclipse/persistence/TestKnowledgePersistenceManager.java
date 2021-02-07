@@ -11,8 +11,8 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openide.util.Lookup;
@@ -36,11 +36,11 @@ public class TestKnowledgePersistenceManager {
 	final private static String KNOWLEDGE_LOCATION_FOLDER = "target";
 	final private static String KNOWLEDGE_LOCATION_FILE = "knowledge.json";
 
-	private static GitClient gitClient;
-	private static JiraClient jiraClient;
+	private GitClient gitClient;
+	private JiraClient jiraClient;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		gitClient = TestGitClient.initGitClient();
 		jiraClient = TestJiraClient.initJiraClient();
 	}
@@ -535,8 +535,8 @@ public class TestKnowledgePersistenceManager {
 		assertTrue(KnowledgePersistenceManager.createDecisionKnowledgeElementInJira(type, summary, description));
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		KnowledgeGraphImpl.clear();
 		Node.nodes.clear();
 		GitClient.instances.clear();

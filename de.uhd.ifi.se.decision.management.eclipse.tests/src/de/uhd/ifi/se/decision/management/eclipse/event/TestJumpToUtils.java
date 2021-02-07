@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -28,11 +28,11 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 
 public class TestJumpToUtils {
 
-	private static JiraClient jiraClient;
-	private static GitClient gitClient;
+	private JiraClient jiraClient;
+	private GitClient gitClient;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		jiraClient = TestJiraClient.initJiraClient();
 		gitClient = TestGitClient.initGitClient();
 	}
@@ -91,8 +91,7 @@ public class TestJumpToUtils {
 
 	@Test
 	public void testJumpToDecisionKnowledgeElement() {
-		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is a decision!");
+		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE, "This is a decision!");
 		element.setType(KnowledgeType.DECISION);
 		try {
 			boolean elementOpened = JumpToUtils.jumpTo(element);
@@ -102,8 +101,8 @@ public class TestJumpToUtils {
 		}
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		JiraClient.instances.clear();
 		GitClient.instances.clear();
 		JiraIssue.instances.clear();

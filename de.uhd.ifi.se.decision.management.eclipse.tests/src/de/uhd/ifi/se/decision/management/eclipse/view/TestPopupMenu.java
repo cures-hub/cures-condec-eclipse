@@ -7,8 +7,8 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openide.util.Lookup;
 
@@ -28,66 +28,66 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 public class TestPopupMenu {
-	
-	private static GitClient gitClient;
-	private static JiraClient jiraClient;
-	
-	@BeforeClass
-	public static void setUp() {
+
+	private GitClient gitClient;
+	private JiraClient jiraClient;
+
+	@Before
+	public void setUp() {
 		gitClient = TestGitClient.initGitClient();
 		jiraClient = TestJiraClient.initJiraClient();
 	}
-	
+
 	@Test
 	public void testPopupMenu() {
 		KnowledgeGraphImpl.clear();
-		
-		KnowledgeGraph knowledgeGraph =  KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
-		
+
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+
 		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
-		
+
 		knowledgeGraph.addVertex(node);
-		
+
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		Workspace workspace = projectController.getCurrentWorkspace();
 		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        
-        org.gephi.graph.api.Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
-        gephiNode.setLabel("[0] test");
-        
-        assertNotNull(new PopupMenu(gephiNode));
+
+		org.gephi.graph.api.Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
+		gephiNode.setLabel("[0] test");
+
+		assertNotNull(new PopupMenu(gephiNode));
 	}
-	
+
 	@Test
 	public void testPopupMenuMethod() {
 		KnowledgeGraphImpl.clear();
-		
-		KnowledgeGraph knowledgeGraph =  KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
-		
+
+		KnowledgeGraph knowledgeGraph = KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
+
 		ChangedFile file = new ChangedFileImpl(new Path("./file1"));
 		CodeMethod node = new CodeMethodImpl("testMethod()", file);
-		
+
 		knowledgeGraph.addVertex(node);
-		
+
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		Workspace workspace = projectController.getCurrentWorkspace();
 		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        
-        org.gephi.graph.api.Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
-        gephiNode.setLabel("[0] test");
-        
-        assertNotNull(new PopupMenu(gephiNode));
+
+		org.gephi.graph.api.Node gephiNode = graphModel.factory().newNode(String.valueOf(node.getId()));
+		gephiNode.setLabel("[0] test");
+
+		assertNotNull(new PopupMenu(gephiNode));
 	}
-	
+
 	@Test
 	public void testPopupMenuNull() {
-        assertNotNull(new PopupMenu(null));
+		assertNotNull(new PopupMenu(null));
 	}
-	
-	@AfterClass
-	public static void tearDown() {
+
+	@After
+	public void tearDown() {
 		KnowledgeGraphImpl.clear();
 		KnowledgeGraphViewImpl.clear();
 		Node.nodes.clear();
