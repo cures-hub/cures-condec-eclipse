@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.Path;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -22,16 +21,12 @@ import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImp
 
 public class TestKnowledgeGraphView {
 
-	private static KnowledgeGraphView knowledgeGraphView;
-	private static KnowledgeGraph knowledgeGraph;
+	private KnowledgeGraphView knowledgeGraphView;
+	private KnowledgeGraph knowledgeGraph;
 
 	@Before
 	public void setUp() {
 		knowledgeGraph = initKnowledgeGraph();
-	}
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
 		KnowledgeGraphViewImpl.clear();
 		knowledgeGraphView = KnowledgeGraphViewImpl.getInstance(knowledgeGraph);
 	}
@@ -77,7 +72,8 @@ public class TestKnowledgeGraphView {
 
 	@Test
 	public void testGetInstanceFrameTitle() {
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertNotNull(knowledgeGraphViewTest);
 	}
@@ -86,7 +82,8 @@ public class TestKnowledgeGraphView {
 	public void testGetInstanceFrameTitleNull() {
 		KnowledgeGraphViewImpl.clear();
 
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertNotNull(knowledgeGraphViewTest);
 	}
@@ -116,7 +113,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testResetFilters() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertTrue(knowledgeGraphViewTest.resetFilters());
 	}
@@ -124,7 +122,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testHighlightSelectedNode() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
 
@@ -138,7 +137,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testHighlightSelectedNodeNull() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertFalse(knowledgeGraphViewTest.highlightSelectedNode());
 	}
@@ -146,7 +146,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testHighlightNode() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
 
@@ -158,7 +159,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testHighlightNodeNull() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertFalse(knowledgeGraphViewTest.highlightNode(null));
 	}
@@ -166,7 +168,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testHighlightSelectedNodeAndUpdate() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		ChangedFile node = new ChangedFileImpl(new Path("./file1"));
 
@@ -178,7 +181,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testCreateNode() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertTrue(knowledgeGraphViewTest.createNode());
 	}
@@ -186,7 +190,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testGetLinkDistance() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertTrue(knowledgeGraphViewTest.getLinkDistance() == 2);
 	}
@@ -194,7 +199,8 @@ public class TestKnowledgeGraphView {
 	@Test
 	public void testGetGephiGraph() {
 		KnowledgeGraphViewImpl.clear();
-		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph, "Knowledge Graph");
+		KnowledgeGraphView knowledgeGraphViewTest = KnowledgeGraphViewImpl.getInstance(knowledgeGraph,
+				"Knowledge Graph");
 
 		assertNotNull(knowledgeGraphViewTest.getGephiGraph());
 	}
@@ -206,6 +212,7 @@ public class TestKnowledgeGraphView {
 	}
 
 	public static void main(String[] args) {
-		setUpBeforeClass();
+		new TestKnowledgeGraphView().setUp();
+		;
 	}
 }
