@@ -7,10 +7,10 @@
 
 The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user can capture decision knowledge in code and commit messages and explore relevant knowledge for code. Relevant knowledge is also extracted from the Jira project.
 
-## User Interface and Usage Example
+## User Interface and Usage Description
 
 ### Configuration
-Before you can start using the plugin, you need to configure the git repository and Jira project for the Eclipse project. Select `Project` -> `Properties` -> `ConDec` and add your configuration there.
+Before you can start using the plugin, you need to configure the git repository and Jira project associated to your Eclipse project. Select `Project` -> `Properties` -> `ConDec` and add your configuration there.
 
 ![Project Settings](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/configuration.png)
 *Project Settings*
@@ -56,15 +56,15 @@ The precompiled .jar-File for the latest release can be found here: https://gith
 - Navigate to the Eclipse installation folder and copy the cures-condec-eclipse.jar file into the dropins folder (or a similar folder depending on your operation system).
 - Open Eclipse. (Make sure that the eclipse.ini file points to Java 15 JDK.)
 
-### Develop in Eclipse
+## Develop in Eclipse
 The following subsections are important if you want to contribute as a developer.
 
-#### Prerequisites
+### Prerequisites
 - [Install Eclipse IDE for RCP and RAP Developers](https://www.eclipse.org/downloads/packages/) and open it. (Make sure that the eclipse.ini file points to Java 15 JDK.)
 - [Install the Tycho Maven plug-in.](http://codeandme.blogspot.com/2012/12/tycho-build-1-building-plug-ins.html)
 - [Install the M2E Connector for the Maven Dependency Plugin.](https://marketplace.eclipse.org/content/m2e-connector-maven-dependency-plugin)
 
-#### Import the Plugin
+### Import the Plugin
 To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
 - Import the project as an Existing Maven Project.
 - Run *mvn clean install* in the parent project (cures-condec-eclipse folder) to download the necessary dependendencies into the de.uhd.ifi.se.decision.management.eclipse/lib folder.
@@ -72,7 +72,7 @@ To evolve the ConDec Eclipse plug-in, it needs to be imported into Eclipse.
     - Add JARs... / select all jar-files in the lib folder (if not already included).
     - Add Library... / select the *Plug-in Dependencies* (if not already included).
 
-#### Setting up Dependencies
+### Setting up Dependencies
 The following steps might be necessary to correctly setup Eclipse, in particular, after you added a or updated an existing dependency:
 
 1. Update the pom.xml in the main/parent folder (add new dependency or update the version of an existing dependency, such as jira-rest-java-client-core from 4.0.0 to 5.2.2). Do not change the nested pom.xml files. (There are four pom.xml files in total.)
@@ -84,5 +84,5 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 ![Runtime Tab](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/runtime_tab.png)
 *Runtime Tab*
 
-#### Run as a second Eclipse Application
-You can start a second Eclipse instance containing the plugin by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 
+### Run as a second Eclipse Application
+You can start a second Eclipse instance containing the plugin  from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 

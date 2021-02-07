@@ -1,13 +1,11 @@
 package de.uhd.ifi.se.decision.management.eclipse.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.GitClient;
@@ -60,8 +58,8 @@ public class TestDecisionKnowledgeElement {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		element.setCommit(commits.get(0));
 
-		assertTrue(element.getNodeId()
-				.equals("DKE: Decision commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 -----p"));
+		assertEquals(element.getNodeId(),
+				"DKE: Decision commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 ------p");
 	}
 
 	@After
