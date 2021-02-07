@@ -66,30 +66,17 @@
 
 	<repositories>
 		<repository>
-			<id>eclipse-2019-12</id>
+			<id>eclipse-2020-12</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/releases/2019-09</url>
+			<url>https://download.eclipse.org/releases/2020-12</url>
 		</repository>
 		<repository>
 			<id>atlassian-public</id>
-			<url>https://packages.atlassian.com/maven/repository/public</url>
+			<url>https://packages.atlassian.com/maven-public/</url>
 		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>atlassian-public</id>
-			<url>https://m2proxy.atlassian.com/repository/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
