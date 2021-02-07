@@ -90,7 +90,7 @@
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-rest-java-client-core</artifactId>
-			<version>4.0.0</version>
+			<version>5.2.2</version>
 		</dependency>
 
 		<dependency>
