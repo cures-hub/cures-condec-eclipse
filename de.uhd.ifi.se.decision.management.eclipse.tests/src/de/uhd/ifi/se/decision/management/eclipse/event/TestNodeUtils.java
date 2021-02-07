@@ -26,13 +26,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 
 public class TestNodeUtils {
 
-	private GitClient gitClient;
-	private JiraClient jiraClient;
-
 	@Before
 	public void setUp() {
-		gitClient = TestGitClient.initGitClient();
-		jiraClient = TestJiraClient.initJiraClient();
+		GitClient gitClient = TestGitClient.initGitClient();
+		JiraClient jiraClient = TestJiraClient.initJiraClient();
 		KnowledgeGraphImpl.getInstance(gitClient, jiraClient);
 	}
 
