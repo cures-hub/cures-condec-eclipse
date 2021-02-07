@@ -19,7 +19,7 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>1.5.1</version>
+				<version>${tycho-version}</version>
 				<configuration>
 					<verbose>true</verbose>
 				</configuration>
