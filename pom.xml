@@ -71,8 +71,43 @@
 			<url>https://download.eclipse.org/releases/2020-12</url>
 		</repository>
 		<repository>
+			<id>atlassian-external</id>
+			<url>https://packages.atlassian.com/mvn/maven-external/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
 			<id>atlassian-public</id>
-			<url>https://packages.atlassian.com/maven-public/</url>
+			<url>https://packages.atlassian.com/maven/repository/public</url>
+		</repository>
+		<repository>
+			<id>maven-atlassian-public</id>
+			<url>http://maven.atlassian.com/public</url>
+		</repository>
+		<repository>
+			<id>atlassian-3party</id>
+			<url>https://packages.atlassian.com/maven-3rdparty/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>Central MVN Repo</name>
+			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 	</repositories>
 
