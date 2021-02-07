@@ -21,6 +21,8 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.KnowledgeGraphImpl;
 import de.uhd.ifi.se.decision.management.eclipse.view.impl.KnowledgeGraphViewImpl;
 
 @Ignore
+// On Travis CI: Cannot read field "drawGlyphListAALoop" because "sg2d.loops" is
+// null
 public class TestKnowledgeGraphView {
 
 	private KnowledgeGraphView knowledgeGraphView;
