@@ -54,7 +54,6 @@ public class TestDecisionKnowledgeElement {
 	}
 
 	@Test
-	@Ignore
 	public void testGetNodeId() {
 		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
 				"This is a decision!");
