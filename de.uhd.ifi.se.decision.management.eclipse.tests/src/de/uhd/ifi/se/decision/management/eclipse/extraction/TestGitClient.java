@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.GitClientImpl;
@@ -24,11 +24,11 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
 
 public class TestGitClient {
 
-	private static GitClient gitClient;
-	private static IPath path;
+	private GitClient gitClient;
+	private IPath path;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		path = initPathToGitRepo();
 		gitClient = initGitClient(path);
 	}
@@ -134,8 +134,8 @@ public class TestGitClient {
 		assertEquals(5, changedFiles.size());
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
 		ChangedFile.instances.clear();

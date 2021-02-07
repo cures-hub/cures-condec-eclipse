@@ -11,8 +11,8 @@ import java.util.Set;
 
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,10 +23,10 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
 
 public class TestJiraClient {
 
-	private static JiraClient jiraClient;
+	private JiraClient jiraClient;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		jiraClient = initJiraClient();
 	}
 
@@ -104,8 +104,8 @@ public class TestJiraClient {
 		assertFalse(jiraClient.createIssue(payload));
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		JiraIssue.instances.clear();
 		JiraClient.instances.clear();
 	}

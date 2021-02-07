@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -18,10 +18,10 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.GitCommitImpl;
 
 public class TestGitCommit {
 
-	private static GitClient gitClient;
+	private GitClient gitClient;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		gitClient = TestGitClient.initGitClient();
 	}
 
@@ -74,8 +74,8 @@ public class TestGitCommit {
 		assertTrue(commit.getNodeId().equals("commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 -----p"));
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
 		ChangedFile.instances.clear();

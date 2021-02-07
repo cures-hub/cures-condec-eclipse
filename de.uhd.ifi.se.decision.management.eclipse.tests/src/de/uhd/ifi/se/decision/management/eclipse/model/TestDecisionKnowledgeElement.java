@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -16,25 +16,23 @@ import de.uhd.ifi.se.decision.management.eclipse.model.impl.DecisionKnowledgeEle
 
 public class TestDecisionKnowledgeElement {
 
-	private static GitClient gitClient;
+	private GitClient gitClient;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		gitClient = TestGitClient.initGitClient();
 	}
 
 	@Test
 	public void testSetAndGetKnowledgeType() {
-		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE,
-				"This is a decision!");
+		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.ISSUE, "This is a decision!");
 		element.setType(KnowledgeType.DECISION);
 		assertEquals(KnowledgeType.DECISION, element.getType());
 	}
 
 	@Test
 	public void testSetAndGetSummary() {
-		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION,
-				"How to ...?");
+		DecisionKnowledgeElement element = new DecisionKnowledgeElementImpl(KnowledgeType.DECISION, "How to ...?");
 		element.setSummary("This is a decision!");
 		assertEquals("This is a decision!", element.getSummary());
 	}
@@ -63,11 +61,12 @@ public class TestDecisionKnowledgeElement {
 		List<GitCommit> commits = gitClient.getCommitsForJiraIssue("ECONDEC-1");
 		element.setCommit(commits.get(0));
 
-		assertTrue(element.getNodeId().equals("DKE: Decision commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 -----p"));
+		assertTrue(element.getNodeId()
+				.equals("DKE: Decision commit 907be0618dbdf6640cac49e1ce52e2d349310c06 1559134638 -----p"));
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		GitClient.instances.clear();
 		GitCommit.instances.clear();
 	}
