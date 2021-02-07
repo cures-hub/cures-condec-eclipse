@@ -55,6 +55,7 @@ public class TestGitClient {
 		IPath path = new Path(canonicalPath);
 		path = path.removeLastSegments(1);
 		path = path.append(".git");
+		System.out.println(path);
 		return path;
 	}
 
