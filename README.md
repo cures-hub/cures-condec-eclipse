@@ -83,6 +83,7 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 3. Run `maven clean package -DskipTests` which will refill the lib folder including the new or updated dependencies.
 4. Update the .classpath of the de.uhd.ifi.se.decision.management.eclipse project. Add all .jar-files in the lib folder and export them so that they can be found by the test project.
 5. Update the `MANIFEST.MF` and the `build.properties` using the Eclipse GUI. Navigate to `Runtime` and add all libraries as `Exported Packages` and make sure that the `Classpath` contains all .jar files.
+6. Make sure that the file `MANIFEST.MF` contains the entry `Bundle-ClassPath: .,`.
 
 ![Runtime Tab](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/runtime_tab.png)
 *Runtime Tab*
