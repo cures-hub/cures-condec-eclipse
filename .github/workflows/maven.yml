@@ -10,6 +10,17 @@ jobs:
       with:
         java-version: '15'
         distribution: 'adopt'
+    - name: maven-settings-xml-action
+      uses: whelk-io/maven-settings-xml-action@v4
+      with:
+        mirrors: '[{ "id": "mirror1", "mirrorOf": "central", "url": "https://repo.maven.apache.org/maven2" }]'
+    - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
     - name: Build with Maven
       run: mvn clean install -P jacoco
     - name: Report test coverage via Codecov

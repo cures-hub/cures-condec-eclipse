@@ -105,15 +105,40 @@
 		</repository>
 		<repository>
 			<id>central</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<name>Central MVN Repo</name>
 			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 		<repository>
 			<id>netbeans</id>
 			<name>NetBeans</name>
-			<url>http://netbeans.apidesign.org/maven2/</url>
+			<url>http://netbeans.apidesign.org/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<dependencies>
 		<!-- Testing -->
@@ -196,41 +221,6 @@
 			<groupId>org.gephi</groupId>
 			<artifactId>gephi-toolkit</artifactId>
 			<version>0.9.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.netbeans.modules</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.netbeans.api</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.netbeans.modules</groupId>
-			<artifactId>org-netbeans-modules-masterfs</artifactId>
-			<version>RELEASE82</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.netbeans.modules</groupId>
-			<artifactId>org-netbeans-core-startup-base</artifactId>
-			<version>RELEASE82</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.netbeans.modules</groupId>
-			<artifactId>org-netbeans-core</artifactId>
-			<version>RELEASE82</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.netbeans.api</groupId>
-			<artifactId>org-openide-util-lookup</artifactId>
-			<version>RELEASE82</version>
-		</dependency>
-		<dependency>
-			<groupId>org.netbeans.api</groupId>
-			<artifactId>org-openide-util</artifactId>
-			<version>RELEASE82</version>
 		</dependency>
 
 		<!-- Logging -->
