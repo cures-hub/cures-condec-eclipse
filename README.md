@@ -10,7 +10,7 @@ Decision knowledge covers knowledge about decisions, the problems they address, 
 The user explores linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. 
 The knowledge elements are extracted from the Jira and git projects associated to the Eclipse project. 
 Trace links between code files and Jira issues are created via the Jira issue identifier in commit messages. 
-The user captures decision knowledge in code comments and commit messages. 
+The user (i.e. a software developer) captures decision knowledge in code comments and commit messages. 
 
 ## User Interface and Usage Description
 
@@ -21,19 +21,27 @@ Before you can start using the plug-in, you need to configure the git repository
 
 *Project Settings*
 
-### Knowledge Graph View in Eclipse
-The knowledge graph consists of knowledge elements (i.e. decision knowledge elements but also other artifacts) and links (i.e. trace links). You can view the **entire knowledge graph** consisting of code files, commits, decision knowledge elements, and Jira issues (e.g. requirements, work items) for a project. The knowledge graph is interactive: You can create, update, and delete knowledge elements and links. The view provides various filters.
+### Knowledge Graph View in Jira
+The ConDec Eclipse plug-in enables to quickly navigate from the currently active code file to Jira, 
+where decision knowledge and other knowledge elements are shown in various views on the **knowledge graph** (e.g. as a tree, graph, and matrix view).
+![Knowledge Graph View in Jira](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/subgraph_from_code_file.png)
+*Knowledge Graph View in Jira*
 
-![Entire Knowledge Graph for a Project](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/knowledge_graph_condec_eclipse.png)
-*Entire Knowledge Graph for a Project*
-
-To explore linked knowledge elements for a specific code file, select a file in the `Project Explorer` and open the context menu. There, you find the new entry `ConDec` with different options for knowledge exploration:
+To navigate to Jira and to explore linked knowledge elements for a specific code file, select a file in the `Project Explorer` and open the context menu. 
+There, you find the new entry `ConDec` with different options for knowledge exploration:
 
 ![Context Menu on a Code File](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/context_menu.png)
 *Context Menu on a Code File*
 
-### Knowledge Graph View in Jira
-similar as in the VSCode plug-in
+### Knowledge Graph View in Eclipse
+The knowledge graph consists of knowledge elements (i.e. decision knowledge elements but also other artifacts) and links (i.e. trace links). 
+You can see the **entire knowledge graph** consisting of code files, commits, decision knowledge elements, and Jira issues (e.g. requirements, work items) for a project. 
+The knowledge graph is interactive: You can create, update, and delete knowledge elements and links. 
+The view provides various filters.
+However, **we recommend to navigate to Jira and use the views there** as they are much more advanced (see above).
+
+![Entire Knowledge Graph for a Project](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/knowledge_graph_condec_eclipse.png)
+*Entire Knowledge Graph for a Project*
 
 ### Textual Representation of Knowledge Graph in Eclipse
 The plug-in offers two views for textual knowledge presentation. Go to `Window` -> `Show View` -> `Other...` and add the views *KnowledgeExploration* and *ChangeImpactAnalysis*. Then, select a file in the `Project Explorer` and open the context menu. There, you find the  entry `ConDec` with the submenu `Extract Knowledge`.
@@ -95,4 +103,4 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 *Runtime Tab*
 
 ### Run as a second Eclipse Application
-You can start a second Eclipse instance containing the plug-in  from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 
+You can start a second Eclipse instance containing the plug-in from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 

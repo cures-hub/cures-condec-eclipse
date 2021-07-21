@@ -2,17 +2,6 @@
 <!DOCTYPE project>
 <plugin>	    
    <extension
-         id="de.uhd.ifi.se.decision.management.eclipse.event.DecisionCompletionProposalComputer"
-         name="DecisionCompletionProposalComputer"
-         point="org.eclipse.jdt.ui.javaCompletionProposalComputer">
-      <javaCompletionProposalComputer
-            activate="true"
-            categoryId="org.eclipse.jdt.ui.defaultProposalCategory"
-            class="de.uhd.ifi.se.decision.management.eclipse.event.DecisionCompletionProposalComputer"
-            needsSortingAfterFiltering="false">
-      </javaCompletionProposalComputer>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <view
             class="de.uhd.ifi.se.decision.management.eclipse.view.DecisionExplorationView"

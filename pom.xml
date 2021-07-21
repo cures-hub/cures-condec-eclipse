@@ -105,6 +105,11 @@
 			</releases>
 		</repository>
 		<repository>
+			<id>netbeans</id>
+			<name>NetBeans</name>
+			<url>http://netbeans.apidesign.org/maven2</url>
+		</repository>
+		<repository>
 			<id>central</id>
 			<name>Central MVN Repo</name>
 			<url>https://repo1.maven.org/maven2</url>
