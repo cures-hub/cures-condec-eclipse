@@ -1,11 +1,16 @@
 # cures-condec-eclipse
 
-[![Build Status](https://travis-ci.org/cures-hub/cures-condec-eclipse.svg?branch=master)](https://travis-ci.org/cures-hub/cures-condec-eclipse)
+[![Build Status](https://app.travis-ci.com/cures-hub/cures-condec-eclipse.svg?branch=master)](https://app.travis-ci.com/cures-hub/cures-condec-eclipse)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d05c885619e24c5d8fb9113e203d10a4)](https://www.codacy.com/gh/cures-hub/cures-condec-eclipse/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cures-hub/cures-condec-eclipse&amp;utm_campaign=Badge_Grade)
 [![Codecoverage](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master/graph/badge.svg)](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master)
 [![GitHub contributors](https://img.shields.io/github/contributors/cures-hub/cures-condec-eclipse.svg)](https://github.com/cures-hub/cures-condec-eclipse/graphs/contributors)
 
-The CURES ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). The user explores linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. The knowledge elements are extracted from the Jira and git projects associated to the Eclipse project. Trace links between code files and Jira issues are created via the Jira issue identifier in commit messages. The user captures decision knowledge in code comments and commit messages. 
+The ConDec Eclipse plug-in enables the user to capture and explore decision knowledge in Eclipse. 
+Decision knowledge covers knowledge about decisions, the problems they address, solution proposals, their context, and justifications (rationale). 
+The user explores linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. 
+The knowledge elements are extracted from the Jira and git projects associated to the Eclipse project. 
+Trace links between code files and Jira issues are created via the Jira issue identifier in commit messages. 
+The user captures decision knowledge in code comments and commit messages. 
 
 ## User Interface and Usage Description
 
