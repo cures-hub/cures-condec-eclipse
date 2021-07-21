@@ -1,0 +1,27 @@
+sudo: false
+os: osx
+language: java
+jdk:
+- oraclejdk15
+cache:
+  directories:
+  - "$HOME/.m2"
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+script:
+  - mvn clean install -P jacoco
+deploy:
+  provider: releases
+  token: "$GITHUB_TOKEN"
+  skip_cleanup: true
+  file: $TRAVIS_BUILD_DIR/de.uhd.ifi.se.decision.management.eclipse/target/cures-condec-eclipse.jar  
+  on:
+    tags: true
+    repo: cures-hub/cures-condec-eclipse
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -f $TRAVIS_BUILD_DIR/de.uhd.ifi.se.decision.management.eclipse.tests.report/target/site/jacoco-aggregate/jacoco.xml
