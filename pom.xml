@@ -194,19 +194,11 @@
 			<exclusions>
 				<exclusion>
 					<groupId>org.netbeans.modules</groupId>
-					<artifactId>org-netbeans-modules-masterfs</artifactId>
+					<artifactId>*</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.netbeans.modules</groupId>
-					<artifactId>org-netbeans-core-startup-base</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.netbeans.modules</groupId>
-					<artifactId>org-netbeans-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.netbeans.modules</groupId>
-					<artifactId>org-netbeans-modules-nbjunit</artifactId>
+					<groupId>org.netbeans.api</groupId>
+					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
