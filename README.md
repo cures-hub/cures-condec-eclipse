@@ -10,7 +10,7 @@ Decision knowledge covers knowledge about decisions, the problems they address, 
 The user explores linked knowledge elements for code, such as requirements, work items, decision knowledge elements, and commits. 
 The knowledge elements are extracted from the Jira and git projects associated to the Eclipse project. 
 Trace links between code files and Jira issues are created via the Jira issue identifier in commit messages. 
-The user captures decision knowledge in code comments and commit messages. 
+The user (i.e. a software developer) captures decision knowledge in code comments and commit messages. 
 
 ## User Interface and Usage Description
 
@@ -22,7 +22,7 @@ Before you can start using the plug-in, you need to configure the git repository
 *Project Settings*
 
 ### Knowledge Graph View in Jira
-The Eclipse ConDec plugin enables to quickly navigate from the currently active code file to Jira, 
+The ConDec Eclipse plug-in enables to quickly navigate from the currently active code file to Jira, 
 where decision knowledge and other knowledge elements are shown in various views on the **knowledge graph** (e.g. as a tree, graph, and matrix view).
 ![Knowledge Graph View in Jira](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/subgraph_from_code_file.png)
 *Knowledge Graph View in Jira*
@@ -103,4 +103,4 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 *Runtime Tab*
 
 ### Run as a second Eclipse Application
-You can start a second Eclipse instance containing the plug-in  from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 
+You can start a second Eclipse instance containing the plug-in from within your initial Eclipse by running the de.uhd.ifi.se.decision.management.eclipse project as an `Eclipse Application`. 
