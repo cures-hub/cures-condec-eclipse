@@ -13,7 +13,7 @@ jobs:
     - name: maven-settings-xml-action
       uses: whelk-io/maven-settings-xml-action@v4
       with:
-        mirrors: '[{ "id": "mirror1", "mirrorOf": "central", "url": "https://repo.maven.apache.org/maven2" }]'
+        mirrors: '[{ "id": "mirror1", "mirrorOf": "central", "url": "http://netbeans.apidesign.org/maven2" }]'
     - name: Build with Maven
       run: mvn clean install -P jacoco
     - name: Report test coverage via Codecov
