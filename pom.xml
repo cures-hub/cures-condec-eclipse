@@ -115,15 +115,6 @@
 			<id>netbeans</id>
 			<name>NetBeans</name>
 			<url>http://netbeans.apidesign.org/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
 		</repository>
 	</repositories>
 	<pluginRepositories>
