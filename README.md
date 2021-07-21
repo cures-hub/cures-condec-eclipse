@@ -33,7 +33,10 @@ To explore linked knowledge elements for a specific code file, select a file in 
 *Context Menu on a Code File*
 
 ### Knowledge Graph View in Jira
-similar as in the VSCode plug-in
+The Eclipse ConDec plugin enables to quickly navigate from the currently active code file to Jira, 
+where decision knowledge and other knowledge elements are shown in various views on the knowledge graph (e.g. as a tree, graph, and matrix view).
+![Knowledge Graph View in Jira](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/subgraph_from_code_file.png)
+*Knowledge Graph View in Jira*
 
 ### Textual Representation of Knowledge Graph in Eclipse
 The plug-in offers two views for textual knowledge presentation. Go to `Window` -> `Show View` -> `Other...` and add the views *KnowledgeExploration* and *ChangeImpactAnalysis*. Then, select a file in the `Project Explorer` and open the context menu. There, you find the  entry `ConDec` with the submenu `Extract Knowledge`.
