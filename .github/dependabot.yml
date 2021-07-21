@@ -1,0 +1,54 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.github.javaparser:javaparser-core
+    versions:
+    - 3.18.0
+    - 3.19.0
+    - 3.20.0
+  - dependency-name: com.fasterxml.jackson.core:jackson-annotations
+    versions:
+    - 2.12.2
+  - dependency-name: com.fasterxml.jackson.core:jackson-core
+    versions:
+    - 2.12.1
+    - 2.12.2
+  - dependency-name: com.konghq:unirest-objectmapper-jackson
+    versions:
+    - 3.11.10
+    - 3.11.11
+  - dependency-name: org.jgrapht:jgrapht-core
+    versions:
+    - 1.5.0
+  - dependency-name: com.konghq:unirest-java
+    versions:
+    - 3.11.10
+    - 3.11.11
+  - dependency-name: org.eclipse.tycho:tycho-surefire-plugin
+    versions:
+    - 2.1.0
+    - 2.2.0
+  - dependency-name: org.eclipse.tycho:tycho-maven-plugin
+    versions:
+    - 2.1.0
+    - 2.2.0
+  - dependency-name: org.eclipse.tycho:tycho-compiler-plugin
+    versions:
+    - 2.2.0
+  - dependency-name: com.atlassian.jira:jira-rest-java-client-core
+    versions:
+    - 5.2.2
+  - dependency-name: org.slf4j:slf4j-api
+    versions:
+    - 1.7.30
+  - dependency-name: commons-codec:commons-codec
+    versions:
+    - "1.15"
+  - dependency-name: com.atlassian.fugue:fugue
+    versions:
+    - 2.7.0
