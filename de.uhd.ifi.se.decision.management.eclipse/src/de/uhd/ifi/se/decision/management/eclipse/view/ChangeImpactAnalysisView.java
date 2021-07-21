@@ -8,6 +8,22 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * @issue How to present related knowledge and change impact to developers?
+ * @decision Present related knowledge and change impact in dedicated views.
+ * @alternative Present related knowledge and change impact as a list of
+ *              proposals.
+ * @con Would mislead developers. Developers associate content assist with
+ *      auto-completion and proposals for bug-fixes.
+ * 
+ * @issue How to trigger decision exploration and change impact analysis?
+ * @decision Use menu items in context menu to trigger decision exploration and
+ *           change impact analysis!
+ * @alternative Content assist invocation triggers decision exploration view and
+ *              change impact analysis view
+ * @con Would mislead developers. Developers associate content assist with
+ *      auto-completion and proposals for bug-fixes.
+ */
 public class ChangeImpactAnalysisView extends ViewPart {
 
 	private Label label;
