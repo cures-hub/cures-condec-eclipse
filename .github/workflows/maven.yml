@@ -5,6 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Remove broken apt repos [Ubuntu]
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
     - name: Set up JDK 15
       uses: actions/setup-java@v2
       with:
@@ -17,6 +21,7 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven
+      uses: GabrielBB/xvfb-action@v1
       run: mvn clean install -P jacoco
     - name: Report test coverage via Codecov
       uses: codecov/codecov-action@v1.5.2
