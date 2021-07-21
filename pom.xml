@@ -24,7 +24,7 @@
 	<url>https://github.com/cures-hub/cures-condec-eclipse</url>
 
 	<properties>
-		<tycho-version>2.2.0</tycho-version>
+		<tycho-version>2.4.0</tycho-version>
 		<jacoco-version>0.8.6</jacoco-version>
 	</properties>
 
