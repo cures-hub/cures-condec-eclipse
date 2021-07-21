@@ -13,6 +13,7 @@ The CURES ConDec Eclipse plug-in enables the user to capture and explore decisio
 Before you can start using the plug-in, you need to configure the git repository and Jira project associated to your Eclipse project. Select `Project` -> `Properties` -> `ConDec` and add your configuration there.
 
 ![Project Settings](https://github.com/cures-hub/cures-condec-eclipse/raw/master/doc/configuration.png)
+
 *Project Settings*
 
 ### Knowledge Graph View in Eclipse
@@ -80,7 +81,7 @@ The following steps might be necessary to correctly setup Eclipse, in particular
 
 1. Update the pom.xml in the main/parent folder (add new dependency or update the version of an existing dependency, such as jira-rest-java-client-core from 4.0.0 to 5.2.2). Do not change the nested pom.xml files. (There are four pom.xml files in total.)
 2. Delete the contents of the de.uhd.ifi.se.decision.management.eclipse/lib folder
-3. Run `maven clean package -DskipTests` which will refill the lib folder including the new or updated dependencies.
+3. Run `mvn clean package -DskipTests` which will refill the lib folder including the new or updated dependencies. (It might fail but the dependencies are copied into de.uhd.ifi.se.decision.management.eclipse/lib, that is fine.) 
 4. Update the .classpath of the de.uhd.ifi.se.decision.management.eclipse project. Add all .jar-files in the lib folder and export them so that they can be found by the test project.
 5. Update the `MANIFEST.MF` and the `build.properties` using the Eclipse GUI. Navigate to `Runtime` and add all libraries as `Exported Packages` and make sure that the `Classpath` contains all .jar files.
 6. Make sure that the file `MANIFEST.MF` contains the entry `Bundle-ClassPath: .,`.
