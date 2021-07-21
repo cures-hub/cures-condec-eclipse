@@ -196,6 +196,41 @@
 			<groupId>org.gephi</groupId>
 			<artifactId>gephi-toolkit</artifactId>
 			<version>0.9.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.netbeans.modules</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.netbeans.api</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.modules</groupId>
+			<artifactId>org-netbeans-modules-masterfs</artifactId>
+			<version>RELEASE124</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.netbeans.modules</groupId>
+			<artifactId>org-netbeans-core-startup-base</artifactId>
+			<version>RELEASE124</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.netbeans.modules</groupId>
+			<artifactId>org-netbeans-core</artifactId>
+			<version>RELEASE124</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-util-lookup</artifactId>
+			<version>RELEASE124</version>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-util</artifactId>
+			<version>RELEASE124</version>
 		</dependency>
 
 		<!-- Logging -->
