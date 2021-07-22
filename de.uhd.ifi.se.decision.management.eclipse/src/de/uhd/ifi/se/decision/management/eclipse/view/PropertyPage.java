@@ -20,9 +20,10 @@ import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceMa
  * @see ConfigPersistenceManager
  * @see PreferencePage
  * 
- * @issue Currently, only the preferences are used. The project properties are
- *        treated the same as the preferences. How can we access the project
- *        properties in the ConfigPersistenceManager class?
+ * @issue Currently, only the preferences are used (thus, all Eclipse projects
+ *        have the same settings). The project properties are treated the same
+ *        as the preferences. How can we access the project properties in the
+ *        ConfigPersistenceManager class?
  */
 public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements IWorkbenchPropertyPage {
 	private Text textGitPath;
