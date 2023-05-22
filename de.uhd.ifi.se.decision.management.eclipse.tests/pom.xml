@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>de.uhd.ifi.se.decision</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.3</version>
+		<version>0.0.4</version>
 	</parent>
 
 	<artifactId>de.uhd.ifi.se.decision.management.eclipse.tests</artifactId>
