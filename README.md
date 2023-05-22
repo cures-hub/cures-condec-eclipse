@@ -1,6 +1,6 @@
 # cures-condec-eclipse
 
-[![Build Status](https://app.travis-ci.com/cures-hub/cures-condec-eclipse.svg?branch=master)](https://app.travis-ci.com/cures-hub/cures-condec-eclipse)
+[![Continuous integration](https://github.com/cures-hub/cures-condec-eclipse/actions/workflows/maven.yml/badge.svg)](https://github.com/cures-hub/cures-condec-eclipse/actions/workflows/maven.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d05c885619e24c5d8fb9113e203d10a4)](https://www.codacy.com/gh/cures-hub/cures-condec-eclipse/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cures-hub/cures-condec-eclipse&amp;utm_campaign=Badge_Grade)
 [![Codecoverage](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master/graph/badge.svg)](https://codecov.io/gh/cures-hub/cures-condec-eclipse/branch/master)
 [![GitHub contributors](https://img.shields.io/github/contributors/cures-hub/cures-condec-eclipse.svg)](https://github.com/cures-hub/cures-condec-eclipse/graphs/contributors)
