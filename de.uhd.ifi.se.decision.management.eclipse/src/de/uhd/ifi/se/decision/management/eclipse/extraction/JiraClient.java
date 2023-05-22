@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.jackson.node.ObjectNode;
-
 import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
@@ -127,14 +126,13 @@ public interface JiraClient {
 	 *         objects.
 	 */
 	Set<JiraIssue> getLinkedJiraIssues(JiraIssue jiraIssue);
-	
+
 	/**
 	 * Creates an issue and adds it to the JIRA instance.
 	 *
 	 * @param payload
 	 *            A json containing all data to create a JIRA issue.
-	 * @return payload
-	 *            true, if the issue was created in Jira, false if not.
+	 * @return payload true, if the issue was created in Jira, false if not.
 	 */
 	public boolean createIssue(ObjectNode payload);
 }

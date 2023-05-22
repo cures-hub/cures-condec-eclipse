@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ConDec Eclipse Tests
 Bundle-SymbolicName: de.uhd.ifi.se.decision.management.eclipse.tests
-Bundle-Version: 0.0.3
-Bundle-RequiredExecutionEnvironment: JavaSE-15
+Bundle-Version: 0.0.4
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.jface,

@@ -6,18 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import org.codehaus.jackson.node.ObjectNode;
-
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import de.uhd.ifi.se.decision.management.eclipse.extraction.JiraClient;
 import de.uhd.ifi.se.decision.management.eclipse.model.JiraIssue;
 import de.uhd.ifi.se.decision.management.eclipse.persistence.ConfigPersistenceManager;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
-import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
 
 /**
@@ -149,57 +148,31 @@ public class JiraClientImpl implements JiraClient {
 	public void setJiraRestClient(JiraRestClient jiraRestClient) {
 		this.jiraRestClient = jiraRestClient;
 	}
-	
+
 	@Override
 	public boolean createIssue(ObjectNode payload) {
 		String username = ConfigPersistenceManager.getJiraUser();
 		String password = ConfigPersistenceManager.getJiraPassword();
 
 		String uri = ConfigPersistenceManager.getJiraUri().toString();
-		if(!uri.endsWith("/")) {
+		if (!uri.endsWith("/")) {
 			uri = uri.concat("/");
 		}
 		uri = uri.concat("/rest/condec/latest/knowledge/createDecisionKnowledgeElement.json");
-
-		Unirest.config().setObjectMapper(new ObjectMapper() {
-			private org.codehaus.jackson.map.ObjectMapper jacksonObjectMapper = new org.codehaus.jackson.map.ObjectMapper();
-
-			public <T> T readValue(String value, Class<T> valueType) {
-				try {
-					return jacksonObjectMapper.readValue(value, valueType);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-					return null;
-				}
-			}
-
-			public String writeValue(Object value) {
-				try {
-					return jacksonObjectMapper.writeValueAsString(value);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-					return null;
-				}
-			}
-		});
-
 		try {
 			HttpResponse<JsonNode> response = Unirest.post(uri).basicAuth(username, password)
-			.header("Accept", "application/json").header("Content-Type", "application/json")
-			.body(payload).asJson();
-			
+					.header("Accept", "application/json").header("Content-Type", "application/json").body(payload)
+					.asJson();
+
 			System.out.println(response.getStatus());
-			
+
 			if (response.getStatus() == 200) {
 				return true;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 }
