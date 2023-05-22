@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ConDec Eclipse
 Bundle-SymbolicName: de.uhd.ifi.se.decision.management.eclipse;singleton:=true
 Bundle-Version: 0.0.4
-Bundle-RequiredExecutionEnvironment: JavaSE-15
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jgit,
  org.eclipse.jdt.ui,
