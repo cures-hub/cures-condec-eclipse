@@ -53,7 +53,7 @@ The plug-in offers two views for textual knowledge presentation. Go to `Window` 
 
 ### Prerequisites
 The following prerequisites are necessary to compile the plug-in from source code:
-- Java 15 JDK
+- Java 17 JDK
 - [Maven 3](https://maven.apache.org)
 
 ### Compilation via Terminal
