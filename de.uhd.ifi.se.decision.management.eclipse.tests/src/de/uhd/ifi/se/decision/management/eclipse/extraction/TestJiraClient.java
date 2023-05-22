@@ -9,11 +9,12 @@ import static org.junit.Assert.assertTrue;
 import java.net.URI;
 import java.util.Set;
 
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import de.uhd.ifi.se.decision.management.eclipse.extraction.impl.JiraClientImpl;
 import de.uhd.ifi.se.decision.management.eclipse.mock.MockJiraRestClient;
