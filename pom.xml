@@ -161,7 +161,7 @@
 		<dependency>
 			<groupId>com.konghq</groupId>
 			<artifactId>unirest-java</artifactId>
-			<version>3.14.2</version>
+			<version>3.14.5</version>
 		</dependency>
 
 		<dependency>
